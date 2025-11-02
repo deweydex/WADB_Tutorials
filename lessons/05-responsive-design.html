@@ -4,61 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lesson 05: Responsive Design</title>
-    <link rel="stylesheet" href="../styles.css">
-    <style>
-        .lesson-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .learning-outcomes {
-            background-color: #e0f2fe;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--primary-color);
-        }
-        .concept-section {
-            margin-bottom: 3rem;
-        }
-        .code-example {
-            background-color: #1e293b;
-            color: #e2e8f0;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            overflow-x: auto;
-        }
-        .code-example code {
-            font-family: 'Courier New', monospace;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-        .worked-example {
-            background-color: #f0f9ff;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-        }
-        .exercise {
-            background-color: #fef3c7;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 2rem 0;
-            border-left: 4px solid #f59e0b;
-        }
-        .nav-links {
-            margin-bottom: 2rem;
-        }
-        .nav-links a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/navigation.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/lessons.css">
+    <!-- 
+        Links to external CSS files organized by purpose.
+        base.css: foundational styles and CSS variables
+        navigation.css: header and navigation (minimal on lesson pages)
+        components.css: shared components like learning-outcomes and code-example
+        lessons.css: lesson page-specific styles
+    -->
+    <script src="../script.js"></script>
 </head>
 <body>
+    <!-- 
+        Minimal Navigation Header
+        
+        On lesson pages, navigation is collapsed by default with a hamburger menu.
+        This keeps the page focused on content while still providing access
+        to site navigation when needed.
+    -->
+    <header>
+        <nav class="navbar minimal">
+            <div class="container">
+                <a href="../index.html" class="logo">Learn HTML & CSS</a>
+                <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+                    ☰ Menu
+                </button>
+                <ul class="nav-links">
+                    <li><a href="../index.html#home">Home</a></li>
+                    <li><a href="../index.html#lessons">Lessons</a></li>
+                    <li><a href="../index.html#examples">Examples</a></li>
+                    <li><a href="../index.html#templates">Templates</a></li>
+                    <li><a href="../index.html#github">GitHub</a></li>
+                    <li><a href="../design-resources.html">Design Resources</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
     <div class="lesson-container">
-        <div class="nav-links">
+        <div class="lesson-nav-links">
             <a href="../index.html">Back to Home</a> | 
             <a href="04-css-layout.html">Previous Lesson</a>
         </div>
@@ -233,7 +220,7 @@ nav a {
             <p>W3Schools. "CSS Media Queries." W3Schools. <a href="https://www.w3schools.com/css/css_rwd_mediaqueries.asp">https://www.w3schools.com/css/css_rwd_mediaqueries.asp</a></p>
         </div>
 
-        <div class="nav-links" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+        <div class="lesson-nav-links" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
             <a href="../index.html">Back to Home</a> | 
             <a href="04-css-layout.html">Previous Lesson</a> | 
             <a href="06-github-setup.html">Next Lesson: GitHub Setup</a>
