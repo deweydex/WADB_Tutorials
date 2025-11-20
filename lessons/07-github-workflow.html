@@ -69,6 +69,8 @@
         <li><a href="06-github-setup.html">06. GitHub Setup</a></li>
         <li><a href="07-github-workflow.html">07. GitHub Workflow</a></li>
         <li><a href="08-github-pages.html">08. GitHub Pages</a></li>
+        <li><a href="09-images.html">09. Working with Images</a></li>
+        <li><a href="10-links.html">10. Working with Links</a></li>
         <li class="nav-section-header">Resources</li>
         <li><a href="../index.html#examples">Examples</a></li>
         <li><a href="../index.html#templates">Templates</a></li>
@@ -88,7 +90,26 @@
 
         <h1>Lesson 07: GitHub Workflow</h1>
 
-        <div class="learning-outcomes">
+        <!-- Table of Contents -->
+        <nav class="table-of-contents">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#learning-outcomes">Learning Outcomes</a></li>
+                <li><a href="#commits-and-messages">Understanding Commits and Commit Messages</a></li>
+                <li><a href="#making-commits">Making Commits Through the GitHub Web Interface</a></li>
+                <li><a href="#understanding-branches">Understanding Branches</a></li>
+                <li><a href="#creating-branches">Creating and Using Branches</a></li>
+                <li><a href="#pull-requests">Understanding Pull Requests</a></li>
+                <li><a href="#worked-example">Worked Example: Complete Workflow with Branch and Pull Request</a></li>
+                <li><a href="#collaboration">Collaboration Basics</a></li>
+                <li><a href="#practice">Practice Opportunity</a></li>
+                <li><a href="#summary">Summary of Key Concepts</a></li>
+                <li><a href="#next-steps">Next Steps</a></li>
+                <li><a href="#bibliography">Bibliography</a></li>
+            </ul>
+        </nav>
+
+        <div class="learning-outcomes" id="learning-outcomes">
             <h2>Learning Outcomes</h2>
             <p>After this lesson, you will understand how to save changes to GitHub through commits, how to write meaningful commit messages, and how to use branches to work on different versions of your project. You will understand what pull requests are and how to use them for managing changes, and you'll be familiar with collaboration workflows that allow multiple people to work on the same project effectively.</p>
             
@@ -96,7 +117,7 @@
             <p>You should have a GitHub account and have created at least one repository from Lesson 06. Understanding the basic GitHub interface and repository structure is necessary before learning workflow concepts.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="commits-and-messages">
             <h2>Understanding Commits and Commit Messages</h2>
             
             <p>A <strong>commit</strong> is a snapshot of your project at a specific point in time. When you make changes to files in your repository and save those changes, you create a commit that permanently records:</p>
@@ -203,7 +224,7 @@ Add responsive navigation styles
             <p>Following these patterns makes commit histories <strong>more readable and professional</strong>. See <a href="https://www.conventionalcommits.org/" target="_blank">Conventional Commits</a> for more detailed guidelines.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="making-commits">
             <h2>Making Commits Through the GitHub Web Interface</h2>
             <p>You can make commits to your GitHub repository directly through the web interface without installing any additional software. This approach is perfect for beginners and works well for HTML and CSS projects where you're making changes through the browser.</p>
 
@@ -218,7 +239,7 @@ Add responsive navigation styles
             <p>This web-based workflow is accessible and straightforward, making it ideal for beginners. As you become more comfortable with GitHub, you might choose to use desktop applications or command-line tools that provide more advanced features, but the web interface remains a powerful and convenient way to manage your repositories.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="understanding-branches">
             <h2>Understanding Branches</h2>
             
             <p><strong>Branches</strong> in Git and GitHub allow you to work on different versions of your project simultaneously without affecting the main version. Think of branches like <em>alternate timelines</em> - you can experiment with new features, try different approaches, or work on multiple tasks in parallel, all while keeping your main branch stable and functional.</p>
@@ -302,7 +323,7 @@ Add responsive navigation styles
             <p>The ability to work on changes independently, test them thoroughly, and then merge them only when ready creates a <strong>professional workflow</strong> that scales from personal projects to large team collaborations.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="creating-branches">
             <h2>Creating and Using Branches</h2>
             <p>Creating a branch on GitHub is straightforward through the web interface. You can create branches to experiment with changes, work on new features, or try different approaches to your design without affecting your main branch.</p>
 
@@ -315,7 +336,7 @@ Add responsive navigation styles
             <p>When you're ready to incorporate your branch's changes into main, you merge the branch. Merging combines the changes from your branch into main, bringing those commits and file modifications into the main branch. GitHub provides a simple interface for merging through pull requests, which we'll discuss next. After merging, your branch's changes become part of main, and you can continue working from there or create new branches for future features.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="pull-requests">
             <h2>Understanding Pull Requests</h2>
             
             <p><strong>Pull requests</strong>, often abbreviated as <strong>PRs</strong>, are proposals to merge changes from one branch into another. While the name might suggest requesting someone else to pull your changes, pull requests are <em>valuable even when working alone</em> because they provide a structured way to review, discuss, and merge changes before they become part of your main branch.</p>
@@ -389,7 +410,7 @@ Add responsive navigation styles
             <p>For guidance on creating effective pull requests, see GitHub's <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request" target="_blank">creating pull requests guide</a>.</p>
         </div>
 
-        <div class="worked-example">
+        <div class="worked-example" id="worked-example">
             <h2>Worked Example: Complete Workflow with Branch and Pull Request</h2>
             <p>This example demonstrates a complete workflow from creating a branch through making changes and merging them via a pull request. Following this process shows how branches and pull requests work together to create organized, reviewable changes to your project.</p>
 
@@ -410,7 +431,7 @@ Add responsive navigation styles
             <p>This workflow - create branch, make changes, create pull request, review, merge - might seem like extra steps for simple changes. However, it creates organized, reviewable changes and establishes habits that scale well as projects grow. Even for solo projects, this process helps catch mistakes and creates clearer project history.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="collaboration">
             <h2>Collaboration Basics</h2>
             <p>GitHub's collaboration features allow multiple people to work on the same project simultaneously without conflicts or lost work. Understanding how collaboration works prepares you for working with others, whether on open-source projects, team assignments, or future professional development work.</p>
 
@@ -425,26 +446,26 @@ Add responsive navigation styles
             <p>Understanding these collaboration workflows prepares you for real-world development scenarios. Even when working alone, practicing with branches and pull requests develops skills that translate directly to professional environments where collaboration is essential. The ability to work effectively with version control and code review processes is highly valued in software development careers.</p>
         </div>
 
-        <div class="exercise">
+        <div class="exercise" id="practice">
             <h2>Practice Opportunity</h2>
             <p>Practice the complete GitHub workflow by creating a branch in one of your repositories, making a small change such as updating colors or adding content, committing the change with a clear message, then creating a pull request to merge it back into main. Review the pull request to see how GitHub displays your changes, then merge it. After merging, verify that your changes appear in the main branch and delete the feature branch you created.</p>
 
             <p>Create multiple commits on a branch to see how the commit history builds up. Make related changes across multiple files, committing each logical group of changes separately with descriptive messages. Observe how the pull request shows all commits and changes together, giving you a complete view of what would be merged before you finalize it.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="summary">
             <h2>Summary of Key Concepts</h2>
             <p>Commits are snapshots of your project that record changes with descriptive messages, creating a permanent history you can review or return to. Branches allow you to work on different versions simultaneously, enabling experimentation without affecting your main branch. Pull requests provide a structured way to review and merge changes, serving as both a safety checkpoint and a record of what changed and why. Collaboration workflows use these tools to allow multiple people to work on projects simultaneously while maintaining code quality and clear project history.</p>
 
             <p>These GitHub workflow concepts form the foundation of professional software development practices. Understanding commits, branches, and pull requests prepares you for both solo projects and team collaboration. The habits you develop - writing clear commit messages, using branches for features, and reviewing changes through pull requests - scale from simple websites to complex applications. These skills demonstrate professional competency and align with industry-standard development workflows.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="next-steps">
             <h2>Next Steps</h2>
             <p>Now that you understand GitHub workflows, Lesson 08 covers deploying your HTML and CSS websites to the internet using GitHub Pages. You'll learn how to publish your websites for free so anyone can visit them online.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="bibliography">
             <h2>Bibliography</h2>
             <p>GitHub. "Understanding the GitHub Flow." GitHub Guides. <a href="https://guides.github.com/introduction/flow/">https://guides.github.com/introduction/flow/</a></p>
             

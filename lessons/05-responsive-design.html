@@ -69,6 +69,8 @@
         <li><a href="06-github-setup.html">06. GitHub Setup</a></li>
         <li><a href="07-github-workflow.html">07. GitHub Workflow</a></li>
         <li><a href="08-github-pages.html">08. GitHub Pages</a></li>
+        <li><a href="09-images.html">09. Working with Images</a></li>
+        <li><a href="10-links.html">10. Working with Links</a></li>
         <li class="nav-section-header">Resources</li>
         <li><a href="../index.html#examples">Examples</a></li>
         <li><a href="../index.html#templates">Templates</a></li>
@@ -88,7 +90,25 @@
 
         <h1>Lesson 05: Responsive Design</h1>
 
-        <div class="learning-outcomes">
+        <!-- Table of Contents -->
+        <nav class="table-of-contents">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#learning-outcomes">Learning Outcomes</a></li>
+                <li><a href="#what-is-responsive-design">What is Responsive Design and Why It Matters</a></li>
+                <li><a href="#viewport-meta-tag">The Viewport Meta Tag</a></li>
+                <li><a href="#media-queries">Understanding and Using Media Queries</a></li>
+                <li><a href="#mobile-first">Mobile-First Design Approach</a></li>
+                <li><a href="#worked-example">Worked Example: Making a Page Responsive</a></li>
+                <li><a href="#flexible-images">Flexible Images and Media</a></li>
+                <li><a href="#practice">Practice Opportunity</a></li>
+                <li><a href="#summary">Summary of Key Concepts</a></li>
+                <li><a href="#next-steps">Next Steps</a></li>
+                <li><a href="#bibliography">Bibliography</a></li>
+            </ul>
+        </nav>
+
+        <div class="learning-outcomes" id="learning-outcomes">
             <h2>Learning Outcomes</h2>
             <p>By the end of this lesson, you will understand what responsive design means and why it's essential for modern web development. You will be able to use the viewport meta tag to make pages mobile-friendly, write media queries to apply different styles at different screen sizes, and create layouts that adapt smoothly from mobile phones to desktop computers. You will also understand best practices for designing mobile-first responsive websites.</p>
             
@@ -96,7 +116,7 @@
             <p>You should be comfortable with CSS layout techniques from Lesson 04, including understanding flexbox and how to control element sizing and spacing. Familiarity with CSS selectors and properties is also necessary.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="what-is-responsive-design">
             <h2>What is Responsive Design and Why It Matters</h2>
             
             <p><strong>Responsive design</strong> refers to creating websites that <em>adapt their layout and appearance</em> based on the screen size and capabilities of the device viewing them. A responsive website looks and functions well on:</p>
@@ -166,7 +186,7 @@
             <p>These techniques work together to create a website that <strong>automatically optimizes</strong> for each device type.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="viewport-meta-tag">
             <h2>The Viewport Meta Tag</h2>
             
             <p>The <strong>viewport meta tag</strong> is <em>essential</em> for responsive design because it tells mobile browsers how to handle your page's dimensions and scaling.</p>
@@ -236,7 +256,7 @@
             <p><strong>Best practice:</strong> Use the standard <code>width=device-width, initial-scale=1.0</code> and allow users to zoom if needed.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="media-queries">
             <h2>Understanding and Using Media Queries</h2>
             <p>Media queries are CSS features that allow you to apply styles conditionally based on device characteristics, most commonly screen width. They enable you to write different CSS rules for different screen sizes, creating layouts that adapt as the viewport changes. Media queries are the primary tool for implementing responsive design in CSS.</p>
 
@@ -251,7 +271,7 @@
             <p>You can also use media queries to hide or show elements, change font sizes for better readability, adjust spacing, modify grid or flexbox layouts, or change any other CSS property. The key is understanding that media queries allow you to create multiple versions of your styling that activate at different screen sizes, all using the same HTML structure.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="mobile-first">
             <h2>Mobile-First Design Approach</h2>
             <p>Mobile-first design means starting with styles optimized for small screens, then using media queries to enhance the design for larger screens. This approach has become the standard way to build responsive websites because it aligns with how most people access the internet and creates more efficient, maintainable code.</p>
 
@@ -264,7 +284,7 @@
             <p>Mobile-first also aligns with progressive enhancement, a web development philosophy that starts with a functional base experience and adds enhancements for devices that support them. Your website works on all devices, but provides better experiences on devices with more capabilities. This is more inclusive than assuming everyone has a large desktop screen and trying to make it work on smaller devices.</p>
         </div>
 
-        <div class="worked-example">
+        <div class="worked-example" id="worked-example">
             <h2>Worked Example: Making a Page Responsive</h2>
             <p>Creating a responsive page demonstrates how media queries transform a mobile layout into a desktop layout using the same HTML. We'll start with a mobile-first design and add enhancements for larger screens.</p>
 
@@ -329,7 +349,7 @@ nav a {
             <p>Test your responsive design by resizing your browser window or using browser developer tools that let you simulate different device sizes. The layout should smoothly transition between mobile, tablet, and desktop arrangements. Elements should remain readable and usable at all sizes, with navigation that's easy to interact with whether it's vertical on mobile or horizontal on desktop.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="flexible-images">
             <h2>Flexible Images and Media</h2>
             <p>Images and other media need special consideration in responsive design because fixed-width images can break layouts on smaller screens or waste space on larger ones. Making images flexible ensures they scale appropriately with their containers.</p>
 
@@ -338,28 +358,30 @@ nav a {
             <p>For responsive images that serve different file sizes for different devices, you can use the <code>&lt;picture&gt;</code> element or the <code>srcset</code> attribute on <code>&lt;img&gt;</code> tags. These allow browsers to download appropriately sized images for the user's device, saving bandwidth on mobile connections while providing high-quality images on larger screens. However, for learning purposes, the max-width: 100% approach is sufficient and works for most websites.</p>
 
             <p>Videos and embedded content like iframes also need responsive treatment. Setting <code>width: 100%;</code> and <code>height: auto;</code> works for most embedded media, though some video platforms provide responsive embed codes that handle this automatically. The key is ensuring media elements never overflow their containers and maintain appropriate aspect ratios.</p>
+
+            <p><strong>Note:</strong> For a deeper dive into working with images on the web, including detailed coverage of the <code>&lt;picture&gt;</code> element, image formats, accessibility, and advanced responsive image techniques, see <a href="09-images.html">Lesson 09: Working with Images</a>.</p>
         </div>
 
-        <div class="exercise">
+        <div class="exercise" id="practice">
             <h2>Practice Opportunity</h2>
             <p>Take an existing HTML page you've created and make it responsive. Start by adding the viewport meta tag. Then review your CSS and identify elements that need to adapt at different screen sizes. Create a mobile-first CSS approach with base styles for small screens, then add media queries for tablet and desktop breakpoints. Test your responsive design by resizing your browser window and verifying that content remains readable and usable at all sizes.</p>
 
             <p>Focus on making navigation adapt between vertical mobile layout and horizontal desktop layout. Ensure text doesn't become too small on mobile or too large on desktop. Check that images scale appropriately and that spacing works well at all screen sizes. Pay attention to touch targets on mobile - interactive elements should be large enough to tap easily.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="summary">
             <h2>Summary of Key Concepts</h2>
             <p>Responsive design creates websites that adapt to different screen sizes, ensuring good user experiences across all devices. The viewport meta tag is essential for mobile browsers to render pages correctly. Media queries allow you to apply different CSS rules at different screen sizes, enabling layouts that transform from mobile to desktop. Mobile-first design approaches start with simple mobile layouts and enhance them for larger screens, creating more maintainable and efficient responsive websites.</p>
 
             <p>Understanding responsive design is crucial for modern web development because users access websites from many different devices. Creating one responsive website is more efficient than separate mobile and desktop versions, and responsive design improves accessibility and search engine visibility. The techniques you've learned - viewport meta tags, media queries, flexible layouts, and mobile-first approaches - provide the foundation for building websites that work well for all users.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="next-steps">
             <h2>Next Steps</h2>
             <p>With HTML and CSS fundamentals complete, you're ready to learn how to use GitHub to store your code and deploy your websites. Lesson 06 covers setting up a GitHub account and creating your first repository, which are the first steps toward publishing your websites online.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="bibliography">
             <h2>Bibliography</h2>
             <p>Mozilla Developer Network. "Responsive Design." MDN Web Docs. <a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design">https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design</a></p>
             

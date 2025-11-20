@@ -73,6 +73,8 @@
         <li><a href="06-github-setup.html">06. GitHub Setup</a></li>
         <li><a href="07-github-workflow.html">07. GitHub Workflow</a></li>
         <li><a href="08-github-pages.html">08. GitHub Pages</a></li>
+        <li><a href="09-images.html">09. Working with Images</a></li>
+        <li><a href="10-links.html">10. Working with Links</a></li>
         <li class="nav-section-header">Resources</li>
         <li><a href="../index.html#examples">Examples</a></li>
         <li><a href="../index.html#templates">Templates</a></li>
@@ -92,7 +94,25 @@
 
         <h1>Lesson 01: HTML Basics</h1>
 
-        <div class="learning-outcomes">
+        <!-- Table of Contents -->
+        <nav class="table-of-contents">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#learning-outcomes">Learning Outcomes</a></li>
+                <li><a href="#what-is-html">What is HTML and Why Does It Matter?</a></li>
+                <li><a href="#html-files">Understanding HTML and CSS as Files</a></li>
+                <li><a href="#creating-first-file">Example: Creating and Saving Your First HTML File</a></li>
+                <li><a href="#document-structure">The Basic Structure of an HTML Document</a></li>
+                <li><a href="#tags-elements">Understanding HTML Tags and Elements</a></li>
+                <li><a href="#common-tags">Common HTML Tags You'll Use Regularly</a></li>
+                <li><a href="#using-tags">Example: Using Common HTML Tags</a></li>
+                <li><a href="#worked-example">Worked Example: Creating Your First HTML Page</a></li>
+                <li><a href="#practice">Practice Opportunity</a></li>
+                <li><a href="#summary">Summary</a></li>
+            </ul>
+        </nav>
+
+        <div class="learning-outcomes" id="learning-outcomes">
             <h2>Learning Outcomes</h2>
             <p>By the end of this lesson, you will be able to understand what HTML is and why it exists, identify the basic structure of an HTML document, recognize common HTML tags and understand their purpose, and create your first simple HTML page. These skills form the foundation for all web development work.</p>
             
@@ -100,7 +120,7 @@
             <p>No prior coding experience is required for this lesson. You only need a text editor (like Notepad, TextEdit, or VS Code) and a web browser (Chrome, Firefox, Safari, or Edge) installed on your computer.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="what-is-html">
             <h2>What is HTML and Why Does It Matter?</h2>
             
             <h3>Understanding the Name</h3>
@@ -142,7 +162,7 @@
             <p>HTML is an essential skill for web development, content creation, and digital communication. Once you understand HTML, you can build on this knowledge to learn CSS for styling and JavaScript for interactivity.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="html-files">
             <h2>Understanding HTML and CSS as Files</h2>
             
             <p>Before diving into writing HTML code, it's important to understand that <strong>HTML and CSS are simply text files</strong> saved on your computer. These files contain instructions written in special languages that web browsers can read and interpret.</p>
@@ -184,7 +204,7 @@
             <p>The code you write is just <em>text</em>, saved in a file that browsers know how to interpret. This simplicity is one of HTML's greatest strengths - you don't need expensive software or complicated setup to get started.</p>
         </div>
 
-        <div class="worked-example">
+        <div class="worked-example" id="creating-first-file">
             <h2>Example: Creating and Saving Your First HTML File</h2>
             
             <p>This example demonstrates the <strong>complete process</strong> of creating an HTML file, from opening a text editor to viewing it in a browser. Following these steps helps you understand how HTML files work on your computer.</p>
@@ -243,7 +263,7 @@
             <p><strong>Important reminder:</strong> Your browser doesn't automatically detect file changes, so you <em>must</em> refresh to see updates. This cycle of <strong>editing → saving → refreshing</strong> is fundamental to web development.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="document-structure">
             <h2>The Basic Structure of an HTML Document</h2>
             
             <p>Every HTML document follows a <strong>specific structure</strong> that tells the browser what type of document it is and how to interpret the content. This structure consists of several key elements that work together to create a valid web page.</p>
@@ -307,7 +327,7 @@
             <p>This is essential for any page that might include content beyond basic English letters and numbers.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="tags-elements">
             <h2>Understanding HTML Tags and Elements</h2>
             
             <h3>What Are Tags?</h3>
@@ -362,7 +382,7 @@
             <p>By using the right tags for the right content, you create websites that are not only visually appealing but also meaningful to both humans and machines.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="common-tags">
             <h2>Common HTML Tags You'll Use Regularly</h2>
             
             <p>While HTML has many tags available, certain tags appear in <strong>almost every web page</strong> you'll create. Understanding these fundamental tags gives you the ability to create meaningful, well-structured web pages.</p>
@@ -402,6 +422,8 @@
             
             <p>The text between the opening and closing anchor tags (<code>Click here</code> in this example) is what users will see and click on.</p>
 
+            <p><strong>Note:</strong> Links are fundamental to web development and there's much more to learn about them. For a complete guide to working with links, including navigation menus, link styling, and best practices, see <a href="10-links.html">Lesson 10: Working with Links</a>.</p>
+
             <h3>Other Essential Tags</h3>
             <p>You'll encounter several other essential tags frequently:</p>
             
@@ -411,11 +433,13 @@
                 <li><strong>Emphasis tag:</strong> <code>&lt;em&gt;</code> - Emphasizes text (typically displays as <em>italic</em>)</li>
                 <li><strong>List tags:</strong> <code>&lt;ul&gt;</code> (unordered list) and <code>&lt;ol&gt;</code> (ordered list) with <code>&lt;li&gt;</code> (list items)</li>
             </ul>
-            
+
             <p>Each of these tags serves a <strong>specific purpose</strong> in marking up your content meaningfully. As you practice, you'll learn when to use each tag appropriately.</p>
+
+            <p><strong>Note:</strong> Images are an important part of modern web pages. For a comprehensive guide to adding images, including file formats, accessibility with alt text, sizing, positioning, and responsive images, see <a href="09-images.html">Lesson 09: Working with Images</a>.</p>
         </div>
 
-        <div class="worked-example">
+        <div class="worked-example" id="using-tags">
             <h2>Example: Using Common HTML Tags</h2>
             
             <p>This example demonstrates how to use several <strong>common HTML tags</strong> together to create a simple but complete web page. Seeing these tags work together helps you understand how they combine to create structured content.</p>
@@ -471,9 +495,9 @@
             <p>Each time you make a change, <strong>save the file</strong> and <strong>refresh your browser</strong> to see the results. This practice helps you understand how each tag affects the display of your content.</p>
         </div>
 
-        <div class="worked-example">
+        <div class="worked-example" id="worked-example">
             <h2>Worked Example: Creating Your First HTML Page</h2>
-            
+
             <p>Creating your first HTML page involves several steps, and understanding <em>why</em> each step matters will help you remember the process. We'll create a simple page that displays a greeting and a short paragraph.</p>
 
             <p class="playground-intro"><strong>Try it yourself:</strong> Edit the code below! Modify the heading text or add a new paragraph. You'll see your changes appear instantly in the live preview.</p>
@@ -598,7 +622,7 @@ p {
             <p>This structure is the foundation for all your HTML pages, no matter how complex they become.</p>
         </div>
 
-        <div class="exercise">
+        <div class="exercise" id="practice">
             <h2>Practice Opportunity</h2>
             
             <p>Create an HTML page about a topic that interests you. Your page should include:</p>
@@ -625,7 +649,7 @@ p {
             <p><strong>If something doesn't display correctly:</strong> Check that you've closed all your tags and that your file has the <code>.html</code> extension. Remember to save your file and refresh your browser after making changes.</p>
         </div>
 
-        <div class="concept-section">
+        <div class="concept-section" id="summary">
             <h2>Summary of Key Concepts</h2>
             
             <p>HTML provides the <strong>structural foundation</strong> for all web pages. It uses tags to mark up content, giving browsers instructions on how to organize and display information.</p>
