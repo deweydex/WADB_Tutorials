@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12: Component-Based Design & Maintainable CSS | Web Development Tutorials</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/navigation.css">
+    <link rel="stylesheet" href="../css/lesson.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header>
+        <nav class="navbar minimal">
+            <div class="container">
+                <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+                    ☰ Menu
+                </button>
+                <div class="site-header-content">
+                    <h1 class="logo">Learn HTML, CSS, GitHub, and More!</h1>
+                    <p class="site-subtitle">Lesson 12: Component-Based Design & Maintainable CSS</p>
+                </div>
+                <div class="header-right">
+                    <a href="../about.html">About</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="menu-overlay"></div>
+
+    <nav class="lesson-nav">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="01-html-basics.html">01. HTML Basics</a></li>
+            <li><a href="02-html-semantics.html">02. Semantic HTML</a></li>
+            <li><a href="03-css-basics.html">03. CSS Basics</a></li>
+            <li><a href="04-css-layout.html">04. CSS Layout</a></li>
+            <li><a href="05-responsive-design.html">05. Responsive Design</a></li>
+            <li><a href="06-images.html">06. Working with Images</a></li>
+            <li><a href="07-links.html">07. Working with Links</a></li>
+            <li><a href="08-github-setup.html">08. GitHub Setup</a></li>
+            <li><a href="09-github-workflow.html">09. GitHub Workflow</a></li>
+            <li><a href="10-github-pages.html">10. GitHub Pages</a></li>
+            <li><a href="11-flexbox-grid-advanced.html">11. Advanced Flexbox & Grid</a></li>
+            <li><a href="12-component-design.html" class="active">12. Component Design</a></li>
+            <li><a href="13-animations-transitions.html">13. Animations & Transitions</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <article class="lesson-content">
+            <div class="lesson-header">
+                <span class="lesson-number">Lesson 12</span>
+                <h1>Component-Based Design & Maintainable CSS</h1>
+                <p class="lesson-description">
+                    Learn to build reusable UI components with maintainable CSS architecture, naming conventions, and CSS custom properties for scalable design systems.
+                </p>
+            </div>
+
+            <div class="lesson-nav-links">
+                <a href="../index.html">Back to Home</a> |
+                <a href="11-flexbox-grid-advanced.html">Previous Lesson</a> |
+                <a href="13-animations-transitions.html">Next Lesson: Animations & Transitions</a>
+            </div>
+
+            <nav class="table-of-contents">
+                <h2>Table of Contents</h2>
+                <ul>
+                    <li><a href="#learning-outcomes">Learning Outcomes</a></li>
+                    <li><a href="#prerequisites">Prerequisites</a></li>
+                    <li><a href="#introduction">Introduction: The Component Mindset</a></li>
+                    <li><a href="#component-thinking">What is Component Thinking?</a></li>
+                    <li><a href="#bem-methodology">BEM Naming Convention</a></li>
+                    <li><a href="#css-variables">CSS Custom Properties (Variables)</a></li>
+                    <li><a href="#design-tokens">Design Tokens & Design Systems</a></li>
+                    <li><a href="#button-components">Building Button Components</a></li>
+                    <li><a href="#card-components">Building Card Components</a></li>
+                    <li><a href="#form-components">Building Form Components</a></li>
+                    <li><a href="#css-architecture">CSS Architecture & File Organization</a></li>
+                    <li><a href="#example-design-system">Worked Example: Complete Design System</a></li>
+                    <li><a href="#example-theme-switcher">Worked Example: Theme Switcher</a></li>
+                    <li><a href="#practice">Practice Opportunity</a></li>
+                    <li><a href="#summary">Summary</a></li>
+                    <li><a href="#bibliography">Further Reading</a></li>
+                </ul>
+            </nav>
+
+            <section id="learning-outcomes">
+                <h2>Learning Outcomes</h2>
+                <p>By the end of this lesson, you will be able to:</p>
+                <ul>
+                    <li>Think about UI design in terms of reusable components</li>
+                    <li>Apply the BEM (Block Element Modifier) naming methodology</li>
+                    <li>Create and use CSS custom properties (variables) effectively</li>
+                    <li>Build a design system with consistent tokens for colors, typography, and spacing</li>
+                    <li>Design and implement reusable component patterns (buttons, cards, forms)</li>
+                    <li>Organize CSS files for maintainability and scalability</li>
+                    <li>Implement theming and dark mode using CSS variables</li>
+                </ul>
+            </section>
+
+            <section id="prerequisites">
+                <h2>Prerequisites</h2>
+                <p>Before starting this lesson, you should be comfortable with:</p>
+                <ul>
+                    <li>CSS selectors, specificity, and the cascade (<a href="03-css-basics.html">Lesson 3</a>)</li>
+                    <li>Flexbox and Grid layouts (<a href="04-css-layout.html">Lesson 4</a>, <a href="11-flexbox-grid-advanced.html">Lesson 11</a>)</li>
+                    <li>Responsive design principles (<a href="05-responsive-design.html">Lesson 5</a>)</li>
+                </ul>
+            </section>
+
+            <section id="introduction">
+                <h2>Introduction: The Component Mindset</h2>
+                <p>
+                    As websites grow in size and complexity, maintaining CSS becomes increasingly difficult. Without a systematic approach, you'll encounter problems like:
+                </p>
+                <ul>
+                    <li><strong>Specificity wars:</strong> CSS rules conflicting and overriding each other unpredictably</li>
+                    <li><strong>Duplication:</strong> Similar patterns written multiple times with slight variations</li>
+                    <li><strong>Unclear naming:</strong> Class names like <code>box2</code> or <code>blue-thing</code> that don't communicate purpose</li>
+                    <li><strong>Difficult changes:</strong> Changing a color or spacing value requires finding and updating dozens of places</li>
+                    <li><strong>Lack of consistency:</strong> Buttons, cards, and other elements looking different across the site</li>
+                </ul>
+                <p>
+                    <strong>Component-based design</strong> solves these problems by thinking about UI as a collection of reusable, self-contained pieces. Instead of writing CSS for "the button on the homepage" and "the button in the sidebar" separately, you create <em>one button component</em> with variations (primary, secondary, large, small) that can be used anywhere.
+                </p>
+                <p>
+                    This lesson teaches you to build scalable, maintainable CSS that will serve you well on projects of any size, from personal portfolios to large applications.
+                </p>
+            </section>
+
+            <section id="component-thinking">
+                <h2>What is Component Thinking?</h2>
+                <p>
+                    <strong>Component thinking</strong> means breaking your user interface into independent, reusable pieces. Each component is self-contained and handles one specific part of the UI.
+                </p>
+
+                <h3>Breaking Down a UI</h3>
+                <p>Consider a typical card displaying a blog post:</p>
+
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!-- Non-component approach: specific, not reusable --&gt;
+&lt;div class="blog-post-card-homepage"&gt;
+    &lt;img src="post.jpg" class="post-image-main"&gt;
+    &lt;h3 class="blog-heading"&gt;Post Title&lt;/h3&gt;
+    &lt;p class="post-text"&gt;Post description...&lt;/p&gt;
+    &lt;a href="#" class="read-more-link-blue"&gt;Read More&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <p>This approach has problems:</p>
+                <ul>
+                    <li>Class names are specific to one location (<code>blog-post-card-homepage</code>)</li>
+                    <li>Can't reuse this card structure for products, team members, or portfolios</li>
+                    <li>Every new use case requires new CSS</li>
+                </ul>
+
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!-- Component approach: reusable and composable --&gt;
+&lt;div class="card"&gt;
+    &lt;img src="post.jpg" class="card__image"&gt;
+    &lt;div class="card__content"&gt;
+        &lt;h3 class="card__title"&gt;Post Title&lt;/h3&gt;
+        &lt;p class="card__description"&gt;Post description...&lt;/p&gt;
+        &lt;a href="#" class="btn btn--primary"&gt;Read More&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <p>The component approach:</p>
+                <ul>
+                    <li>Uses generic, reusable names (<code>card</code>, <code>btn</code>)</li>
+                    <li>Can be used for blog posts, products, team members, anything</li>
+                    <li>Clear naming shows relationships (<code>card__image</code> belongs to <code>card</code>)</li>
+                    <li>Components can be nested (button component inside card component)</li>
+                </ul>
+
+                <div class="key-concept">
+                    <h3>Key Principle: Single Responsibility</h3>
+                    <p>
+                        Each component should do <strong>one thing well</strong>. A button component handles buttons. A card component handles cards. Don't create components that try to be buttons <em>and</em> cards <em>and</em> forms.
+                    </p>
+                </div>
+            </section>
+
+            <section id="bem-methodology">
+                <h2>BEM Naming Convention</h2>
+                <p>
+                    <strong>BEM</strong> (Block Element Modifier) is a naming methodology that makes your CSS clear, structured, and maintainable. It solves the problem of knowing what class names mean and how they relate to each other.
+                </p>
+
+                <h3>BEM Structure</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* BLOCK: Standalone component */
+.card { }
+
+/* ELEMENT: Part of a block (uses __) */
+.card__image { }
+.card__title { }
+.card__content { }
+
+/* MODIFIER: Variation of block or element (uses --) */
+.card--featured { }
+.card--horizontal { }
+.button--primary { }
+.button--large { }</code></pre>
+                </div>
+
+                <h3>Understanding Each Part</h3>
+
+                <h4>1. Block (Component)</h4>
+                <p>
+                    The <strong>block</strong> is the top-level component. It's a standalone entity that makes sense on its own: <code>.card</code>, <code>.button</code>, <code>.form</code>, <code>.nav</code>.
+                </p>
+
+                <h4>2. Element (Child)</h4>
+                <p>
+                    An <strong>element</strong> is a part of a block that has no standalone meaning. It only makes sense in the context of its parent block. Connect elements with <code>__</code> (double underscore):
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;nav class="nav"&gt;
+    &lt;ul class="nav__list"&gt;
+        &lt;li class="nav__item"&gt;
+            &lt;a href="#" class="nav__link"&gt;Home&lt;/a&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+                </div>
+
+                <p>
+                    <code>.nav__list</code> clearly belongs to <code>.nav</code>. You wouldn't use <code>.nav__list</code> outside of a <code>.nav</code> block—it has no standalone meaning.
+                </p>
+
+                <h4>3. Modifier (Variation)</h4>
+                <p>
+                    A <strong>modifier</strong> represents a different version or state. Connect modifiers with <code>--</code> (double dash):
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!-- Normal button --&gt;
+&lt;button class="btn btn--primary"&gt;Submit&lt;/button&gt;
+
+&lt;!-- Large primary button --&gt;
+&lt;button class="btn btn--primary btn--large"&gt;Submit&lt;/button&gt;
+
+&lt;!-- Secondary button --&gt;
+&lt;button class="btn btn--secondary"&gt;Cancel&lt;/button&gt;</code></pre>
+                </div>
+
+                <p>Notice that you keep both the base class (<code>.btn</code>) and the modifier (<code>.btn--primary</code>). The base class provides shared styles, while the modifier adds variations.</p>
+
+                <h3>Why BEM Works</h3>
+                <ul>
+                    <li><strong>No specificity problems:</strong> All classes have equal specificity (one class selector)</li>
+                    <li><strong>Clear relationships:</strong> You immediately understand <code>.card__title</code> belongs to <code>.card</code></li>
+                    <li><strong>Self-documenting:</strong> Class names explain the structure and purpose</li>
+                    <li><strong>Searchable:</strong> Easy to find all parts of a component in your codebase</li>
+                    <li><strong>Prevents conflicts:</strong> <code>.nav__link</code> and <code>.card__link</code> are clearly different</li>
+                </ul>
+
+                <div class="example-box">
+                    <h4>Complete BEM Example</h4>
+                    <pre><code class="language-html">&lt;article class="card card--featured"&gt;
+    &lt;img src="image.jpg" class="card__image"&gt;
+    &lt;div class="card__content"&gt;
+        &lt;h3 class="card__title"&gt;Featured Article&lt;/h3&gt;
+        &lt;p class="card__description"&gt;This is a featured card with special styling.&lt;/p&gt;
+        &lt;div class="card__actions"&gt;
+            &lt;button class="btn btn--primary btn--large"&gt;Read More&lt;/button&gt;
+            &lt;button class="btn btn--secondary"&gt;Save&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+
+                    <pre><code class="language-css">/* Block */
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Elements */
+.card__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card__content {
+    padding: 1.5rem;
+}
+
+.card__title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.card__description {
+    color: #666;
+    line-height: 1.6;
+}
+
+.card__actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Modifier */
+.card--featured {
+    border: 3px solid gold;
+    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="css-variables">
+                <h2>CSS Custom Properties (Variables)</h2>
+                <p>
+                    CSS variables (officially called <strong>custom properties</strong>) let you store values and reuse them throughout your stylesheet. They solve the problem of having to update dozens of places when you want to change a color or size.
+                </p>
+
+                <h3>Defining Variables</h3>
+                <p>
+                    Define variables inside <code>:root</code> to make them available globally. Use the <code>--</code> prefix for custom property names:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">:root {
+    /* Colors */
+    --color-primary: #2563eb;
+    --color-secondary: #7c3aed;
+    --color-success: #16a34a;
+    --color-danger: #dc2626;
+    --color-warning: #f59e0b;
+
+    /* Typography */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "Courier New", monospace;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+}</code></pre>
+                </div>
+
+                <h3>Using Variables</h3>
+                <p>
+                    Use the <code>var()</code> function to reference variables. You can provide a fallback value as the second argument:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">.btn {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-base);
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
+}
+
+.btn--primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn--primary:hover {
+    background-color: var(--color-primary-dark, #1d4ed8); /* Fallback if not defined */
+    box-shadow: var(--shadow-md);
+}</code></pre>
+                </div>
+
+                <h3>Benefits of CSS Variables</h3>
+                <ul>
+                    <li><strong>Single source of truth:</strong> Change <code>--color-primary</code> once, update everywhere</li>
+                    <li><strong>Consistency:</strong> Ensures the same spacing/colors used throughout</li>
+                    <li><strong>Maintainability:</strong> Easy to update the design system</li>
+                    <li><strong>Runtime changes:</strong> Can change via JavaScript for themes</li>
+                    <li><strong>Cascade and inheritance:</strong> Can override variables in specific contexts</li>
+                </ul>
+
+                <h3>Scoped Variables</h3>
+                <p>
+                    You can override variables in specific contexts:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">:root {
+    --button-padding: 0.75rem 1.5rem;
+}
+
+/* Override in large variant */
+.btn--large {
+    --button-padding: 1rem 2rem;
+}
+
+.btn {
+    padding: var(--button-padding);
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="design-tokens">
+                <h2>Design Tokens & Design Systems</h2>
+                <p>
+                    A <strong>design system</strong> is a collection of reusable components and guidelines that create consistency across your site. <strong>Design tokens</strong> are the primitive values (colors, spacing, typography) that form the foundation.
+                </p>
+
+                <h3>Creating a Color System</h3>
+                <p>
+                    Instead of arbitrary colors throughout your site, define a systematic palette:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">:root {
+    /* Primary color scale (shades from light to dark) */
+    --primary-50: #eff6ff;
+    --primary-100: #dbeafe;
+    --primary-200: #bfdbfe;
+    --primary-300: #93c5fd;
+    --primary-400: #60a5fa;
+    --primary-500: #3b82f6;  /* Base primary */
+    --primary-600: #2563eb;
+    --primary-700: #1d4ed8;
+    --primary-800: #1e40af;
+    --primary-900: #1e3a8a;
+
+    /* Semantic colors (meaningful names) */
+    --color-primary: var(--primary-600);
+    --color-primary-light: var(--primary-400);
+    --color-primary-dark: var(--primary-800);
+
+    /* Text colors */
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+
+    /* Background colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+}</code></pre>
+                </div>
+
+                <h3>Typography Scale</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">:root {
+    /* Font families */
+    --font-heading: "Inter", -apple-system, sans-serif;
+    --font-body: "Inter", -apple-system, sans-serif;
+    --font-code: "Fira Code", "Courier New", monospace;
+
+    /* Font sizes (responsive type scale) */
+    --text-xs: 0.75rem;    /* 12px */
+    --text-sm: 0.875rem;   /* 14px */
+    --text-base: 1rem;     /* 16px */
+    --text-lg: 1.125rem;   /* 18px */
+    --text-xl: 1.25rem;    /* 20px */
+    --text-2xl: 1.5rem;    /* 24px */
+    --text-3xl: 1.875rem;  /* 30px */
+    --text-4xl: 2.25rem;   /* 36px */
+
+    /* Font weights */
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    /* Line heights */
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.75;
+}</code></pre>
+                </div>
+
+                <h3>Spacing Scale</h3>
+                <p>
+                    A consistent spacing system prevents random margins and paddings:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">:root {
+    /* Spacing scale based on multiples of 4px */
+    --space-0: 0;
+    --space-1: 0.25rem;  /* 4px */
+    --space-2: 0.5rem;   /* 8px */
+    --space-3: 0.75rem;  /* 12px */
+    --space-4: 1rem;     /* 16px */
+    --space-5: 1.25rem;  /* 20px */
+    --space-6: 1.5rem;   /* 24px */
+    --space-8: 2rem;     /* 32px */
+    --space-10: 2.5rem;  /* 40px */
+    --space-12: 3rem;    /* 48px */
+    --space-16: 4rem;    /* 64px */
+}</code></pre>
+                </div>
+
+                <div class="key-concept">
+                    <h3>Why Systematic Scales?</h3>
+                    <p>
+                        Using systematic scales (like multiples of 4px for spacing, or a consistent type scale) creates visual harmony. Random values like <code>padding: 13px</code> or <code>font-size: 17.5px</code> make designs feel inconsistent and arbitrary.
+                    </p>
+                </div>
+            </section>
+
+            <section id="button-components">
+                <h2>Building Button Components</h2>
+                <p>
+                    Let's build a complete button component system with multiple variants:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">/* Base button styles (shared by all buttons) */
+.btn {
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+
+    /* Spacing */
+    padding: var(--space-3) var(--space-6);
+
+    /* Typography */
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    text-decoration: none;
+    line-height: 1;
+
+    /* Visual */
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    /* Remove default button styles */
+    background: none;
+}
+
+/* Primary button variant */
+.btn--primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn--primary:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn--primary:active {
+    transform: translateY(0);
+}
+
+/* Secondary button variant */
+.btn--secondary {
+    background-color: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn--secondary:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+/* Ghost button variant (subtle) */
+.btn--ghost {
+    background-color: transparent;
+    color: var(--text-secondary);
+}
+
+.btn--ghost:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Danger button variant */
+.btn--danger {
+    background-color: var(--color-danger);
+    color: white;
+}
+
+.btn--danger:hover {
+    background-color: #b91c1c;
+}
+
+/* Size modifiers */
+.btn--small {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+}
+
+.btn--large {
+    padding: var(--space-4) var(--space-8);
+    font-size: var(--text-lg);
+}
+
+/* State modifiers */
+.btn--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Full-width modifier */
+.btn--block {
+    width: 100%;
+}</code></pre>
+                </div>
+
+                <h3>Using Button Components</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!-- Primary button --&gt;
+&lt;button class="btn btn--primary"&gt;Submit&lt;/button&gt;
+
+&lt;!-- Large primary button --&gt;
+&lt;button class="btn btn--primary btn--large"&gt;Get Started&lt;/button&gt;
+
+&lt;!-- Small secondary button --&gt;
+&lt;button class="btn btn--secondary btn--small"&gt;Cancel&lt;/button&gt;
+
+&lt;!-- Ghost button --&gt;
+&lt;button class="btn btn--ghost"&gt;Learn More&lt;/button&gt;
+
+&lt;!-- Danger button --&gt;
+&lt;button class="btn btn--danger"&gt;Delete Account&lt;/button&gt;
+
+&lt;!-- Full-width button --&gt;
+&lt;button class="btn btn--primary btn--block"&gt;Continue&lt;/button&gt;
+
+&lt;!-- Button as link --&gt;
+&lt;a href="#" class="btn btn--primary"&gt;View Details&lt;/a&gt;</code></pre>
+                </div>
+            </section>
+
+            <section id="card-components">
+                <h2>Building Card Components</h2>
+                <p>
+                    Cards are versatile containers for related content. Let's build a flexible card system:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">/* Base card */
+.card {
+    background-color: var(--bg-primary);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Card elements */
+.card__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card__header {
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.card__body {
+    padding: var(--space-6);
+}
+
+.card__footer {
+    padding: var(--space-6);
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--bg-tertiary);
+}
+
+.card__title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-2);
+    color: var(--text-primary);
+}
+
+.card__subtitle {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.card__description {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+}
+
+/* Card modifiers */
+.card--compact {
+    border-radius: 8px;
+}
+
+.card--compact .card__body {
+    padding: var(--space-4);
+}
+
+.card--bordered {
+    border: 2px solid var(--bg-tertiary);
+    box-shadow: none;
+}
+
+.card--horizontal {
+    display: flex;
+}
+
+.card--horizontal .card__image {
+    width: 200px;
+    height: auto;
+}
+
+/* Clickable card */
+.card--clickable {
+    cursor: pointer;
+}
+
+.card--clickable:hover {
+    border-color: var(--color-primary);
+}</code></pre>
+                </div>
+
+                <h3>Using Card Components</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!-- Standard card --&gt;
+&lt;article class="card"&gt;
+    &lt;img src="image.jpg" class="card__image" alt="Description"&gt;
+    &lt;div class="card__body"&gt;
+        &lt;h3 class="card__title"&gt;Card Title&lt;/h3&gt;
+        &lt;p class="card__description"&gt;
+            This is the card content with a description.
+        &lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="card__footer"&gt;
+        &lt;button class="btn btn--primary btn--small"&gt;Learn More&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/article&gt;
+
+&lt;!-- Card with header --&gt;
+&lt;article class="card"&gt;
+    &lt;div class="card__header"&gt;
+        &lt;h3 class="card__title"&gt;Featured Article&lt;/h3&gt;
+        &lt;p class="card__subtitle"&gt;Published on Jan 15, 2024&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="card__body"&gt;
+        &lt;p class="card__description"&gt;Article content...&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/article&gt;
+
+&lt;!-- Horizontal card --&gt;
+&lt;article class="card card--horizontal"&gt;
+    &lt;img src="image.jpg" class="card__image" alt="Description"&gt;
+    &lt;div class="card__body"&gt;
+        &lt;h3 class="card__title"&gt;Horizontal Card&lt;/h3&gt;
+        &lt;p class="card__description"&gt;Content appears beside image.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+                </div>
+            </section>
+
+            <section id="form-components">
+                <h2>Building Form Components</h2>
+                <p>
+                    Forms require consistent styling for inputs, labels, and validation states:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">/* Form group (wraps label + input) */
+.form-group {
+    margin-bottom: var(--space-6);
+}
+
+/* Labels */
+.form-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+/* Input base styles */
+.form-input,
+.form-textarea,
+.form-select {
+    /* Layout */
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+
+    /* Typography */
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+
+    /* Visual */
+    background-color: var(--bg-primary);
+    border: 2px solid var(--bg-tertiary);
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+/* Textarea specific */
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Helper text */
+.form-help {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    margin-top: var(--space-2);
+}
+
+/* Validation states */
+.form-group--error .form-input {
+    border-color: var(--color-danger);
+}
+
+.form-group--error .form-label {
+    color: var(--color-danger);
+}
+
+.form-error {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-danger);
+    margin-top: var(--space-2);
+}
+
+.form-group--success .form-input {
+    border-color: var(--color-success);
+}
+
+/* Checkbox and radio */
+.form-checkbox,
+.form-radio {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.form-checkbox input,
+.form-radio input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}</code></pre>
+                </div>
+
+                <h3>Using Form Components</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;form&gt;
+    &lt;!-- Text input --&gt;
+    &lt;div class="form-group"&gt;
+        &lt;label for="email" class="form-label"&gt;Email Address&lt;/label&gt;
+        &lt;input type="email" id="email" class="form-input" placeholder="you@example.com"&gt;
+        &lt;span class="form-help"&gt;We'll never share your email.&lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Error state --&gt;
+    &lt;div class="form-group form-group--error"&gt;
+        &lt;label for="password" class="form-label"&gt;Password&lt;/label&gt;
+        &lt;input type="password" id="password" class="form-input"&gt;
+        &lt;span class="form-error"&gt;Password must be at least 8 characters.&lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Textarea --&gt;
+    &lt;div class="form-group"&gt;
+        &lt;label for="message" class="form-label"&gt;Message&lt;/label&gt;
+        &lt;textarea id="message" class="form-textarea"&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Checkbox --&gt;
+    &lt;label class="form-checkbox"&gt;
+        &lt;input type="checkbox"&gt;
+        &lt;span&gt;I agree to the terms and conditions&lt;/span&gt;
+    &lt;/label&gt;
+
+    &lt;button type="submit" class="btn btn--primary btn--block"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                </div>
+            </section>
+
+            <section id="css-architecture">
+                <h2>CSS Architecture & File Organization</h2>
+                <p>
+                    As your project grows, organizing CSS into logical files prevents chaos. Here's a scalable structure:
+                </p>
+
+                <h3>File Structure</h3>
+                <div class="example-box">
+                    <pre><code>css/
+├── 1-settings/
+│   ├── _variables.css      (Design tokens: colors, spacing, typography)
+│   └── _breakpoints.css    (Media query breakpoints)
+│
+├── 2-base/
+│   ├── _reset.css          (CSS reset or normalize)
+│   ├── _typography.css     (Base font styles, headings)
+│   └── _global.css         (Body, html, global styles)
+│
+├── 3-components/
+│   ├── _buttons.css        (Button component)
+│   ├── _cards.css          (Card component)
+│   ├── _forms.css          (Form components)
+│   ├── _navigation.css     (Nav component)
+│   └── _modals.css         (Modal component)
+│
+├── 4-layouts/
+│   ├── _grid.css           (Grid layout utilities)
+│   ├── _containers.css     (Container/wrapper styles)
+│   └── _header-footer.css  (Page layout structures)
+│
+├── 5-pages/
+│   ├── _home.css           (Homepage-specific styles)
+│   └── _about.css          (About page-specific styles)
+│
+├── 6-utilities/
+│   ├── _spacing.css        (Margin/padding utilities)
+│   ├── _text.css           (Text utilities)
+│   └── _display.css        (Display utilities)
+│
+└── main.css                (Imports all other files)</code></pre>
+                </div>
+
+                <h3>main.css (Import Order)</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Main CSS file that imports everything in order */
+
+/* 1. Settings: Variables and tokens */
+@import '1-settings/_variables.css';
+@import '1-settings/_breakpoints.css';
+
+/* 2. Base: Foundation styles */
+@import '2-base/_reset.css';
+@import '2-base/_typography.css';
+@import '2-base/_global.css';
+
+/* 3. Components: Reusable UI pieces */
+@import '3-components/_buttons.css';
+@import '3-components/_cards.css';
+@import '3-components/_forms.css';
+@import '3-components/_navigation.css';
+
+/* 4. Layouts: Page structure */
+@import '4-layouts/_grid.css';
+@import '4-layouts/_containers.css';
+@import '4-layouts/_header-footer.css';
+
+/* 5. Pages: Page-specific styles */
+@import '5-pages/_home.css';
+
+/* 6. Utilities: Helper classes (load last for highest specificity) */
+@import '6-utilities/_spacing.css';
+@import '6-utilities/_text.css';</code></pre>
+                </div>
+
+                <h3>Why This Structure?</h3>
+                <ul>
+                    <li><strong>Predictable:</strong> Know exactly where to find or add styles</li>
+                    <li><strong>Maintainable:</strong> Easy to locate and modify specific components</li>
+                    <li><strong>Scalable:</strong> Add new components without disturbing existing ones</li>
+                    <li><strong>Clear cascade:</strong> Order ensures proper specificity (settings → base → components → utilities)</li>
+                </ul>
+
+                <div class="key-concept">
+                    <h3>Component Files</h3>
+                    <p>
+                        Each component gets its own file (<code>_buttons.css</code>, <code>_cards.css</code>). This makes it easy to find, edit, or remove components. Prefix with underscore to indicate they're partial files meant to be imported.
+                    </p>
+                </div>
+            </section>
+
+            <section id="example-design-system">
+                <h2>Worked Example: Complete Design System</h2>
+                <p>
+                    Let's build a mini design system from scratch with all the concepts we've learned:
+                </p>
+
+                <h3>Step 1: Define Design Tokens</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* css/1-settings/_variables.css */
+:root {
+    /* Color palette */
+    --primary-500: #3b82f6;
+    --primary-600: #2563eb;
+    --primary-700: #1d4ed8;
+    --success-500: #22c55e;
+    --danger-500: #ef4444;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-600: #4b5563;
+    --gray-900: #111827;
+
+    /* Semantic colors */
+    --color-primary: var(--primary-600);
+    --color-primary-light: var(--primary-500);
+    --color-primary-dark: var(--primary-700);
+    --color-success: var(--success-500);
+    --color-danger: var(--danger-500);
+
+    --text-primary: var(--gray-900);
+    --text-secondary: var(--gray-600);
+    --text-muted: var(--gray-400);
+
+    --bg-primary: #ffffff;
+    --bg-secondary: var(--gray-50);
+    --bg-tertiary: var(--gray-100);
+
+    --border-color: var(--gray-200);
+
+    /* Typography */
+    --font-body: system-ui, -apple-system, sans-serif;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+
+    /* Effects */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-full: 9999px;
+}</code></pre>
+                </div>
+
+                <h3>Step 2: Create Button System</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* css/3-components/_buttons.css */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    line-height: 1;
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+}
+
+.btn--primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn--primary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn--secondary {
+    background: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn--secondary:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn--small {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+}
+
+.btn--large {
+    padding: var(--space-4) var(--space-8);
+    font-size: var(--text-lg);
+}</code></pre>
+                </div>
+
+                <h3>Step 3: Create Card System</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* css/3-components/_cards.css */
+.card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.card__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card__body {
+    padding: var(--space-6);
+}
+
+.card__title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.card__description {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    line-height: 1.6;
+}</code></pre>
+                </div>
+
+                <h3>Step 4: Use the System</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Design System Demo&lt;/title&gt;
+    &lt;link rel="stylesheet" href="css/main.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;Our Design System&lt;/h1&gt;
+
+        &lt;!-- Buttons --&gt;
+        &lt;section&gt;
+            &lt;h2&gt;Buttons&lt;/h2&gt;
+            &lt;button class="btn btn--primary"&gt;Primary Button&lt;/button&gt;
+            &lt;button class="btn btn--secondary"&gt;Secondary Button&lt;/button&gt;
+            &lt;button class="btn btn--primary btn--small"&gt;Small&lt;/button&gt;
+            &lt;button class="btn btn--primary btn--large"&gt;Large&lt;/button&gt;
+        &lt;/section&gt;
+
+        &lt;!-- Cards --&gt;
+        &lt;section&gt;
+            &lt;h2&gt;Cards&lt;/h2&gt;
+            &lt;div class="card"&gt;
+                &lt;img src="image.jpg" class="card__image" alt="Card image"&gt;
+                &lt;div class="card__body"&gt;
+                    &lt;h3 class="card__title"&gt;Card Title&lt;/h3&gt;
+                    &lt;p class="card__description"&gt;This card uses our design system tokens for consistent spacing, colors, and typography.&lt;/p&gt;
+                    &lt;button class="btn btn--primary btn--small"&gt;Learn More&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/section&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                <p>
+                    This design system provides:
+                </p>
+                <ul>
+                    <li>Consistent visual language across all components</li>
+                    <li>Easy maintenance (change <code>--color-primary</code> once, updates everywhere)</li>
+                    <li>Clear naming conventions with BEM</li>
+                    <li>Reusable components that compose together</li>
+                    <li>Organized file structure</li>
+                </ul>
+            </section>
+
+            <section id="example-theme-switcher">
+                <h2>Worked Example: Theme Switcher</h2>
+                <p>
+                    CSS variables can be changed at runtime, enabling powerful theming. Let's build a dark mode toggle:
+                </p>
+
+                <h3>Step 1: Define Light and Dark Themes</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Default light theme */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+}
+
+/* Dark theme (applied when data-theme="dark" on html) */
+[data-theme="dark"] {
+    --bg-primary: #1f2937;
+    --bg-secondary: #111827;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --border-color: #374151;
+}
+
+/* Components use the variables */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.card {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}</code></pre>
+                </div>
+
+                <h3>Step 2: Add Toggle Button</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;button id="theme-toggle" class="btn btn--ghost"&gt;
+    &lt;span class="theme-toggle__icon"&gt;🌙&lt;/span&gt;
+    &lt;span class="theme-toggle__text"&gt;Dark Mode&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+                </div>
+
+                <h3>Step 3: JavaScript to Toggle Theme</h3>
+                <div class="example-box">
+                    <pre><code class="language-javascript">const themeToggle = document.getElementById('theme-toggle');
+const html = document.documentElement;
+
+// Check for saved theme preference or default to light
+const currentTheme = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', currentTheme);
+
+themeToggle.addEventListener('click', () => {
+    // Get current theme
+    const currentTheme = html.getAttribute('data-theme');
+
+    // Toggle between light and dark
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+    // Update the theme
+    html.setAttribute('data-theme', newTheme);
+
+    // Save preference
+    localStorage.setItem('theme', newTheme);
+
+    // Update button text
+    const icon = newTheme === 'dark' ? '☀️' : '🌙';
+    const text = newTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
+
+    themeToggle.querySelector('.theme-toggle__icon').textContent = icon;
+    themeToggle.querySelector('.theme-toggle__text').textContent = text;
+});</code></pre>
+                </div>
+
+                <h3>Complete Working Example</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en" data-theme="light"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Theme Switcher Demo&lt;/title&gt;
+    &lt;style&gt;
+        /* Light theme (default) */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f3f4f6;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        /* Dark theme */
+        [data-theme="dark"] {
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border-color: #374151;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Theme Switcher Demo&lt;/h1&gt;
+
+    &lt;button id="theme-toggle"&gt;
+        &lt;span class="theme-toggle__icon"&gt;🌙&lt;/span&gt;
+        &lt;span class="theme-toggle__text"&gt;Dark Mode&lt;/span&gt;
+    &lt;/button&gt;
+
+    &lt;div class="card"&gt;
+        &lt;h2&gt;How It Works&lt;/h2&gt;
+        &lt;p&gt;Click the button above to toggle between light and dark mode. The theme preference is saved to localStorage so it persists across page reloads.&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Load saved theme or default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+
+        // Update button based on current theme
+        updateButton(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateButton(newTheme);
+        });
+
+        function updateButton(theme) {
+            const icon = theme === 'dark' ? '☀️' : '🌙';
+            const text = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+
+            document.querySelector('.theme-toggle__icon').textContent = icon;
+            document.querySelector('.theme-toggle__text').textContent = text;
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                <p>
+                    This example demonstrates:
+                </p>
+                <ul>
+                    <li>Using CSS variables for themeable values</li>
+                    <li>Changing variables via data attributes</li>
+                    <li>Persisting user preference with localStorage</li>
+                    <li>Smooth transitions between themes</li>
+                    <li>All components automatically adapt to the theme</li>
+                </ul>
+            </section>
+
+            <section id="practice">
+                <h2>Practice Opportunity</h2>
+                <p>
+                    Reinforce what you've learned by building your own component library:
+                </p>
+
+                <h3>Challenge: Build a Component Library</h3>
+                <ol>
+                    <li>
+                        <strong>Create design tokens</strong>
+                        <ul>
+                            <li>Define a color palette (primary, secondary, success, danger, warning)</li>
+                            <li>Create a spacing scale (multiples of 4px or 8px)</li>
+                            <li>Define a typography scale</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Build three components using BEM:</strong>
+                        <ul>
+                            <li>Alert component (info, success, warning, danger variants)</li>
+                            <li>Badge component (small pill-shaped labels with colors)</li>
+                            <li>Modal component (dialog box with backdrop)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Organize your CSS:</strong>
+                        <ul>
+                            <li>Create separate files for variables and each component</li>
+                            <li>Use a main.css file to import everything in order</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Create a demo page:</strong>
+                        <ul>
+                            <li>Show all component variants</li>
+                            <li>Include a theme switcher</li>
+                            <li>Demonstrate components working together</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>Bonus Challenges</h3>
+                <ul>
+                    <li>Add keyboard navigation to your modal (Escape to close, Tab to cycle through buttons)</li>
+                    <li>Create size modifiers for all components (small, medium, large)</li>
+                    <li>Build a navigation component with dropdown menus</li>
+                    <li>Add loading and disabled states to your button component</li>
+                    <li>Create a toast/notification system that appears in the corner</li>
+                </ul>
+            </section>
+
+            <section id="summary">
+                <h2>Summary</h2>
+                <p>
+                    In this lesson, you learned how to build maintainable, scalable CSS using component-based design:
+                </p>
+                <ul>
+                    <li><strong>Component thinking:</strong> Breaking UI into independent, reusable pieces with single responsibilities</li>
+                    <li><strong>BEM methodology:</strong> Naming convention (Block__Element--Modifier) that creates clear, searchable, low-specificity CSS</li>
+                    <li><strong>CSS variables:</strong> Using custom properties to create a single source of truth for design tokens</li>
+                    <li><strong>Design systems:</strong> Systematic scales for colors, typography, and spacing that create visual consistency</li>
+                    <li><strong>Component patterns:</strong> Building reusable button, card, and form components with variants</li>
+                    <li><strong>CSS architecture:</strong> Organizing files into settings, base, components, layouts, pages, and utilities</li>
+                    <li><strong>Theming:</strong> Implementing dark mode and theme switching using CSS variables and data attributes</li>
+                </ul>
+                <p>
+                    These techniques form the foundation of modern CSS architecture used in professional web development. Whether you're building a small personal site or a large application, thinking in components and using systematic design tokens will make your CSS easier to write, maintain, and scale.
+                </p>
+            </section>
+
+            <section id="bibliography">
+                <h2>Further Reading</h2>
+                <ul>
+                    <li>
+                        <a href="https://getbem.com/" target="_blank" rel="noopener noreferrer">
+                            BEM Methodology Official Guide
+                        </a> - Complete BEM documentation with examples
+                    </li>
+                    <li>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties" target="_blank" rel="noopener noreferrer">
+                            MDN: Using CSS Custom Properties
+                        </a> - Comprehensive guide to CSS variables
+                    </li>
+                    <li>
+                        <a href="https://cube.fyi/" target="_blank" rel="noopener noreferrer">
+                            CUBE CSS
+                        </a> - Another approach to CSS architecture
+                    </li>
+                    <li>
+                        <a href="https://every-layout.dev/" target="_blank" rel="noopener noreferrer">
+                            Every Layout
+                        </a> - Modern CSS layout patterns
+                    </li>
+                    <li>
+                        <a href="https://www.designsystems.com/" target="_blank" rel="noopener noreferrer">
+                            Design Systems
+                        </a> - Resources and examples of design systems
+                    </li>
+                </ul>
+            </section>
+
+            <div class="lesson-nav-links">
+                <a href="../index.html">Back to Home</a> |
+                <a href="11-flexbox-grid-advanced.html">Previous Lesson</a> |
+                <a href="13-animations-transitions.html">Next Lesson: Animations & Transitions</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Learn HTML, CSS, GitHub, and More! | <a href="https://jsaaron.com" target="_blank" rel="noopener noreferrer">Joshua Aaron</a></p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

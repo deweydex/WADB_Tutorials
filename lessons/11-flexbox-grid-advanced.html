@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11: Advanced Flexbox & CSS Grid</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/navigation.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/lessons.css">
+    <link rel="stylesheet" href="../css/playground.css">
+    <link rel="stylesheet" href="../css/search.css">
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../script.js"></script>
+    <script src="../js/copy-code.js"></script>
+    <script src="../js/progress-tracker.js"></script>
+    <script src="../js/code-playground.js"></script>
+    <script src="../js/search.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar minimal">
+            <div class="container">
+                <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+                    ☰ Menu
+                </button>
+                <div class="site-header-content">
+                    <a href="../index.html" class="logo">Learn HTML, CSS, GitHub, and More!</a>
+                    <p class="site-subtitle">
+                        A series of tutorials (and experiments) from
+                        <a href="https://jsaaron.com" target="_blank" rel="noopener noreferrer">Joshua Aaron</a> |
+                        <a href="https://github.com/jsaaron" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    </p>
+                </div>
+
+                <div class="header-right">
+                    <a href="../about.html">About</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="menu-overlay"></div>
+
+    <ul class="nav-links">
+        <li><a href="../index.html#home">Home</a></li>
+        <li class="nav-section-header">Lessons</li>
+        <li><a href="01-html-basics.html">01. HTML Basics</a></li>
+        <li><a href="02-html-semantics.html">02. Semantic HTML</a></li>
+        <li><a href="03-css-basics.html">03. CSS Basics</a></li>
+        <li><a href="04-css-layout.html">04. CSS Layout</a></li>
+        <li><a href="05-responsive-design.html">05. Responsive Design</a></li>
+        <li><a href="06-images.html">06. Working with Images</a></li>
+        <li><a href="07-links.html">07. Working with Links</a></li>
+        <li><a href="08-github-setup.html">08. GitHub Setup</a></li>
+        <li><a href="09-github-workflow.html">09. GitHub Workflow</a></li>
+        <li><a href="10-github-pages.html">10. GitHub Pages</a></li>
+        <li><a href="11-flexbox-grid-advanced.html">11. Advanced Flexbox & Grid</a></li>
+        <li><a href="12-component-design.html">12. Component Design</a></li>
+        <li><a href="13-animations-transitions.html">13. Animations & Transitions</a></li>
+        <li class="nav-section-header">Resources</li>
+        <li><a href="../index.html#examples">Examples</a></li>
+        <li><a href="../index.html#templates">Templates</a></li>
+        <li><a href="../index.html#github">GitHub Guides</a></li>
+        <li><a href="../design-resources.html">Design Resources</a></li>
+        <li><a href="../troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="../reference.html">Quick Reference</a></li>
+        <li><a href="../project-ideas.html">Project Ideas</a></li>
+        <li><a href="../about.html">About</a></li>
+    </ul>
+
+    <div class="lesson-container">
+        <div class="lesson-nav-links">
+            <a href="../index.html">Back to Home</a> |
+            <a href="10-github-pages.html">Previous Lesson</a> |
+            <a href="12-component-design.html">Next Lesson: Component Design</a>
+        </div>
+
+        <h1>Lesson 11: Advanced Flexbox & CSS Grid</h1>
+
+        <!-- Table of Contents -->
+        <nav class="table-of-contents">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#learning-outcomes">Learning Outcomes</a></li>
+                <li><a href="#why-advanced">Why Master Advanced Layout Techniques?</a></li>
+                <li><a href="#flex-properties">Advanced Flexbox Properties</a></li>
+                <li><a href="#flex-basis">Understanding Flex-Basis, Grow, and Shrink</a></li>
+                <li><a href="#flex-order">Visual Reordering with the Order Property</a></li>
+                <li><a href="#grid-areas">Named Grid Areas and Template Syntax</a></li>
+                <li><a href="#auto-fit-fill">Auto-Fit vs Auto-Fill: Responsive Grids</a></li>
+                <li><a href="#minmax">The Minmax Function for Flexible Sizing</a></li>
+                <li><a href="#combining">Combining Grid and Flexbox Effectively</a></li>
+                <li><a href="#holy-grail">Worked Example: The Holy Grail Layout</a></li>
+                <li><a href="#dashboard">Worked Example: Dashboard Layout with Advanced Grid</a></li>
+                <li><a href="#practice">Practice Opportunity</a></li>
+                <li><a href="#summary">Summary</a></li>
+            </ul>
+        </nav>
+
+        <div class="learning-outcomes" id="learning-outcomes">
+            <h2>Learning Outcomes</h2>
+            <p>By the end of this lesson, you will master advanced flexbox properties including flex-grow, flex-shrink, and flex-basis, and understand how they work together. You will be able to create complex grid layouts using named areas, grid template syntax, and understand the crucial difference between auto-fit and auto-fill. You will know when to use Grid versus Flexbox, how to combine them effectively, and be able to implement sophisticated real-world layout patterns like dashboards and magazine-style designs.</p>
+
+            <h3>Prerequisites</h3>
+            <p>You should be comfortable with basic flexbox and grid concepts from Lesson 04 (CSS Layout), including creating simple flex containers, basic grid layouts, and understanding the box model. Familiarity with responsive design principles from Lesson 05 will also be helpful.</p>
+        </div>
+
+        <div class="concept-section" id="why-advanced">
+            <h2>Why Master Advanced Layout Techniques?</h2>
+
+            <p>While basic flexbox and grid can handle many layout needs, <strong>advanced techniques</strong> unlock truly sophisticated, maintainable designs that adapt gracefully to any content or screen size. Modern web applications often require complex layouts—dashboards with multiple panels, magazine-style article layouts, responsive card grids that automatically adjust, or interfaces that reorder visually based on context.</p>
+
+            <h3>The Power of Advanced Layout Control</h3>
+            <p>Advanced flexbox and grid techniques allow you to:</p>
+
+            <ul>
+                <li><strong>Create truly responsive designs</strong> that adapt not just to screen size, but to content amount</li>
+                <li><strong>Build complex application interfaces</strong> like dashboards, admin panels, and data visualization layouts</li>
+                <li><strong>Maintain semantic HTML</strong> while controlling visual presentation independently</li>
+                <li><strong>Reduce JavaScript dependencies</strong> by handling layout logic purely in CSS</li>
+                <li><strong>Write more maintainable code</strong> using named grid areas and clear structural patterns</li>
+            </ul>
+
+            <h3>Real-World Applications</h3>
+            <p>These techniques are used extensively in modern web development:</p>
+
+            <ul>
+                <li><strong>Dashboard applications</strong> use advanced grid for complex panel layouts</li>
+                <li><strong>E-commerce sites</strong> use auto-fit grids for product listings that work at any screen size</li>
+                <li><strong>News sites</strong> use grid template areas for magazine-style article layouts</li>
+                <li><strong>Navigation systems</strong> use flexbox order and advanced properties for responsive menus</li>
+            </ul>
+
+            <p>Mastering these techniques prepares you for professional web development and modern CSS frameworks, many of which build upon these fundamental concepts.</p>
+        </div>
+
+        <div class="concept-section" id="flex-properties">
+            <h2>Advanced Flexbox Properties</h2>
+
+            <p>Beyond the basics of <code>display: flex</code> and simple alignment, flexbox offers powerful properties that control exactly how items grow, shrink, and occupy space within their container. Understanding these properties deeply transforms flexbox from a simple alignment tool into a sophisticated layout system.</p>
+
+            <h3>The Flex Property: A Shorthand</h3>
+            <p>The <code>flex</code> property is actually a <strong>shorthand</strong> for three individual properties:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Shorthand */
+.item {
+    flex: 1 1 200px;
+}
+
+/* Equivalent to: */
+.item {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 200px;
+}</code></pre>
+            </div>
+
+            <p>These three values control:</p>
+            <ol>
+                <li><code>flex-grow</code> - How much the item should grow relative to other flex items</li>
+                <li><code>flex-shrink</code> - How much the item should shrink relative to other flex items</li>
+                <li><code>flex-basis</code> - The initial size of the item before growing or shrinking</li>
+            </ol>
+
+            <h3>Common Flex Shorthand Values</h3>
+            <p>You'll often see these common patterns:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Equal distribution - items grow and shrink equally */
+.item {
+    flex: 1;  /* Same as flex: 1 1 0% */
+}
+
+/* Don't grow, but allow shrinking */
+.item {
+    flex: 0 1 auto;  /* Default flex value */
+}
+
+/* Grow but don't shrink */
+.item {
+    flex: 1 0 auto;
+}
+
+/* Fixed size - don't grow or shrink */
+.item {
+    flex: 0 0 200px;
+}</code></pre>
+            </div>
+
+            <p><strong>Important:</strong> When you write <code>flex: 1</code>, you're actually setting <code>flex: 1 1 0%</code>, which means "grow proportionally, allow shrinking, start from zero basis." This is different from the default <code>flex: 0 1 auto</code>.</p>
+        </div>
+
+        <div class="concept-section" id="flex-basis">
+            <h2>Understanding Flex-Basis, Grow, and Shrink</h2>
+
+            <p>These three properties work together to determine the final size of flex items. Understanding how they interact is key to mastering flexbox layout.</p>
+
+            <h3>Flex-Basis: The Starting Point</h3>
+            <p><code>flex-basis</code> sets the <strong>initial size</strong> of a flex item before any growing or shrinking happens. Think of it as the item's "ideal" size:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.item {
+    flex-basis: 200px;  /* Start at 200px wide */
+}
+
+.item {
+    flex-basis: 30%;    /* Start at 30% of container */
+}
+
+.item {
+    flex-basis: auto;   /* Use content size or width property */
+}</code></pre>
+            </div>
+
+            <p><strong>Note:</strong> <code>flex-basis</code> takes priority over <code>width</code> (or <code>height</code> in a column flex container). If you set both, <code>flex-basis</code> wins unless it's set to <code>auto</code>.</p>
+
+            <h3>Flex-Grow: Claiming Extra Space</h3>
+            <p><code>flex-grow</code> determines how flex items <strong>divide extra space</strong> in the container. A value of <code>0</code> means "don't grow," while positive numbers indicate growth proportions:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Example: Three items with different grow values */
+.item-a {
+    flex-grow: 1;  /* Gets 1 portion of extra space */
+}
+
+.item-b {
+    flex-grow: 2;  /* Gets 2 portions of extra space */
+}
+
+.item-c {
+    flex-grow: 1;  /* Gets 1 portion of extra space */
+}
+
+/* Result: If there's 400px of extra space:
+   item-a gets 100px, item-b gets 200px, item-c gets 100px */</code></pre>
+            </div>
+
+            <p><strong>How it works:</strong> Flexbox adds up all the grow values (1 + 2 + 1 = 4), then divides the extra space by that total. Each item gets extra space proportional to its grow value.</p>
+
+            <h3>Flex-Shrink: Handling Insufficient Space</h3>
+            <p><code>flex-shrink</code> determines how flex items <strong>give up space</strong> when the container is too small:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.item-a {
+    flex-shrink: 1;  /* Shrinks normally */
+}
+
+.item-b {
+    flex-shrink: 0;  /* Never shrinks */
+}
+
+.item-c {
+    flex-shrink: 2;  /* Shrinks twice as fast as item-a */
+}</code></pre>
+            </div>
+
+            <p>A <code>flex-shrink</code> of <code>0</code> is useful for elements that should maintain their size, like logos or important content that shouldn't compress.</p>
+
+            <h3>Practical Example: Flexible Sidebar Layout</h3>
+            <p>Here's how these properties work together in a real layout:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.container {
+    display: flex;
+}
+
+.sidebar {
+    flex: 0 0 250px;  /* Fixed 250px, won't grow or shrink */
+}
+
+.main-content {
+    flex: 1 1 auto;   /* Grows to fill space, shrinks if needed */
+}
+
+.advertisement {
+    flex: 0 1 200px;  /* Won't grow, but can shrink below 200px */
+}</code></pre>
+            </div>
+
+            <p>This creates a three-column layout where the sidebar stays fixed, the main content flexes to fill available space, and the ad can compress if necessary but won't expand.</p>
+        </div>
+
+        <div class="concept-section" id="flex-order">
+            <h2>Visual Reordering with the Order Property</h2>
+
+            <p>The <code>order</code> property allows you to <strong>change the visual order</strong> of flex items without changing the HTML source order. This is powerful for responsive designs where you want elements to appear in different positions at different screen sizes.</p>
+
+            <h3>How Order Works</h3>
+            <p>By default, all flex items have <code>order: 0</code>. Items are displayed in source order, but you can change this:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.item-a { order: 2; }   /* Appears third */
+.item-b { order: 1; }   /* Appears second */
+.item-c { order: 0; }   /* Appears first (default) */
+.item-d { order: -1; }  /* Appears before all others */</code></pre>
+            </div>
+
+            <p>Items are sorted by their order value from lowest to highest. Items with the same order value appear in source order relative to each other.</p>
+
+            <h3>Responsive Reordering Example</h3>
+            <p>A common use case is moving navigation or sidebars at different screen sizes:</p>
+
+            <div class="code-example">
+                <pre><code class="language-html">&lt;div class="layout"&gt;
+    &lt;header class="header"&gt;Header&lt;/header&gt;
+    &lt;nav class="sidebar"&gt;Navigation&lt;/nav&gt;
+    &lt;main class="content"&gt;Main Content&lt;/main&gt;
+    &lt;footer class="footer"&gt;Footer&lt;/footer&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-css">.layout {
+    display: flex;
+    flex-direction: column;
+}
+
+/* On mobile, sidebar appears after content */
+.sidebar {
+    order: 3;
+}
+
+.content {
+    order: 2;
+}
+
+/* On desktop, sidebar appears before content */
+@media (min-width: 768px) {
+    .layout {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .header {
+        order: 1;
+        flex: 0 0 100%;
+    }
+
+    .sidebar {
+        order: 2;
+        flex: 0 0 250px;
+    }
+
+    .content {
+        order: 3;
+        flex: 1;
+    }
+
+    .footer {
+        order: 4;
+        flex: 0 0 100%;
+    }
+}</code></pre>
+            </div>
+
+            <h3>Accessibility Consideration</h3>
+            <p><strong>Important:</strong> The <code>order</code> property only changes <em>visual</em> order, not the order in the HTML document. Screen readers and keyboard navigation follow the source order. Use <code>order</code> thoughtfully to ensure your content makes sense in both visual and source order.</p>
+
+            <p>For example, it's generally safe to reorder sidebar and main content, but you should be careful about reordering within forms or navigation where tab order matters.</p>
+        </div>
+
+        <div class="concept-section" id="grid-areas">
+            <h2>Named Grid Areas and Template Syntax</h2>
+
+            <p>One of CSS Grid's most powerful features is the ability to create <strong>named grid areas</strong> using <code>grid-template-areas</code>. This provides a visual, semantic way to define complex layouts that's much easier to understand and maintain than numeric grid lines.</p>
+
+            <h3>The Grid Template Areas Syntax</h3>
+            <p>With <code>grid-template-areas</code>, you literally <strong>draw your layout</strong> using named regions:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.container {
+    display: grid;
+    grid-template-areas:
+        "header  header  header"
+        "sidebar content content"
+        "footer  footer  footer";
+    grid-template-columns: 250px 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 1rem;
+}</code></pre>
+            </div>
+
+            <p>This creates a three-column, three-row grid where:</p>
+            <ul>
+                <li>The header spans all three columns</li>
+                <li>The sidebar takes the first column, content takes the other two</li>
+                <li>The footer spans all three columns</li>
+            </ul>
+
+            <h3>Assigning Elements to Areas</h3>
+            <p>Once you've defined the areas, assign elements to them using <code>grid-area</code>:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.header {
+    grid-area: header;
+}
+
+.sidebar {
+    grid-area: sidebar;
+}
+
+.content {
+    grid-area: content;
+}
+
+.footer {
+    grid-area: footer;
+}</code></pre>
+            </div>
+
+            <h3>Creating Empty Cells</h3>
+            <p>Use a period (<code>.</code>) to create empty cells in your grid:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.container {
+    grid-template-areas:
+        "logo    .       search"
+        "nav     nav     nav"
+        "sidebar content content"
+        ".       footer  footer";
+}
+
+/* This creates:
+   - Logo on left, empty middle, search on right (top row)
+   - Navigation spanning full width (second row)
+   - Sidebar with content (third row)
+   - Empty left cell, footer spanning right two columns (bottom row) */</code></pre>
+            </div>
+
+            <h3>Responsive Grid Areas</h3>
+            <p>The real power comes from changing grid areas at different screen sizes:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Mobile: stacked layout */
+.container {
+    display: grid;
+    grid-template-areas:
+        "header"
+        "content"
+        "sidebar"
+        "footer";
+    grid-template-columns: 1fr;
+}
+
+/* Tablet: sidebar beside content */
+@media (min-width: 768px) {
+    .container {
+        grid-template-areas:
+            "header header"
+            "sidebar content"
+            "footer footer";
+        grid-template-columns: 200px 1fr;
+    }
+}
+
+/* Desktop: full layout with wider sidebar */
+@media (min-width: 1024px) {
+    .container {
+        grid-template-areas:
+            "header  header  header"
+            "sidebar content aside"
+            "footer  footer  footer";
+        grid-template-columns: 250px 1fr 300px;
+    }
+}</code></pre>
+            </div>
+
+            <p>This approach lets you reorganize entire layouts with just a few lines of CSS, maintaining the same HTML structure throughout.</p>
+
+            <h3>Benefits of Named Areas</h3>
+            <ul>
+                <li><strong>Readability:</strong> The CSS visually represents the layout</li>
+                <li><strong>Maintainability:</strong> Easy to understand and modify layouts</li>
+                <li><strong>Semantic:</strong> Names describe purpose, not just position</li>
+                <li><strong>Flexible:</strong> Easy to rearrange for different screen sizes</li>
+            </ul>
+        </div>
+
+        <div class="concept-section" id="auto-fit-fill">
+            <h2>Auto-Fit vs Auto-Fill: Responsive Grids</h2>
+
+            <p>Two of Grid's most powerful keywords are <code>auto-fit</code> and <code>auto-fill</code>. They create <strong>automatically responsive grids</strong> that adjust the number of columns based on available space, without media queries. Understanding the difference between them is crucial.</p>
+
+            <h3>The Auto-Fill Keyword</h3>
+            <p><code>auto-fill</code> creates as many tracks as will fit, even if they're empty:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}</code></pre>
+            </div>
+
+            <p><strong>What this does:</strong> Creates columns that are at least 200px wide, fitting as many as possible into the container. If there's extra space after filling with items, <strong>empty columns remain</strong> and items don't stretch to fill the extra space.</p>
+
+            <h3>The Auto-Fit Keyword</h3>
+            <p><code>auto-fit</code> also creates as many tracks as will fit, but <strong>collapses empty tracks to zero</strong>:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}</code></pre>
+            </div>
+
+            <p><strong>What this does:</strong> Creates columns that are at least 200px wide. If there's extra space after placing items, empty columns collapse and <strong>items stretch to fill the container</strong>.</p>
+
+            <h3>Visual Comparison</h3>
+            <p>Imagine a container 1000px wide with three 200px items:</p>
+
+            <p><strong>With auto-fill:</strong></p>
+            <ul>
+                <li>Creates 5 columns (1000px ÷ 200px = 5)</li>
+                <li>Items occupy first 3 columns at 200px each</li>
+                <li>2 empty columns remain (400px of empty space)</li>
+            </ul>
+
+            <p><strong>With auto-fit:</strong></p>
+            <ul>
+                <li>Creates 5 columns initially</li>
+                <li>2 empty columns collapse to zero width</li>
+                <li>3 remaining columns expand to fill container (333px each)</li>
+            </ul>
+
+            <h3>When to Use Each</h3>
+
+            <h4>Use auto-fill when:</h4>
+            <ul>
+                <li>You want consistent item sizing regardless of how many items exist</li>
+                <li>You're creating a grid where items should <strong>not</strong> stretch</li>
+                <li>You might dynamically add more items</li>
+                <li>Example: Product grids, image galleries where sizing should stay consistent</li>
+            </ul>
+
+            <h4>Use auto-fit when:</h4>
+            <ul>
+                <li>You want items to <strong>fill available space</strong></li>
+                <li>The number of items varies and you want them to stretch</li>
+                <li>You want items to be as large as possible while respecting minimum size</li>
+                <li>Example: Feature sections, card layouts that should fill width</li>
+            </ul>
+
+            <h3>Practical Example: Responsive Card Grid</h3>
+            <div class="code-example">
+                <pre><code class="language-css">/* Product grid - items stay consistent size */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+/* Feature cards - stretch to fill space */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* Result:
+   - Products maintain ~250px size even with extra space
+   - Features expand to fill available width */</code></pre>
+            </div>
+        </div>
+
+        <div class="concept-section" id="minmax">
+            <h2>The Minmax Function for Flexible Sizing</h2>
+
+            <p>The <code>minmax()</code> function is Grid's secret weapon for creating <strong>truly flexible layouts</strong>. It defines a size range for grid tracks, allowing them to grow and shrink within defined boundaries.</p>
+
+            <h3>Basic Minmax Syntax</h3>
+            <div class="code-example">
+                <pre><code class="language-css">.grid {
+    grid-template-columns: minmax(200px, 400px) 1fr 1fr;
+}
+
+/* First column:
+   - Never smaller than 200px
+   - Never larger than 400px
+   - Other columns divide remaining space */</code></pre>
+            </div>
+
+            <h3>Using Minmax with Fractions</h3>
+            <p>Combining <code>minmax()</code> with <code>fr</code> units creates powerful responsive behavior:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Column can shrink to 100px but grows to fill space */
+.grid {
+    grid-template-columns: minmax(100px, 1fr) 2fr;
+}
+
+/* Common pattern: minimum size but can grow */
+.grid {
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+}
+
+/* Ensures minimum but allows growth */
+.grid {
+    grid-template-columns: minmax(min-content, 500px) 1fr;
+}</code></pre>
+            </div>
+
+            <h3>Minmax with Auto</h3>
+            <p>Using <code>auto</code> as the maximum allows content to determine size:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Min 200px, max based on content */
+.grid {
+    grid-template-columns: minmax(200px, auto) 1fr;
+}
+
+/* Never smaller than content, can grow to fill */
+.grid {
+    grid-template-columns: minmax(min-content, 1fr) auto;
+}</code></pre>
+            </div>
+
+            <h3>Responsive Grid Without Media Queries</h3>
+            <p>The power of <code>minmax()</code> really shines when combined with <code>auto-fit</code>:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+/* This creates:
+   - As many 250px columns as fit
+   - Columns never smaller than 250px
+   - Columns grow equally to fill space
+   - Automatically responsive - no media queries needed! */</code></pre>
+            </div>
+
+            <p>On a 1000px screen, you get 3-4 columns. On a 500px screen, you get 2 columns. On a 300px screen, you get 1 column. All automatically!</p>
+
+            <h3>Practical Patterns</h3>
+
+            <h4>Flexible Sidebar:</h4>
+            <div class="code-example">
+                <pre><code class="language-css">.layout {
+    display: grid;
+    grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+}
+
+/* Sidebar: 200-300px
+   Content: Takes remaining space but can shrink to zero */</code></pre>
+            </div>
+
+            <h4>Constrained Content Width:</h4>
+            <div class="code-example">
+                <pre><code class="language-css">.container {
+    display: grid;
+    grid-template-columns: 1fr minmax(auto, 800px) 1fr;
+}
+
+/* Creates centered content that:
+   - Never exceeds 800px
+   - Centers with equal margins
+   - Can shrink on small screens */</code></pre>
+            </div>
+
+            <h4>Card Grid with Size Limits:</h4>
+            <div class="code-example">
+                <pre><code class="language-css">.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
+    justify-content: center;
+    gap: 2rem;
+}
+
+/* Cards: 300-400px each, centered in container */</code></pre>
+            </div>
+        </div>
+
+        <div class="concept-section" id="combining">
+            <h2>Combining Grid and Flexbox Effectively</h2>
+
+            <p>One of the most important skills in modern CSS layout is knowing <strong>when to use Grid versus Flexbox</strong>, and how to combine them. They're not competitors—they're complementary tools that excel at different tasks.</p>
+
+            <h3>The Fundamental Difference</h3>
+            <p>Understanding this core difference guides all layout decisions:</p>
+
+            <ul>
+                <li><strong>Grid is two-dimensional:</strong> Controls both rows and columns simultaneously</li>
+                <li><strong>Flexbox is one-dimensional:</strong> Controls either a row or a column, not both</li>
+            </ul>
+
+            <h3>When to Use CSS Grid</h3>
+            <p>Choose Grid when you need:</p>
+
+            <ul>
+                <li><strong>Overall page layout:</strong> Headers, sidebars, content areas, footers</li>
+                <li><strong>Complex 2D layouts:</strong> Items need to align in both directions</li>
+                <li><strong>Content in rows AND columns:</strong> Like spreadsheets or dashboards</li>
+                <li><strong>Explicit item placement:</strong> Specific items in specific positions</li>
+                <li><strong>Overlapping content:</strong> Items that layer over each other</li>
+            </ul>
+
+            <h4>Grid Examples:</h4>
+            <div class="code-example">
+                <pre><code class="language-css">/* Page layout */
+.page {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+}
+
+/* Dashboard with panels */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-rows: 200px;
+}
+
+/* Magazine layout */
+.article-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+}</code></pre>
+            </div>
+
+            <h3>When to Use Flexbox</h3>
+            <p>Choose Flexbox when you need:</p>
+
+            <ul>
+                <li><strong>Component layout:</strong> Buttons, cards, navigation bars</li>
+                <li><strong>Content-driven sizing:</strong> Items sized by their content</li>
+                <li><strong>One-dimensional arrangements:</strong> Items in a row or column</li>
+                <li><strong>Alignment without structure:</strong> Centering, distributing space</li>
+                <li><strong>Flexible item order:</strong> Visual reordering with <code>order</code></li>
+            </ul>
+
+            <h4>Flexbox Examples:</h4>
+            <div class="code-example">
+                <pre><code class="language-css">/* Navigation bar */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Card component */
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Button group */
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+}</code></pre>
+            </div>
+
+            <h3>Combining Grid and Flexbox</h3>
+            <p>The most powerful approach uses <strong>Grid for structure, Flexbox for components</strong>:</p>
+
+            <div class="code-example">
+                <pre><code class="language-html">&lt;div class="page"&gt;  &lt;!-- Grid: page structure --&gt;
+    &lt;header class="header"&gt;  &lt;!-- Flexbox: header internals --&gt;
+        &lt;div class="logo"&gt;Logo&lt;/div&gt;
+        &lt;nav class="nav"&gt;  &lt;!-- Flexbox: navigation --&gt;
+            &lt;a href="#"&gt;Link&lt;/a&gt;
+            &lt;a href="#"&gt;Link&lt;/a&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+
+    &lt;main class="content"&gt;  &lt;!-- Grid: cards layout --&gt;
+        &lt;article class="card"&gt;  &lt;!-- Flexbox: card internals --&gt;
+            &lt;img src="..."&gt;
+            &lt;div class="card-content"&gt;
+                &lt;h3&gt;Title&lt;/h3&gt;
+                &lt;p&gt;Description&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/article&gt;
+    &lt;/main&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Grid: Overall page structure */
+.page {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+/* Flexbox: Header components */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.nav {
+    display: flex;
+    gap: 2rem;
+}
+
+/* Grid: Card layout */
+.content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+/* Flexbox: Card internals */
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+}</code></pre>
+            </div>
+
+            <h3>Decision Tree</h3>
+            <p>Use this quick guide:</p>
+
+            <ol>
+                <li><strong>Is it page-level structure?</strong> → Use Grid</li>
+                <li><strong>Does it need both row and column control?</strong> → Use Grid</li>
+                <li><strong>Is it a component (card, nav, button group)?</strong> → Use Flexbox</li>
+                <li><strong>Is it one-dimensional (just rows or columns)?</strong> → Use Flexbox</li>
+                <li><strong>Do items need to wrap and flow naturally?</strong> → Use Flexbox</li>
+                <li><strong>Still unsure?</strong> → Try Flexbox first (simpler), switch to Grid if needed</li>
+            </ol>
+        </div>
+
+        <div class="worked-example" id="holy-grail">
+            <h2>Worked Example: The Holy Grail Layout</h2>
+
+            <p>The "Holy Grail" layout is a classic web design pattern featuring a header, footer, main content area, and two sidebars. It's called the Holy Grail because achieving it used to require complex hacks. With modern CSS Grid, it's straightforward and elegant.</p>
+
+            <h3>The Layout Requirements</h3>
+            <p>A proper Holy Grail layout should:</p>
+            <ul>
+                <li>Header and footer span the full width</li>
+                <li>Three columns in the middle: left sidebar, main content, right sidebar</li>
+                <li>Main content appears first in HTML (for SEO and accessibility)</li>
+                <li>Sidebars have fixed widths, main content flexes</li>
+                <li>Footer stays at bottom even with little content</li>
+                <li>Responsive: collapses to single column on mobile</li>
+            </ul>
+
+            <h3>Step 1: Semantic HTML Structure</h3>
+            <div class="code-example">
+                <pre><code class="language-html">&lt;div class="holy-grail"&gt;
+    &lt;header class="header"&gt;
+        &lt;h1&gt;Site Title&lt;/h1&gt;
+        &lt;nav&gt;Navigation&lt;/nav&gt;
+    &lt;/header&gt;
+
+    &lt;main class="main-content"&gt;
+        &lt;h2&gt;Main Content&lt;/h2&gt;
+        &lt;p&gt;This appears first in HTML for accessibility and SEO.&lt;/p&gt;
+    &lt;/main&gt;
+
+    &lt;aside class="left-sidebar"&gt;
+        &lt;h3&gt;Left Sidebar&lt;/h3&gt;
+        &lt;p&gt;Secondary navigation or content.&lt;/p&gt;
+    &lt;/aside&gt;
+
+    &lt;aside class="right-sidebar"&gt;
+        &lt;h3&gt;Right Sidebar&lt;/h3&gt;
+        &lt;p&gt;Additional information or ads.&lt;/p&gt;
+    &lt;/aside&gt;
+
+    &lt;footer class="footer"&gt;
+        &lt;p&gt;Footer content&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <h3>Step 2: Mobile-First Base Styles</h3>
+            <p>Start with a stacked mobile layout:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.holy-grail {
+    display: grid;
+    grid-template-areas:
+        "header"
+        "main"
+        "left"
+        "right"
+        "footer";
+    grid-template-rows: auto 1fr auto auto auto;
+    min-height: 100vh;
+}
+
+.header { grid-area: header; }
+.main-content { grid-area: main; }
+.left-sidebar { grid-area: left; }
+.right-sidebar { grid-area: right; }
+.footer { grid-area: footer; }
+
+/* Basic styling */
+.header, .footer {
+    background: #333;
+    color: white;
+    padding: 1rem;
+}
+
+.main-content, .left-sidebar, .right-sidebar {
+    padding: 1rem;
+}
+
+.main-content {
+    background: #f5f5f5;
+}
+
+.left-sidebar, .right-sidebar {
+    background: #e0e0e0;
+}</code></pre>
+            </div>
+
+            <h3>Step 3: Tablet Layout</h3>
+            <p>On tablets, put the left sidebar beside the main content:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">@media (min-width: 768px) {
+    .holy-grail {
+        grid-template-areas:
+            "header header"
+            "left main"
+            "right right"
+            "footer footer";
+        grid-template-columns: 200px 1fr;
+        grid-template-rows: auto 1fr auto auto;
+    }
+}</code></pre>
+            </div>
+
+            <h3>Step 4: Desktop Layout</h3>
+            <p>On desktop, show the full three-column layout:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">@media (min-width: 1024px) {
+    .holy-grail {
+        grid-template-areas:
+            "header header header"
+            "left main right"
+            "footer footer footer";
+        grid-template-columns: 200px 1fr 250px;
+        grid-template-rows: auto 1fr auto;
+    }
+}</code></pre>
+            </div>
+
+            <h3>Step 5: Enhanced Styling</h3>
+            <p>Add polish with gaps, shadows, and improved typography:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.holy-grail {
+    display: grid;
+    grid-template-areas:
+        "header"
+        "main"
+        "left"
+        "right"
+        "footer";
+    grid-template-rows: auto 1fr auto auto auto;
+    min-height: 100vh;
+    gap: 0; /* No gap on mobile */
+}
+
+@media (min-width: 1024px) {
+    .holy-grail {
+        grid-template-areas:
+            "header header header"
+            "left main right"
+            "footer footer footer";
+        grid-template-columns: 200px 1fr 250px;
+        grid-template-rows: auto 1fr auto;
+        gap: 1rem; /* Add gap on desktop */
+        padding: 1rem;
+    }
+
+    .main-content, .left-sidebar, .right-sidebar {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+}</code></pre>
+            </div>
+
+            <h3>What Makes This Solution Excellent</h3>
+            <ul>
+                <li><strong>Semantic HTML:</strong> Main content comes first in source order</li>
+                <li><strong>Accessibility:</strong> Screen readers encounter content in logical order</li>
+                <li><strong>SEO-friendly:</strong> Main content appears early in HTML</li>
+                <li><strong>Responsive:</strong> Adapts smoothly from mobile to desktop</li>
+                <li><strong>Maintainable:</strong> Grid areas make layout changes easy</li>
+                <li><strong>Modern:</strong> No floats, no positioning hacks, just clean Grid code</li>
+            </ul>
+        </div>
+
+        <div class="worked-example" id="dashboard">
+            <h2>Worked Example: Dashboard Layout with Advanced Grid</h2>
+
+            <p>Modern dashboard interfaces require sophisticated layouts with panels of varying sizes. This example demonstrates advanced Grid techniques including spanning, auto-placement, and combining fixed and flexible sizing.</p>
+
+            <h3>Dashboard Requirements</h3>
+            <ul>
+                <li>Responsive grid of dashboard panels</li>
+                <li>Some panels span multiple columns or rows</li>
+                <li>Panels should fill available space intelligently</li>
+                <li>Works on all screen sizes</li>
+            </ul>
+
+            <h3>Step 1: HTML Structure</h3>
+            <div class="code-example">
+                <pre><code class="language-html">&lt;div class="dashboard"&gt;
+    &lt;div class="panel panel-stats"&gt;
+        &lt;h2&gt;Statistics&lt;/h2&gt;
+        &lt;p&gt;Overview statistics...&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="panel panel-chart"&gt;
+        &lt;h2&gt;Revenue Chart&lt;/h2&gt;
+        &lt;div class="chart"&gt;Chart placeholder&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="panel panel-activity"&gt;
+        &lt;h2&gt;Recent Activity&lt;/h2&gt;
+        &lt;ul&gt;Activity items...&lt;/ul&gt;
+    &lt;/div&gt;
+
+    &lt;div class="panel panel-tasks"&gt;
+        &lt;h2&gt;Tasks&lt;/h2&gt;
+        &lt;ul&gt;Task items...&lt;/ul&gt;
+    &lt;/div&gt;
+
+    &lt;div class="panel panel-users"&gt;
+        &lt;h2&gt;Active Users&lt;/h2&gt;
+        &lt;p&gt;User data...&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="panel panel-notifications"&gt;
+        &lt;h2&gt;Notifications&lt;/h2&gt;
+        &lt;ul&gt;Notification items...&lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <h3>Step 2: Responsive Grid Foundation</h3>
+            <p>Create a grid that automatically adjusts columns based on screen size:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-rows: minmax(150px, auto);
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.panel {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}</code></pre>
+            </div>
+
+            <h3>Step 3: Make Featured Panels Span Multiple Cells</h3>
+            <p>Use <code>grid-column</code> and <code>grid-row</code> to make important panels larger:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Statistics panel spans 2 columns */
+.panel-stats {
+    grid-column: span 2;
+}
+
+/* Chart panel spans 2 columns and 2 rows */
+.panel-chart {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+/* Activity panel spans 2 rows for scrollable content */
+.panel-activity {
+    grid-row: span 2;
+    overflow-y: auto;
+}
+
+/* On small screens, disable spanning */
+@media (max-width: 768px) {
+    .panel-stats,
+    .panel-chart,
+    .panel-activity {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}</code></pre>
+            </div>
+
+            <h3>Step 4: Advanced Grid Features</h3>
+            <p>Add dense packing to fill gaps automatically:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-rows: minmax(150px, auto);
+    grid-auto-flow: dense; /* Fill gaps automatically */
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+/* Make sure panels can shrink to fit */
+.panel {
+    min-width: 0; /* Allow flex items to shrink below content size */
+    min-height: 0;
+}
+
+/* Ensure content scrolls if needed */
+.panel-activity ul,
+.panel-notifications ul {
+    overflow-y: auto;
+    max-height: 300px;
+}</code></pre>
+            </div>
+
+            <h3>Step 5: Enhanced Responsive Behavior</h3>
+            <p>Fine-tune the layout for different screen sizes:</p>
+
+            <div class="code-example">
+                <pre><code class="language-css">/* Mobile: single column */
+@media (max-width: 767px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop: 3+ columns with auto-fit */
+@media (min-width: 1024px) {
+    .dashboard {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
+    /* Allow more spanning on larger screens */
+    .panel-chart {
+        grid-column: span 2;
+        grid-row: span 2;
+    }
+}
+
+/* Large desktop: 4+ columns */
+@media (min-width: 1400px) {
+    .dashboard {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .panel-stats {
+        grid-column: span 3; /* Span more on very wide screens */
+    }
+}</code></pre>
+            </div>
+
+            <h3>Key Techniques Demonstrated</h3>
+            <ul>
+                <li><strong>auto-fit with minmax():</strong> Responsive columns without media queries</li>
+                <li><strong>grid-column/row span:</strong> Variable-size panels</li>
+                <li><strong>grid-auto-flow: dense:</strong> Intelligent gap filling</li>
+                <li><strong>Flexible row sizing:</strong> Panels grow based on content</li>
+                <li><strong>Progressive enhancement:</strong> Works on all screen sizes</li>
+            </ul>
+
+            <p>This pattern is used in real-world applications like analytics dashboards, admin panels, and data visualization tools. The grid automatically adjusts to content and screen size while maintaining a professional, organized appearance.</p>
+        </div>
+
+        <div class="exercise" id="practice">
+            <h2>Practice Opportunity</h2>
+
+            <p>Create a responsive portfolio website that demonstrates advanced Grid and Flexbox techniques:</p>
+
+            <h3>Requirements</h3>
+            <ul>
+                <li>Use <strong>Grid template areas</strong> for the overall page layout (header, main, footer)</li>
+                <li>Create a project grid using <strong>auto-fit and minmax()</strong> for responsive cards</li>
+                <li>Make at least one card span multiple columns using <code>grid-column</code></li>
+                <li>Use <strong>Flexbox inside cards</strong> for image, title, description, and button layout</li>
+                <li>Implement a <strong>navigation bar with Flexbox</strong> that reorders on mobile using the <code>order</code> property</li>
+                <li>Add a <strong>skills section</strong> with flex items that use flex-grow and flex-basis</li>
+            </ul>
+
+            <h3>Bonus Challenges</h3>
+            <ul>
+                <li>Create a "featured project" that spans 2 columns and 2 rows in the grid</li>
+                <li>Implement a footer with three columns that stack on mobile using Grid</li>
+                <li>Add a testimonials section using Flexbox with varying card heights</li>
+                <li>Use named grid lines for more semantic grid control</li>
+                <li>Experiment with <code>grid-auto-flow: dense</code> to fill gaps automatically</li>
+            </ul>
+
+            <h3>Testing Your Work</h3>
+            <p>Verify your implementation by:</p>
+            <ul>
+                <li>Resizing the browser from mobile (320px) to desktop (1920px) widths</li>
+                <li>Checking that grid columns adjust automatically based on available space</li>
+                <li>Ensuring cards maintain readable widths and don't become too narrow or wide</li>
+                <li>Confirming that flex items grow and shrink appropriately</li>
+                <li>Testing keyboard navigation works properly despite any visual reordering</li>
+            </ul>
+        </div>
+
+        <div class="concept-section" id="summary">
+            <h2>Summary of Key Concepts</h2>
+
+            <p>Advanced Flexbox and Grid techniques provide professional-grade layout control for modern web applications. Understanding these concepts deeply allows you to create sophisticated, responsive designs that were impossible or required complex hacks in the past.</p>
+
+            <h3>Advanced Flexbox</h3>
+            <p>The <code>flex</code> property is shorthand for <code>flex-grow</code>, <code>flex-shrink</code>, and <code>flex-basis</code>. These properties work together to determine how flex items share available space, compress when space is limited, and establish their initial sizing. The <code>order</code> property enables visual reordering without changing HTML structure, though accessibility implications must be considered.</p>
+
+            <h3>Advanced Grid</h3>
+            <p>Named grid areas using <code>grid-template-areas</code> provide a visual, semantic way to define complex layouts that's easy to understand and maintain. The <code>auto-fit</code> and <code>auto-fill</code> keywords create automatically responsive grids, with <code>auto-fit</code> collapsing empty tracks and <code>auto-fill</code> preserving them. The <code>minmax()</code> function defines flexible size ranges for grid tracks, enabling layouts that adapt intelligently to available space.</p>
+
+            <h3>Combining Techniques</h3>
+            <p>The most powerful approach uses Grid for two-dimensional page structure and Flexbox for one-dimensional component layout. Grid excels at overall page architecture, complex multi-column/row layouts, and explicit item placement. Flexbox excels at components, content-driven sizing, and flexible alignment within a single dimension.</p>
+
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li><strong>flex-basis</strong> sets initial size before growing or shrinking occurs</li>
+                <li><strong>auto-fit</strong> stretches items to fill space; <strong>auto-fill</strong> maintains consistent item sizing</li>
+                <li><strong>minmax()</strong> creates truly flexible, responsive layouts without media queries</li>
+                <li><strong>Grid template areas</strong> make complex layouts readable and maintainable</li>
+                <li><strong>Combine Grid and Flexbox</strong> using each for what it does best</li>
+                <li><strong>Visual order</strong> doesn't affect source order, which impacts accessibility</li>
+            </ul>
+
+            <h3>Next Steps</h3>
+            <p>With these advanced layout techniques mastered, you're ready to learn how to build maintainable, reusable component systems. Lesson 12 covers component-based design, CSS naming conventions, custom properties for theming, and creating design systems—essential skills for professional web development and working with modern frameworks.</p>
+        </div>
+
+        <div class="concept-section">
+            <h2>Bibliography</h2>
+            <p>Mozilla Developer Network. "CSS Grid Layout." MDN Web Docs. <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout">https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout</a></p>
+
+            <p>Mozilla Developer Network. "CSS Flexible Box Layout." MDN Web Docs. <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout">https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout</a></p>
+
+            <p>CSS-Tricks. "A Complete Guide to Grid." CSS-Tricks. <a href="https://css-tricks.com/snippets/css/complete-guide-grid/">https://css-tricks.com/snippets/css/complete-guide-grid/</a></p>
+
+            <p>CSS-Tricks. "A Complete Guide to Flexbox." CSS-Tricks. <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a></p>
+
+            <p>Rachel Andrew. "Grid by Example." Grid by Example. <a href="https://gridbyexample.com/">https://gridbyexample.com/</a></p>
+        </div>
+
+        <div class="lesson-nav-links" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+            <a href="../index.html">Back to Home</a> |
+            <a href="10-github-pages.html">Previous Lesson</a> |
+            <a href="12-component-design.html">Next Lesson: Component Design</a>
+        </div>
+    </div>
+</body>
+</html>

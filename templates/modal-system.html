@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<!--
+    Pure CSS Modal System Template
+
+    This template demonstrates a complete modal dialog system using
+    the :target pseudo-class - no JavaScript required! Includes
+    multiple modal variations and features.
+
+    Key Concepts:
+    - :target pseudo-class for showing/hiding modals
+    - Fixed positioning for overlays
+    - Backdrop with rgba transparency
+    - Smooth fade and scale animations
+    - Multiple independent modals on one page
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure CSS Modal System | Interactive Template</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .demo-section h2 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+        }
+
+        .demo-section p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /*
+            Button Styles
+
+            These links trigger modals by changing the URL hash.
+        */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /*
+            Modal Overlay
+
+            The overlay covers the entire screen and contains
+            the modal dialog. Hidden by default, shown when :target.
+
+            Fixed positioning makes it cover the viewport.
+        */
+        .modal {
+            display: none;  /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*
+                Semi-transparent black backdrop
+                Starts transparent for fade-in effect
+            */
+            background: rgba(0, 0, 0, 0);
+            z-index: 1000;
+            /*
+                Flexbox centers the modal dialog
+            */
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            /*
+                Smooth transitions
+            */
+            transition: background 0.3s ease;
+        }
+
+        /*
+            Show Modal When Targeted
+
+            When URL hash matches modal ID (e.g., #modal-welcome),
+            the modal becomes :target and is displayed.
+        */
+        .modal:target {
+            display: flex;
+            /* Fade in the backdrop */
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        /*
+            Modal Dialog Box
+
+            The actual content box that appears centered.
+        */
+        .modal-dialog {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+            /*
+                Start small and transparent for animation
+            */
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /*
+            Animate Dialog When Modal is Targeted
+
+            When the modal becomes visible, scale up and fade in
+            the dialog box.
+        */
+        .modal:target .modal-dialog {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-header h2 {
+            color: var(--text-primary);
+            font-size: 1.75rem;
+            margin: 0;
+            padding-right: 2rem;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-body p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-body ul, .modal-body ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-body li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        /*
+            Close Button (X in corner)
+
+            Clicking this changes URL to # (no hash), which
+            deactivates the :target state and hides the modal.
+        */
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .modal-close:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        /* Feature boxes in modals */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-box {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .feature-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-box p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Alert box */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        /* Info section */
+        .info {
+            margin-top: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+        }
+
+        .info h2 {
+            margin-bottom: 1rem;
+        }
+
+        .info p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .info code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info ul {
+            margin-left: 1.5rem;
+            line-height: 2;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .demo-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .modal-dialog {
+                margin: 1rem;
+            }
+
+            .modal-header, .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pure CSS Modal System</h1>
+            <p>Multiple modals without any JavaScript</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>Try Different Modals</h2>
+            <p>Click any button to open a modal. Each modal uses the :target pseudo-class to show and hide.</p>
+            <div class="demo-buttons">
+                <a href="#modal-welcome" class="btn btn-primary">Welcome Modal</a>
+                <a href="#modal-confirm" class="btn btn-danger">Confirmation Dialog</a>
+                <a href="#modal-features" class="btn btn-success">Features Modal</a>
+                <a href="#modal-form" class="btn btn-primary">Form Modal</a>
+            </div>
+        </div>
+
+        <!--
+            Modal 1: Welcome Modal
+
+            Standard informational modal with header, body, and footer.
+        -->
+        <div class="modal" id="modal-welcome">
+            <div class="modal-dialog">
+                <!--
+                    Close button changes URL to # (empty hash)
+                    This deactivates :target and hides the modal
+                -->
+                <div class="modal-header">
+                    <h2>Welcome!</h2>
+                    <a href="#" class="modal-close" aria-label="Close modal">&times;</a>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        This is a pure CSS modal dialog. No JavaScript is required to make it work!
+                        It uses the <code>:target</code> pseudo-class to detect when the modal should
+                        be visible.
+                    </p>
+                    <p>
+                        When you click "Welcome Modal", the URL changes to include <code>#modal-welcome</code>.
+                        CSS detects this hash and displays the modal with a matching ID.
+                    </p>
+
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <h3>No JavaScript</h3>
+                            <p>Works in all browsers without JS dependencies</p>
+                        </div>
+                        <div class="feature-box">
+                            <h3>Smooth Animations</h3>
+                            <p>Backdrop fades in, dialog scales and fades</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-secondary">Close</a>
+                    <a href="#" class="btn btn-primary">Got It!</a>
+                </div>
+            </div>
+        </div>
+
+        <!--
+            Modal 2: Confirmation Dialog
+
+            Danger-themed modal for confirmations.
+        -->
+        <div class="modal" id="modal-confirm">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h2>Are You Sure?</h2>
+                    <a href="#" class="modal-close" aria-label="Close modal">&times;</a>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> This action cannot be undone. Please confirm that you want to proceed.
+                    </div>
+                    <p>
+                        Confirmation dialogs are important for destructive actions like deleting data,
+                        canceling subscriptions, or making irreversible changes.
+                    </p>
+                    <p>
+                        In a real application, the "Confirm" button would submit a form or trigger
+                        the destructive action (via JavaScript). This pure CSS version demonstrates
+                        the UI pattern.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-secondary">Cancel</a>
+                    <a href="#" class="btn btn-danger">Yes, Delete</a>
+                </div>
+            </div>
+        </div>
+
+        <!--
+            Modal 3: Features Modal
+
+            Larger modal with more content.
+        -->
+        <div class="modal" id="modal-features">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h2>Modal Features</h2>
+                    <a href="#" class="modal-close" aria-label="Close modal">&times;</a>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        This modal system includes several features that make it practical for real-world use:
+                    </p>
+
+                    <h3>Visual Features</h3>
+                    <ul>
+                        <li><strong>Backdrop:</strong> Semi-transparent overlay darkens background</li>
+                        <li><strong>Smooth animations:</strong> Backdrop fades in, dialog scales and fades</li>
+                        <li><strong>Close button:</strong> X button in top-right corner</li>
+                        <li><strong>Responsive:</strong> Adapts to mobile screens</li>
+                        <li><strong>Scrollable:</strong> Long content scrolls within modal (try resizing this window!)</li>
+                    </ul>
+
+                    <h3>Technical Implementation</h3>
+                    <ul>
+                        <li>Uses <code>:target</code> pseudo-class for show/hide logic</li>
+                        <li>Fixed positioning covers entire viewport</li>
+                        <li>Flexbox centers modal dialog</li>
+                        <li>URL hash controls which modal is visible</li>
+                        <li>Clicking close or backdrop changes hash to <code>#</code></li>
+                    </ul>
+
+                    <div class="alert alert-info">
+                        <strong>Pro Tip:</strong> You can link directly to a modal! Try sharing this URL with
+                        <code>#modal-features</code> at the end - the modal will open automatically when someone
+                        visits the link.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary">Close</a>
+                </div>
+            </div>
+        </div>
+
+        <!--
+            Modal 4: Form Modal
+
+            Modal containing a form.
+        -->
+        <div class="modal" id="modal-form">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h2>Contact Form</h2>
+                    <a href="#" class="modal-close" aria-label="Close modal">&times;</a>
+                </div>
+                <div class="modal-body">
+                    <p>Modals are commonly used for forms. Here's an example:</p>
+
+                    <form>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label for="name" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Name</label>
+                            <input type="text" id="name" placeholder="Your name" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Email</label>
+                            <input type="email" id="email" placeholder="your@email.com" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <label for="message" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Message</label>
+                            <textarea id="message" rows="4" placeholder="Your message..." style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; resize: vertical; font-family: inherit;"></textarea>
+                        </div>
+                    </form>
+
+                    <div class="alert alert-info">
+                        This is a demo form. In a real application, you'd add form submission handling with JavaScript
+                        or server-side processing.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-secondary">Cancel</a>
+                    <a href="#" class="btn btn-primary">Send Message</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="info">
+            <h2>How It Works</h2>
+            <p>
+                This modal system uses the <code>:target</code> pseudo-class to show and hide modals
+                based on the URL hash:
+            </p>
+            <ul>
+                <li>Each modal has a unique ID (e.g., <code>id="modal-welcome"</code>)</li>
+                <li>Clicking "Welcome Modal" changes URL to <code>#modal-welcome</code></li>
+                <li>The modal with <code>id="modal-welcome"</code> becomes <code>:target</code></li>
+                <li>CSS <code>.modal:target { display: flex; }</code> shows the modal</li>
+                <li>Clicking close changes URL to <code>#</code>, hiding the modal</li>
+            </ul>
+            <p>
+                <strong>Animations:</strong> The backdrop transitions from <code>background: rgba(0,0,0,0)</code>
+                to <code>rgba(0,0,0,0.6)</code>, creating a fade effect. The dialog transitions from
+                <code>transform: scale(0.7)</code> to <code>scale(1)</code> with <code>opacity: 0</code> to <code>1</code>.
+            </p>
+            <p>
+                <strong>Limitations:</strong> Pure CSS modals work well for simple use cases but lack some features
+                like focus trapping, Escape key closing, and full ARIA support. For production applications with
+                accessibility requirements, add JavaScript to enhance these modals.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

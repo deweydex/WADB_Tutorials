@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!--
+    3D Rotating Cube Template
+
+    This template demonstrates advanced CSS 3D transforms to create
+    a rotating cube with different colored faces. It's an excellent
+    example of perspective, transform-style, and 3D positioning.
+
+    Key Concepts:
+    - perspective property for 3D depth
+    - transform-style: preserve-3d for nested 3D transforms
+    - rotateX(), rotateY(), translateZ() for 3D positioning
+    - backface-visibility for hiding reversed faces
+    - Continuous keyframe animation
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Rotating Cube | CSS Animation Template</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            /*
+                Perspective on body creates 3D space.
+                Lower values = more dramatic perspective
+                Higher values = more subtle perspective
+            */
+            perspective: 1200px;
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .controls h1 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .controls p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        /*
+            Cube Container
+
+            This is the parent that rotates. All faces are children
+            positioned absolutely within this space.
+        */
+        .cube-container {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            /*
+                preserve-3d is CRITICAL: without it, children would
+                be flattened into 2D plane instead of maintaining 3D positions
+            */
+            transform-style: preserve-3d;
+            /*
+                Animation rotates cube continuously on both X and Y axes
+                This creates a tumbling effect
+            */
+            animation: rotate-cube 12s infinite linear;
+        }
+
+        /*
+            Keyframe Animation
+
+            Rotates the cube 360 degrees on both X and Y axes.
+            Using both creates a complex tumbling motion.
+        */
+        @keyframes rotate-cube {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            100% {
+                transform: rotateX(360deg) rotateY(360deg);
+            }
+        }
+
+        /* Pause rotation on hover so users can inspect faces */
+        .cube-container:hover {
+            animation-play-state: paused;
+        }
+
+        /*
+            Cube Face
+
+            Each face is absolutely positioned and then transformed
+            to its final 3D location. All faces start at the same
+            position and are moved using 3D transforms.
+        */
+        .cube-face {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            /*
+                Using rgba for transparency creates a glass-like effect
+                where you can see multiple faces at once
+            */
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0.85;
+            /*
+                backface-visibility: hidden prevents seeing the back
+                of faces when they rotate away from you (they would
+                appear mirrored and backwards without this)
+            */
+            backface-visibility: hidden;
+        }
+
+        /*
+            Positioning Each Face
+
+            The cube is 250px × 250px × 250px, so each face needs to
+            be moved 125px (half the size) from the center.
+
+            Front: Move forward (translateZ)
+            Back: Rotate 180°, then move forward
+            Right: Rotate 90° right, then move forward
+            Left: Rotate 90° left, then move forward
+            Top: Rotate 90° up, then move forward
+            Bottom: Rotate 90° down, then move forward
+        */
+
+        .front {
+            background: rgba(255, 99, 132, 0.8);
+            transform: translateZ(125px);
+        }
+
+        .back {
+            background: rgba(54, 162, 235, 0.8);
+            transform: rotateY(180deg) translateZ(125px);
+        }
+
+        .right {
+            background: rgba(255, 206, 86, 0.8);
+            transform: rotateY(90deg) translateZ(125px);
+        }
+
+        .left {
+            background: rgba(75, 192, 192, 0.8);
+            transform: rotateY(-90deg) translateZ(125px);
+        }
+
+        .top {
+            background: rgba(153, 102, 255, 0.8);
+            transform: rotateX(90deg) translateZ(125px);
+        }
+
+        .bottom {
+            background: rgba(255, 159, 64, 0.8);
+            transform: rotateX(-90deg) translateZ(125px);
+        }
+
+        /* Info panel */
+        .info {
+            margin-top: 3rem;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+        }
+
+        .info h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .info p {
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .info ul {
+            margin-left: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .info code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cube-container {
+                width: 180px;
+                height: 180px;
+            }
+
+            .cube-face {
+                width: 180px;
+                height: 180px;
+                font-size: 3rem;
+            }
+
+            /* Recalculate translateZ for smaller cube */
+            .front { transform: translateZ(90px); }
+            .back { transform: rotateY(180deg) translateZ(90px); }
+            .right { transform: rotateY(90deg) translateZ(90px); }
+            .left { transform: rotateY(-90deg) translateZ(90px); }
+            .top { transform: rotateX(90deg) translateZ(90px); }
+            .bottom { transform: rotateX(-90deg) translateZ(90px); }
+
+            .controls h1 {
+                font-size: 1.5rem;
+            }
+
+            .controls p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h1>3D Rotating Cube</h1>
+        <p>Hover over the cube to pause rotation</p>
+    </div>
+
+    <!--
+        Cube Structure
+
+        Six div elements, one for each face of the cube.
+        Each face is numbered 1-6 like a die.
+    -->
+    <div class="cube-container">
+        <div class="cube-face front">1</div>
+        <div class="cube-face back">2</div>
+        <div class="cube-face right">3</div>
+        <div class="cube-face left">4</div>
+        <div class="cube-face top">5</div>
+        <div class="cube-face bottom">6</div>
+    </div>
+
+    <div class="info">
+        <h2>How It Works</h2>
+        <p>
+            This cube is created entirely with CSS using 3D transforms.
+            Here are the key techniques:
+        </p>
+        <ul>
+            <li><code>perspective: 1200px</code> on the body creates 3D space</li>
+            <li><code>transform-style: preserve-3d</code> maintains 3D positioning for child elements</li>
+            <li>Each face is positioned using <code>rotateX()</code>, <code>rotateY()</code>, and <code>translateZ()</code></li>
+            <li><code>backface-visibility: hidden</code> hides faces when they rotate away</li>
+            <li>Continuous animation rotates on both X and Y axes for tumbling effect</li>
+        </ul>
+        <p>
+            <strong>Try it:</strong> Hover over the cube to pause the animation and inspect individual faces.
+            This technique can be adapted for product showcases, interactive visualizations, and engaging UI elements.
+        </p>
+    </div>
+</body>
+</html>

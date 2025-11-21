@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<!--
+    Pure CSS Tabbed Interface Template
+
+    This template demonstrates a fully functional tab system using
+    the :target pseudo-class - no JavaScript needed! Perfect for
+    organizing content into switchable sections.
+
+    Key Concepts:
+    - :target pseudo-class for URL hash-based state
+    - CSS-only tab switching
+    - Smooth transitions between tabs
+    - Fallback for showing first tab by default
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure CSS Tabs | Interactive Template</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #dbeafe;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /*
+            Tabs Component
+
+            The tabs are built using anchor links that change the URL hash.
+            When the hash matches a tab's ID, that tab becomes :target
+            and is displayed.
+        */
+        .tabs {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        /*
+            Tab Navigation
+
+            Contains links to each tab. Clicking changes the URL hash
+            (e.g., #tab1), which triggers the :target selector.
+        */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--border-color);
+            overflow-x: auto;  /* Allows horizontal scrolling on small screens */
+        }
+
+        .tab-nav a {
+            flex: 1;
+            padding: 1.25rem 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-nav a:hover {
+            background: rgba(59, 130, 246, 0.05);
+            color: var(--primary-color);
+        }
+
+        /*
+            Active Tab Indicator
+
+            When a tab is targeted (URL hash matches), style its
+            corresponding navigation link. We use :target on the
+            tab panel and then reference it back to style the link.
+
+            However, CSS can't select "backwards" to style the link
+            based on which tab is active. So we use a workaround:
+            give each link a hover state and let JS or default state handle it.
+
+            For a pure CSS solution, we style the first tab as active by default.
+        */
+
+        /* Style first tab as active by default */
+        .tab-nav a:first-child {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /*
+            Tab Panels Container
+
+            Contains all tab content panels. Only one will be visible
+            at a time based on which is :target
+        */
+        .tab-content {
+            position: relative;
+            min-height: 400px;
+        }
+
+        /*
+            Individual Tab Panel
+
+            Hidden by default. The :target pseudo-class shows the
+            panel whose ID matches the current URL hash.
+        */
+        .tab-panel {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /*
+            Show Targeted Panel
+
+            When a panel's ID matches the URL hash (e.g., #tab1),
+            it becomes :target and is displayed.
+        */
+        .tab-panel:target {
+            display: block;
+        }
+
+        /*
+            Default: Show First Panel
+
+            If no hash in URL, show the first panel by default.
+            This provides better UX than showing nothing.
+        */
+        .tab-panel:first-of-type {
+            display: block;
+        }
+
+        /*
+            Hide First Panel if Another is Targeted
+
+            When any panel is :target, hide the first panel's
+            default display. This prevents showing two panels.
+        */
+        .tab-panel:target ~ .tab-panel:first-of-type {
+            display: none;
+        }
+
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tab panel content styling */
+        .tab-panel h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+        }
+
+        .tab-panel p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .tab-panel ul, .tab-panel ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .tab-panel li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Feature boxes inside tabs */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-box {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .feature-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-box p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Code block styling */
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 1rem 0;
+        }
+
+        /* Info section */
+        .info {
+            margin-top: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+        }
+
+        .info h2 {
+            margin-bottom: 1rem;
+        }
+
+        .info p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .info code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info ul {
+            margin-left: 1.5rem;
+            line-height: 2;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .tab-nav a {
+                padding: 1rem;
+                font-size: 0.95rem;
+            }
+
+            .tab-panel {
+                padding: 1.5rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pure CSS Tabbed Interface</h1>
+            <p>Click tabs to switch content without JavaScript</p>
+        </div>
+
+        <div class="tabs">
+            <!--
+                Tab Navigation
+
+                Each link's href corresponds to a tab panel's ID.
+                Clicking changes the URL hash, which activates the
+                :target pseudo-class on the matching panel.
+            -->
+            <nav class="tab-nav">
+                <a href="#tab1">Getting Started</a>
+                <a href="#tab2">Features</a>
+                <a href="#tab3">Code Examples</a>
+                <a href="#tab4">Best Practices</a>
+            </nav>
+
+            <div class="tab-content">
+                <!--
+                    Tab Panel 1: Getting Started
+
+                    The first panel is displayed by default if there's
+                    no hash in the URL (via :first-of-type selector).
+                -->
+                <article class="tab-panel" id="tab1">
+                    <h2>Getting Started with CSS Tabs</h2>
+                    <p>
+                        Pure CSS tabs use the <code>:target</code> pseudo-class to show and hide content
+                        based on the URL hash. When you click a tab link, the URL changes (e.g., to <code>#tab1</code>),
+                        and the panel with that ID becomes active.
+                    </p>
+
+                    <h3>How It Works</h3>
+                    <ol>
+                        <li>Each tab is a link (<code>&lt;a href="#tab1"&gt;</code>) that changes the URL hash</li>
+                        <li>Each content panel has a matching ID (<code>&lt;div id="tab1"&gt;</code>)</li>
+                        <li>CSS hides all panels by default (<code>display: none</code>)</li>
+                        <li>The <code>:target</code> selector shows the panel matching the current hash</li>
+                        <li>The first panel shows by default when there's no hash</li>
+                    </ol>
+
+                    <p>
+                        This technique requires no JavaScript, making it perfect for static sites,
+                        progressive enhancement, and situations where you want to minimize dependencies.
+                    </p>
+
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <h3>No JavaScript</h3>
+                            <p>Works in all browsers without any JS dependencies</p>
+                        </div>
+                        <div class="feature-box">
+                            <h3>URL Routing</h3>
+                            <p>Tabs can be linked directly via URL hash</p>
+                        </div>
+                        <div class="feature-box">
+                            <h3>Lightweight</h3>
+                            <p>Minimal code with excellent performance</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Tab Panel 2: Features -->
+                <article class="tab-panel" id="tab2">
+                    <h2>Features & Benefits</h2>
+                    <p>
+                        CSS-only tabs offer several advantages for certain use cases:
+                    </p>
+
+                    <h3>Built-in Browser Support</h3>
+                    <ul>
+                        <li><strong>Back/Forward buttons work:</strong> Browser history navigation switches tabs automatically</li>
+                        <li><strong>Shareable links:</strong> You can link directly to a specific tab (e.g., <code>page.html#tab2</code>)</li>
+                        <li><strong>Bookmark support:</strong> Users can bookmark specific tabs</li>
+                        <li><strong>No dependencies:</strong> Works without JavaScript libraries or frameworks</li>
+                    </ul>
+
+                    <h3>Performance Benefits</h3>
+                    <ul>
+                        <li>No JavaScript parsing or execution overhead</li>
+                        <li>Instant tab switching (no DOM manipulation)</li>
+                        <li>Works even if JavaScript fails to load or is disabled</li>
+                        <li>Smaller page size without JS dependencies</li>
+                    </ul>
+
+                    <h3>Use Cases</h3>
+                    <p>Pure CSS tabs work great for:</p>
+                    <ul>
+                        <li>Documentation sites with multiple sections</li>
+                        <li>Product pages showing different features or specs</li>
+                        <li>Portfolio sections (About, Projects, Contact)</li>
+                        <li>Settings panels with categorized options</li>
+                        <li>Progressive enhancement (works without JS, enhanced with JS)</li>
+                    </ul>
+                </article>
+
+                <!-- Tab Panel 3: Code Examples -->
+                <article class="tab-panel" id="tab3">
+                    <h2>Code Examples</h2>
+                    <p>
+                        Here's the essential code structure for CSS-only tabs:
+                    </p>
+
+                    <h3>HTML Structure</h3>
+                    <div class="code-block">&lt;div class="tabs"&gt;
+    &lt;nav class="tab-nav"&gt;
+        &lt;a href="#tab1"&gt;Tab 1&lt;/a&gt;
+        &lt;a href="#tab2"&gt;Tab 2&lt;/a&gt;
+    &lt;/nav&gt;
+
+    &lt;div class="tab-content"&gt;
+        &lt;div class="tab-panel" id="tab1"&gt;
+            Content for tab 1
+        &lt;/div&gt;
+        &lt;div class="tab-panel" id="tab2"&gt;
+            Content for tab 2
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div>
+
+                    <h3>Essential CSS</h3>
+                    <div class="code-block">/* Hide all panels by default */
+.tab-panel {
+    display: none;
+}
+
+/* Show the targeted panel */
+.tab-panel:target {
+    display: block;
+}
+
+/* Show first panel if no hash */
+.tab-panel:first-of-type {
+    display: block;
+}
+
+/* Hide first panel when another is targeted */
+.tab-panel:target ~ .tab-panel:first-of-type {
+    display: none;
+}</div>
+
+                    <h3>Adding Animations</h3>
+                    <div class="code-block">@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tab-panel {
+    animation: fadeIn 0.5s ease;
+}</div>
+                </article>
+
+                <!-- Tab Panel 4: Best Practices -->
+                <article class="tab-panel" id="tab4">
+                    <h2>Best Practices & Limitations</h2>
+
+                    <h3>Accessibility Considerations</h3>
+                    <p>
+                        While functional, pure CSS tabs have accessibility limitations:
+                    </p>
+                    <ul>
+                        <li>Screen readers don't announce tab states (active/inactive)</li>
+                        <li>No ARIA attributes without JavaScript</li>
+                        <li>Keyboard navigation works (Tab key) but isn't optimal (no arrow keys)</li>
+                        <li>Consider adding ARIA roles with minimal JavaScript for better accessibility</li>
+                    </ul>
+
+                    <h3>When to Use JavaScript Instead</h3>
+                    <p>
+                        Add JavaScript if you need:
+                    </p>
+                    <ul>
+                        <li>Full ARIA support for screen readers</li>
+                        <li>Arrow key navigation between tabs</li>
+                        <li>Analytics tracking of tab switches</li>
+                        <li>Complex animations or transitions</li>
+                        <li>Programmatic tab switching</li>
+                        <li>Preventing certain tabs from being accessible until conditions are met</li>
+                    </ul>
+
+                    <h3>Progressive Enhancement</h3>
+                    <p>
+                        The best approach is often progressive enhancement:
+                    </p>
+                    <ol>
+                        <li><strong>Start with CSS:</strong> Tabs work without JavaScript</li>
+                        <li><strong>Add JavaScript:</strong> Enhance with ARIA, keyboard nav, analytics</li>
+                        <li><strong>Maintain fallback:</strong> Ensure tabs still work if JS fails</li>
+                    </ol>
+
+                    <div class="feature-box">
+                        <h3>Pro Tip</h3>
+                        <p>
+                            You can enhance these pure CSS tabs with a small amount of JavaScript to add ARIA
+                            attributes dynamically, track analytics, and improve keyboard navigation—while
+                            maintaining the CSS-based functionality as a fallback.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <div class="info">
+            <h2>How This Template Works</h2>
+            <p>
+                This tabbed interface uses the <code>:target</code> pseudo-class to detect which tab should be active
+                based on the URL hash:
+            </p>
+            <ul>
+                <li>Clicking "Features" changes URL to <code>#tab2</code></li>
+                <li><code>#tab2</code> element becomes <code>:target</code></li>
+                <li>CSS <code>.tab-panel:target { display: block; }</code> shows that panel</li>
+                <li>Other panels remain <code>display: none</code></li>
+            </ul>
+            <p>
+                The first tab shows by default when there's no hash in the URL, providing a better initial experience.
+                Browser back/forward buttons work automatically because they change the URL hash.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

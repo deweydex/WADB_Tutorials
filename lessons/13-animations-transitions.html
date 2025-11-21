@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 13: CSS Animations & Transitions | Web Development Tutorials</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/navigation.css">
+    <link rel="stylesheet" href="../css/lesson.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header>
+        <nav class="navbar minimal">
+            <div class="container">
+                <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+                    ☰ Menu
+                </button>
+                <div class="site-header-content">
+                    <h1 class="logo">Learn HTML, CSS, GitHub, and More!</h1>
+                    <p class="site-subtitle">Lesson 13: CSS Animations & Transitions</p>
+                </div>
+                <div class="header-right">
+                    <a href="../about.html">About</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="menu-overlay"></div>
+
+    <nav class="lesson-nav">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="01-html-basics.html">01. HTML Basics</a></li>
+            <li><a href="02-html-semantics.html">02. Semantic HTML</a></li>
+            <li><a href="03-css-basics.html">03. CSS Basics</a></li>
+            <li><a href="04-css-layout.html">04. CSS Layout</a></li>
+            <li><a href="05-responsive-design.html">05. Responsive Design</a></li>
+            <li><a href="06-images.html">06. Working with Images</a></li>
+            <li><a href="07-links.html">07. Working with Links</a></li>
+            <li><a href="08-github-setup.html">08. GitHub Setup</a></li>
+            <li><a href="09-github-workflow.html">09. GitHub Workflow</a></li>
+            <li><a href="10-github-pages.html">10. GitHub Pages</a></li>
+            <li><a href="11-flexbox-grid-advanced.html">11. Advanced Flexbox & Grid</a></li>
+            <li><a href="12-component-design.html">12. Component Design</a></li>
+            <li><a href="13-animations-transitions.html" class="active">13. Animations & Transitions</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <article class="lesson-content">
+            <div class="lesson-header">
+                <span class="lesson-number">Lesson 13</span>
+                <h1>CSS Animations & Transitions</h1>
+                <p class="lesson-description">
+                    Master CSS animations, transitions, and transforms to create smooth, performant motion and build interactive UI components entirely with CSS.
+                </p>
+            </div>
+
+            <div class="lesson-nav-links">
+                <a href="../index.html">Back to Home</a> |
+                <a href="12-component-design.html">Previous Lesson</a>
+            </div>
+
+            <nav class="table-of-contents">
+                <h2>Table of Contents</h2>
+                <ul>
+                    <li><a href="#learning-outcomes">Learning Outcomes</a></li>
+                    <li><a href="#prerequisites">Prerequisites</a></li>
+                    <li><a href="#introduction">Introduction: Animation & Motion</a></li>
+                    <li><a href="#css-transitions">CSS Transitions</a></li>
+                    <li><a href="#timing-functions">Timing Functions & Easing</a></li>
+                    <li><a href="#css-transforms">CSS Transforms (2D)</a></li>
+                    <li><a href="#keyframe-animations">Keyframe Animations</a></li>
+                    <li><a href="#animation-properties">Animation Properties</a></li>
+                    <li><a href="#3d-transforms">3D Transforms</a></li>
+                    <li><a href="#checkbox-hack">The Checkbox Hack</a></li>
+                    <li><a href="#target-pseudo">The :target Pseudo-Class</a></li>
+                    <li><a href="#performance">Animation Performance</a></li>
+                    <li><a href="#example-accordion">Worked Example: Pure CSS Accordion</a></li>
+                    <li><a href="#example-modal">Worked Example: Modal System</a></li>
+                    <li><a href="#example-cube">Worked Example: 3D Rotating Cube</a></li>
+                    <li><a href="#example-spinner">Worked Example: Loading Spinners</a></li>
+                    <li><a href="#practice">Practice Opportunity</a></li>
+                    <li><a href="#summary">Summary</a></li>
+                    <li><a href="#bibliography">Further Reading</a></li>
+                </ul>
+            </nav>
+
+            <section id="learning-outcomes">
+                <h2>Learning Outcomes</h2>
+                <p>By the end of this lesson, you will be able to:</p>
+                <ul>
+                    <li>Create smooth transitions between CSS property states</li>
+                    <li>Use timing functions to control animation easing</li>
+                    <li>Apply 2D and 3D transforms (translate, rotate, scale, skew)</li>
+                    <li>Build complex animations using @keyframes</li>
+                    <li>Implement interactive components entirely with CSS (no JavaScript)</li>
+                    <li>Create accordions, tabs, and modals using the checkbox hack and :target</li>
+                    <li>Build 3D effects like rotating cubes and flip cards</li>
+                    <li>Understand animation performance and use GPU-accelerated properties</li>
+                    <li>Create loading spinners and animated feedback elements</li>
+                </ul>
+            </section>
+
+            <section id="prerequisites">
+                <h2>Prerequisites</h2>
+                <p>Before starting this lesson, you should be comfortable with:</p>
+                <ul>
+                    <li>CSS selectors, pseudo-classes, and specificity (<a href="03-css-basics.html">Lesson 3</a>)</li>
+                    <li>CSS layout with flexbox and grid (<a href="04-css-layout.html">Lesson 4</a>)</li>
+                    <li>Component-based thinking and CSS variables (<a href="12-component-design.html">Lesson 12</a>)</li>
+                </ul>
+            </section>
+
+            <section id="introduction">
+                <h2>Introduction: Animation & Motion</h2>
+                <p>
+                    Motion is a powerful tool in web design. It provides:
+                </p>
+                <ul>
+                    <li><strong>Feedback:</strong> Confirms user actions (button press, form submission)</li>
+                    <li><strong>Guidance:</strong> Directs attention to important elements</li>
+                    <li><strong>Context:</strong> Shows relationships between elements (modals sliding in from buttons)</li>
+                    <li><strong>Polish:</strong> Creates delightful, professional experiences</li>
+                </ul>
+                <p>
+                    CSS provides two main ways to create motion:
+                </p>
+                <ul>
+                    <li><strong>Transitions:</strong> Smooth changes between two states (hover effects, showing/hiding elements)</li>
+                    <li><strong>Animations:</strong> Complex, multi-step motion sequences (loading spinners, attention-grabbing effects)</li>
+                </ul>
+                <p>
+                    This lesson teaches you to use both effectively, including building fully interactive components without any JavaScript.
+                </p>
+
+                <div class="key-concept">
+                    <h3>Animation Principles</h3>
+                    <p>
+                        Good animation is <strong>purposeful, subtle, and fast</strong>. Animations should enhance the user experience, not distract from it. Most UI animations should complete in 150-300ms. Slower animations feel sluggish; faster animations appear jarring.
+                    </p>
+                </div>
+            </section>
+
+            <section id="css-transitions">
+                <h2>CSS Transitions</h2>
+                <p>
+                    <strong>Transitions</strong> animate the change between two CSS property values. When a property changes (like on hover), the browser smoothly interpolates between the old and new value instead of changing instantly.
+                </p>
+
+                <h3>Basic Transition Syntax</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">.button {
+    background-color: blue;
+    /* transition: property duration */
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: darkblue;
+    /* Browser smoothly transitions from blue to darkblue over 0.3s */
+}</code></pre>
+                </div>
+
+                <h3>Transition Properties</h3>
+                <p>
+                    The <code>transition</code> property has four components:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">.element {
+    /* transition: property duration timing-function delay; */
+    transition: background-color 0.3s ease-in-out 0.1s;
+}
+
+/* Or use individual properties */
+.element {
+    transition-property: background-color;  /* Which property to animate */
+    transition-duration: 0.3s;              /* How long */
+    transition-timing-function: ease-in-out; /* Easing curve */
+    transition-delay: 0.1s;                 /* Wait before starting */
+}</code></pre>
+                </div>
+
+                <h3>Transitioning Multiple Properties</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Transition specific properties with different durations */
+.button {
+    background-color: blue;
+    transform: scale(1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    transition:
+        background-color 0.3s,
+        transform 0.2s,
+        box-shadow 0.3s;
+}
+
+.button:hover {
+    background-color: darkblue;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Or transition all animatable properties */
+.button {
+    transition: all 0.3s;
+}</code></pre>
+                </div>
+
+                <div class="key-concept">
+                    <h3>What Can Be Transitioned?</h3>
+                    <p>
+                        Not all CSS properties can be animated. Generally, properties with numeric or color values can transition smoothly: <code>opacity</code>, <code>transform</code>, <code>color</code>, <code>background-color</code>, <code>width</code>, <code>height</code>, <code>margin</code>, <code>padding</code>, etc. Properties like <code>display</code> cannot transition because they don't have intermediate values.
+                    </p>
+                </div>
+
+                <h3>Practical Example: Interactive Card</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+
+    /* Transition multiple properties with different timings */
+    transition:
+        transform 0.3s ease-out,
+        box-shadow 0.3s ease-out;
+}
+
+.card:hover {
+    transform: translateY(-8px);  /* Lift card up */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);  /* Increase shadow */
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="timing-functions">
+                <h2>Timing Functions & Easing</h2>
+                <p>
+                    <strong>Timing functions</strong> (also called easing curves) control the speed of the animation at different points in time. They make motion feel natural instead of robotic.
+                </p>
+
+                <h3>Built-in Timing Functions</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Linear: constant speed (robotic, rarely used) */
+.element { transition: transform 0.3s linear; }
+
+/* Ease: slow start, fast middle, slow end (default) */
+.element { transition: transform 0.3s ease; }
+
+/* Ease-in: starts slow, ends fast */
+.element { transition: transform 0.3s ease-in; }
+
+/* Ease-out: starts fast, ends slow (best for UI entrances) */
+.element { transition: transform 0.3s ease-out; }
+
+/* Ease-in-out: slow start and end, fast middle */
+.element { transition: transform 0.3s ease-in-out; }</code></pre>
+                </div>
+
+                <h3>Custom Cubic-Bezier Curves</h3>
+                <p>
+                    For precise control, use <code>cubic-bezier()</code> with four numbers that define the curve:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">/* Custom easing curves */
+.element {
+    /* Snappy, energetic motion */
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.element {
+    /* Smooth, natural deceleration */
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Material Design easing */
+.element {
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}</code></pre>
+                </div>
+
+                <p>
+                    Use tools like <a href="https://cubic-bezier.com" target="_blank" rel="noopener noreferrer">cubic-bezier.com</a> to visualize and create custom curves.
+                </p>
+
+                <h3>When to Use Each Timing Function</h3>
+                <ul>
+                    <li><strong>ease-out:</strong> Best for elements entering the screen (modals, dropdowns appearing)</li>
+                    <li><strong>ease-in:</strong> Best for elements exiting the screen (closing modals)</li>
+                    <li><strong>ease-in-out:</strong> Best for elements that start and end on screen (hovering cards)</li>
+                    <li><strong>linear:</strong> Best for continuous motion (spinning loaders, sliding carousels)</li>
+                </ul>
+            </section>
+
+            <section id="css-transforms">
+                <h2>CSS Transforms (2D)</h2>
+                <p>
+                    The <code>transform</code> property lets you move, rotate, scale, and skew elements. Unlike changing <code>top</code>/<code>left</code> or <code>width</code>/<code>height</code>, transforms are GPU-accelerated and don't trigger layout recalculation, making them highly performant.
+                </p>
+
+                <h3>Transform Functions</h3>
+
+                <h4>1. Translate (Move)</h4>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Move element horizontally */
+transform: translateX(100px);  /* Right 100px */
+transform: translateX(-50px);  /* Left 50px */
+
+/* Move element vertically */
+transform: translateY(50px);   /* Down 50px */
+transform: translateY(-30px);  /* Up 30px */
+
+/* Move both directions at once */
+transform: translate(100px, 50px);  /* Right 100px, down 50px */
+
+/* Use percentages (relative to element's own size) */
+transform: translateX(50%);  /* Right by half its own width */</code></pre>
+                </div>
+
+                <h4>2. Scale (Resize)</h4>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Scale uniformly (2x size) */
+transform: scale(2);
+
+/* Scale down (half size) */
+transform: scale(0.5);
+
+/* Scale horizontally and vertically independently */
+transform: scale(1.5, 0.8);  /* 1.5x width, 0.8x height */
+
+/* Scale only one direction */
+transform: scaleX(1.2);  /* Stretch horizontally */
+transform: scaleY(0.9);  /* Compress vertically */</code></pre>
+                </div>
+
+                <h4>3. Rotate</h4>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Rotate clockwise */
+transform: rotate(45deg);   /* 45 degrees */
+transform: rotate(180deg);  /* Upside down */
+
+/* Rotate counter-clockwise */
+transform: rotate(-90deg);
+
+/* Use turns instead of degrees */
+transform: rotate(0.25turn);  /* Quarter turn (90deg) */
+transform: rotate(0.5turn);   /* Half turn (180deg) */</code></pre>
+                </div>
+
+                <h4>4. Skew (Distort)</h4>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Skew horizontally (parallelogram effect) */
+transform: skewX(20deg);
+
+/* Skew vertically */
+transform: skewY(10deg);
+
+/* Skew both directions */
+transform: skew(20deg, 10deg);</code></pre>
+                </div>
+
+                <h3>Combining Transforms</h3>
+                <p>
+                    Chain multiple transforms by listing them separated by spaces:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">.button:hover {
+    /* Move up, scale up, and rotate slightly */
+    transform: translateY(-4px) scale(1.05) rotate(2deg);
+}
+
+.card:active {
+    /* Move down and shrink slightly (pressed effect) */
+    transform: translateY(2px) scale(0.98);
+}</code></pre>
+                </div>
+
+                <div class="key-concept">
+                    <h3>Order Matters!</h3>
+                    <p>
+                        Transform functions are applied <strong>right to left</strong>. <code>translate(100px, 0) rotate(45deg)</code> is different from <code>rotate(45deg) translate(100px, 0)</code>. The first rotates after moving; the second moves along the rotated axis.
+                    </p>
+                </div>
+
+                <h3>Transform Origin</h3>
+                <p>
+                    By default, transforms happen around the element's center. Change this with <code>transform-origin</code>:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">/* Rotate around top-left corner */
+.element {
+    transform-origin: top left;
+    transform: rotate(45deg);
+}
+
+/* Rotate around bottom center */
+.element {
+    transform-origin: bottom center;
+    transform: rotate(90deg);
+}
+
+/* Use coordinates */
+.element {
+    transform-origin: 20px 30px;  /* 20px from left, 30px from top */
+}</code></pre>
+                </div>
+
+                <h3>Practical Example: Button Press Effect</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">.button {
+    background: #3b82f6;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.1s ease;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="keyframe-animations">
+                <h2>Keyframe Animations</h2>
+                <p>
+                    While transitions move between two states, <strong>keyframe animations</strong> create complex, multi-step sequences. You define snapshots at different points in time, and the browser interpolates between them.
+                </p>
+
+                <h3>Defining Keyframes</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Define the animation sequence */
+@keyframes slide-in {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Or use percentages for more control */
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}</code></pre>
+                </div>
+
+                <h3>Applying Animations</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">.element {
+    /* animation: name duration timing-function delay iteration-count direction fill-mode; */
+    animation: slide-in 0.5s ease-out 0s 1 normal forwards;
+}
+
+/* Shorthand is easier */
+.element {
+    animation: slide-in 0.5s ease-out;
+}</code></pre>
+                </div>
+
+                <h3>Complex Multi-Step Animation</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">@keyframes attention-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    25% {
+        transform: scale(1.05);
+    }
+    50% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+    75% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+.notification {
+    animation: attention-pulse 2s ease-in-out infinite;
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="animation-properties">
+                <h2>Animation Properties</h2>
+                <p>
+                    Fine-tune animations with these properties:
+                </p>
+
+                <h3>Animation Duration & Delay</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">.element {
+    animation-name: slide-in;
+    animation-duration: 0.5s;    /* How long the animation takes */
+    animation-delay: 0.2s;       /* Wait before starting */
+}</code></pre>
+                </div>
+
+                <h3>Animation Iteration Count</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">.element {
+    animation-iteration-count: 1;         /* Run once (default) */
+    animation-iteration-count: 3;         /* Run 3 times */
+    animation-iteration-count: infinite;  /* Run forever */
+}</code></pre>
+                </div>
+
+                <h3>Animation Direction</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">.element {
+    animation-direction: normal;           /* 0% → 100% (default) */
+    animation-direction: reverse;          /* 100% → 0% */
+    animation-direction: alternate;        /* 0% → 100% → 0% → 100% */
+    animation-direction: alternate-reverse; /* 100% → 0% → 100% → 0% */
+}</code></pre>
+                </div>
+
+                <h3>Animation Fill Mode</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">.element {
+    /* What styles apply before/after animation */
+    animation-fill-mode: none;      /* No styles applied outside animation */
+    animation-fill-mode: forwards;  /* Keep final keyframe styles */
+    animation-fill-mode: backwards; /* Apply first keyframe styles during delay */
+    animation-fill-mode: both;      /* Both forwards and backwards */
+}</code></pre>
+                </div>
+
+                <h3>Animation Play State</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Pause animation on hover */
+.spinner:hover {
+    animation-play-state: paused;
+}</code></pre>
+                </div>
+
+                <h3>Practical Example: Fade-In on Load</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-content {
+    animation: fade-in-up 0.6s ease-out forwards;
+}
+
+/* Stagger multiple elements */
+.hero-content .title {
+    animation: fade-in-up 0.6s ease-out 0s forwards;
+}
+
+.hero-content .subtitle {
+    animation: fade-in-up 0.6s ease-out 0.2s forwards;
+}
+
+.hero-content .button {
+    animation: fade-in-up 0.6s ease-out 0.4s forwards;
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="3d-transforms">
+                <h2>3D Transforms</h2>
+                <p>
+                    CSS supports 3D transformations that give depth to your designs. These require understanding perspective and 3D space.
+                </p>
+
+                <h3>Setting Up 3D Space</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Container needs perspective to see 3D */
+.container {
+    perspective: 1000px;  /* Lower = more dramatic, higher = more subtle */
+}
+
+/* Element that will transform in 3D */
+.element {
+    transform-style: preserve-3d;  /* Preserve 3D for children */
+}</code></pre>
+                </div>
+
+                <h3>3D Transform Functions</h3>
+                <div class="example-box">
+                    <pre><code class="language-css">/* Rotate in 3D space */
+transform: rotateX(45deg);  /* Rotate around X-axis (horizontal flip) */
+transform: rotateY(45deg);  /* Rotate around Y-axis (vertical flip) */
+transform: rotateZ(45deg);  /* Rotate around Z-axis (same as rotate()) */
+
+/* Move in 3D space */
+transform: translateZ(100px);  /* Move toward viewer */
+transform: translateZ(-50px);  /* Move away from viewer */
+
+/* 3D translation */
+transform: translate3d(50px, 100px, -20px);
+
+/* Perspective on individual element */
+transform: perspective(500px) rotateY(45deg);</code></pre>
+                </div>
+
+                <h3>Card Flip Effect</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;div class="flip-card"&gt;
+    &lt;div class="flip-card-inner"&gt;
+        &lt;div class="flip-card-front"&gt;
+            &lt;h3&gt;Front&lt;/h3&gt;
+        &lt;/div&gt;
+        &lt;div class="flip-card-back"&gt;
+            &lt;h3&gt;Back&lt;/h3&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <pre><code class="language-css">/* Container */
+.flip-card {
+    width: 300px;
+    height: 200px;
+    perspective: 1000px;
+}
+
+/* Inner container that flips */
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+/* Flip on hover */
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front and back faces */
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;  /* Hide when facing away */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.flip-card-front {
+    background: #3b82f6;
+    color: white;
+}
+
+.flip-card-back {
+    background: #10b981;
+    color: white;
+    transform: rotateY(180deg);  /* Start rotated */
+}</code></pre>
+                </div>
+
+                <div class="key-concept">
+                    <h3>backface-visibility</h3>
+                    <p>
+                        The <code>backface-visibility: hidden</code> property hides an element when it's rotated away from the viewer. This is essential for flip cards where you don't want to see the back of the front face (which would appear mirrored and backward).
+                    </p>
+                </div>
+            </section>
+
+            <section id="checkbox-hack">
+                <h2>The Checkbox Hack</h2>
+                <p>
+                    The "checkbox hack" uses a hidden checkbox to maintain state and trigger CSS changes. This enables interactive components like accordions, tabs, and hamburger menus without JavaScript.
+                </p>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Create a hidden checkbox with an ID</li>
+                    <li>Create a label that controls the checkbox</li>
+                    <li>Use the <code>:checked</code> pseudo-class to style elements differently when checked</li>
+                    <li>Use sibling selectors (<code>~</code>, <code>+</code>) to style other elements based on checkbox state</li>
+                </ol>
+
+                <h3>Basic Example: Toggle Content</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;input type="checkbox" id="toggle" class="toggle-checkbox"&gt;
+&lt;label for="toggle" class="toggle-button"&gt;Toggle Content&lt;/label&gt;
+&lt;div class="toggle-content"&gt;
+    &lt;p&gt;This content can be shown or hidden!&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+                    <pre><code class="language-css">/* Hide the checkbox */
+.toggle-checkbox {
+    display: none;
+}
+
+/* Style the label as a button */
+.toggle-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Content is hidden by default */
+.toggle-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+/* When checkbox is checked, show content */
+.toggle-checkbox:checked ~ .toggle-content {
+    max-height: 500px;  /* Large enough to fit content */
+}
+
+/* Change button style when checked */
+.toggle-checkbox:checked + .toggle-button {
+    background: #10b981;
+}</code></pre>
+                </div>
+
+                <h3>Hamburger Menu Example</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;nav class="mobile-nav"&gt;
+    &lt;input type="checkbox" id="menu-toggle" class="menu-checkbox"&gt;
+    &lt;label for="menu-toggle" class="hamburger"&gt;
+        &lt;span&gt;&lt;/span&gt;
+        &lt;span&gt;&lt;/span&gt;
+        &lt;span&gt;&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;ul class="menu"&gt;
+        &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+
+                    <pre><code class="language-css">/* Hide checkbox */
+.menu-checkbox {
+    display: none;
+}
+
+/* Hamburger icon */
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.hamburger span {
+    display: block;
+    width: 30px;
+    height: 3px;
+    background: #333;
+    transition: all 0.3s;
+}
+
+/* Transform hamburger to X when checked */
+.menu-checkbox:checked + .hamburger span:nth-child(1) {
+    transform: rotate(45deg) translateY(9px);
+}
+
+.menu-checkbox:checked + .hamburger span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-checkbox:checked + .hamburger span:nth-child(3) {
+    transform: rotate(-45deg) translateY(-9px);
+}
+
+/* Menu hidden by default */
+.menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+/* Show menu when checked */
+.menu-checkbox:checked ~ .menu {
+    max-height: 300px;
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="target-pseudo">
+                <h2>The :target Pseudo-Class</h2>
+                <p>
+                    The <code>:target</code> pseudo-class selects an element whose ID matches the current URL hash. This enables tabs, modals, and lightboxes without JavaScript.
+                </p>
+
+                <h3>Basic Tab System</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;div class="tabs"&gt;
+    &lt;div class="tab-links"&gt;
+        &lt;a href="#tab1"&gt;Tab 1&lt;/a&gt;
+        &lt;a href="#tab2"&gt;Tab 2&lt;/a&gt;
+        &lt;a href="#tab3"&gt;Tab 3&lt;/a&gt;
+    &lt;/div&gt;
+
+    &lt;div class="tab-content" id="tab1"&gt;
+        &lt;h3&gt;Tab 1 Content&lt;/h3&gt;
+        &lt;p&gt;This is the first tab.&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="tab-content" id="tab2"&gt;
+        &lt;h3&gt;Tab 2 Content&lt;/h3&gt;
+        &lt;p&gt;This is the second tab.&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="tab-content" id="tab3"&gt;
+        &lt;h3&gt;Tab 3 Content&lt;/h3&gt;
+        &lt;p&gt;This is the third tab.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <pre><code class="language-css">/* Hide all tab content by default */
+.tab-content {
+    display: none;
+    padding: 20px;
+    border: 2px solid #e5e7eb;
+    border-top: none;
+}
+
+/* Show the targeted tab */
+.tab-content:target {
+    display: block;
+    animation: fade-in 0.3s;
+}
+
+/* Show first tab by default (if no hash) */
+.tab-content:first-of-type {
+    display: block;
+}
+
+/* Hide first tab if any other is targeted */
+.tab-content:target ~ .tab-content:first-of-type {
+    display: none;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}</code></pre>
+                </div>
+
+                <h3>Modal System with :target</h3>
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;a href="#modal-1" class="open-modal"&gt;Open Modal&lt;/a&gt;
+
+&lt;div class="modal" id="modal-1"&gt;
+    &lt;div class="modal-content"&gt;
+        &lt;a href="#" class="modal-close"&gt;&times;&lt;/a&gt;
+        &lt;h2&gt;Modal Title&lt;/h2&gt;
+        &lt;p&gt;Modal content goes here.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                    <pre><code class="language-css">/* Modal hidden by default */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+/* Show when targeted */
+.modal:target {
+    display: flex;
+    animation: modal-fade-in 0.3s;
+}
+
+/* Modal content box */
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    position: relative;
+    animation: modal-slide-up 0.3s;
+}
+
+/* Close button */
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2rem;
+    text-decoration: none;
+    color: #666;
+}
+
+@keyframes modal-fade-in {
+    from { background: rgba(0, 0, 0, 0); }
+    to { background: rgba(0, 0, 0, 0.5); }
+}
+
+@keyframes modal-slide-up {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="performance">
+                <h2>Animation Performance</h2>
+                <p>
+                    Not all CSS properties are equally performant. Animating certain properties forces the browser to recalculate layout and repaint, which is expensive.
+                </p>
+
+                <h3>GPU-Accelerated Properties</h3>
+                <p>
+                    These properties are handled by the GPU and perform excellently:
+                </p>
+                <ul>
+                    <li><code>transform</code> (translate, scale, rotate)</li>
+                    <li><code>opacity</code></li>
+                </ul>
+
+                <p>
+                    Always prefer these for animations. They can animate at 60fps even on lower-end devices.
+                </p>
+
+                <h3>Expensive Properties to Animate</h3>
+                <p>
+                    Avoid animating these properties as they trigger layout recalculation:
+                </p>
+                <ul>
+                    <li><code>width</code>, <code>height</code></li>
+                    <li><code>margin</code>, <code>padding</code></li>
+                    <li><code>top</code>, <code>left</code>, <code>right</code>, <code>bottom</code></li>
+                    <li><code>border-width</code></li>
+                </ul>
+
+                <div class="example-box">
+                    <h4>Bad: Animating Width</h4>
+                    <pre><code class="language-css">/* Poor performance - triggers layout recalculation */
+.element {
+    width: 100px;
+    transition: width 0.3s;
+}
+
+.element:hover {
+    width: 200px;
+}</code></pre>
+
+                    <h4>Good: Animating Transform</h4>
+                    <pre><code class="language-css">/* Excellent performance - GPU accelerated */
+.element {
+    transform: scaleX(1);
+    transition: transform 0.3s;
+}
+
+.element:hover {
+    transform: scaleX(2);
+}</code></pre>
+                </div>
+
+                <h3>The will-change Property</h3>
+                <p>
+                    Tell the browser to optimize for an upcoming animation:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-css">.element {
+    /* Hint that transform will change */
+    will-change: transform;
+}
+
+/* Or multiple properties */
+.element {
+    will-change: transform, opacity;
+}</code></pre>
+                </div>
+
+                <p>
+                    <strong>Use sparingly!</strong> Overusing <code>will-change</code> wastes memory. Only use it on elements that actually animate, and remove it when animation completes.
+                </p>
+
+                <div class="key-concept">
+                    <h3>Performance Best Practices</h3>
+                    <ul>
+                        <li>Animate <code>transform</code> and <code>opacity</code> whenever possible</li>
+                        <li>Keep animations under 300ms for UI interactions</li>
+                        <li>Avoid animating layout properties (width, height, margins)</li>
+                        <li>Use <code>will-change</code> sparingly and temporarily</li>
+                        <li>Test on lower-end devices, not just your development machine</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="example-accordion">
+                <h2>Worked Example: Pure CSS Accordion</h2>
+                <p>
+                    Let's build a complete accordion FAQ section using the checkbox hack:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;CSS Accordion&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            padding: 2rem;
+            background: #f3f4f6;
+        }
+
+        .accordion {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .accordion-item {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hide checkbox */
+        .accordion-checkbox {
+            display: none;
+        }
+
+        /* Label as header */
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            cursor: pointer;
+            user-select: none;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .accordion-header:hover {
+            background: #f9fafb;
+        }
+
+        /* Plus/minus icon */
+        .accordion-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .accordion-icon::before {
+            content: '+';
+        }
+
+        /* Rotate icon when open */
+        .accordion-checkbox:checked + .accordion-header .accordion-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Content hidden by default */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion-content-inner {
+            padding: 0 1.25rem 1.25rem;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Show content when checked */
+        .accordion-checkbox:checked ~ .accordion-content {
+            max-height: 500px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="accordion"&gt;
+        &lt;h1 style="margin-bottom: 2rem;"&gt;Frequently Asked Questions&lt;/h1&gt;
+
+        &lt;div class="accordion-item"&gt;
+            &lt;input type="checkbox" id="q1" class="accordion-checkbox"&gt;
+            &lt;label for="q1" class="accordion-header"&gt;
+                &lt;span&gt;What is CSS?&lt;/span&gt;
+                &lt;span class="accordion-icon"&gt;&lt;/span&gt;
+            &lt;/label&gt;
+            &lt;div class="accordion-content"&gt;
+                &lt;div class="accordion-content-inner"&gt;
+                    CSS (Cascading Style Sheets) is a styling language used to control the presentation and layout of HTML documents. It allows you to add colors, fonts, spacing, and create responsive designs.
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class="accordion-item"&gt;
+            &lt;input type="checkbox" id="q2" class="accordion-checkbox"&gt;
+            &lt;label for="q2" class="accordion-header"&gt;
+                &lt;span&gt;How do CSS animations work?&lt;/span&gt;
+                &lt;span class="accordion-icon"&gt;&lt;/span&gt;
+            &lt;/label&gt;
+            &lt;div class="accordion-content"&gt;
+                &lt;div class="accordion-content-inner"&gt;
+                    CSS animations use keyframes to define how properties change over time. You can control duration, timing, delays, and iterations. Transitions provide simpler animations between two states.
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class="accordion-item"&gt;
+            &lt;input type="checkbox" id="q3" class="accordion-checkbox"&gt;
+            &lt;label for="q3" class="accordion-header"&gt;
+                &lt;span&gt;What is the checkbox hack?&lt;/span&gt;
+                &lt;span class="accordion-icon"&gt;&lt;/span&gt;
+            &lt;/label&gt;
+            &lt;div class="accordion-content"&gt;
+                &lt;div class="accordion-content-inner"&gt;
+                    The checkbox hack uses a hidden checkbox's checked state to trigger CSS changes. This enables interactive components like accordions, tabs, and menus without JavaScript.
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                <p>
+                    This accordion:
+                </p>
+                <ul>
+                    <li>Uses hidden checkboxes to maintain open/closed state</li>
+                    <li>Smoothly animates content with <code>max-height</code> transition</li>
+                    <li>Rotates the plus icon to create a "close" indicator</li>
+                    <li>Multiple items can be open simultaneously</li>
+                    <li>No JavaScript required</li>
+                </ul>
+            </section>
+
+            <section id="example-modal">
+                <h2>Worked Example: Modal System</h2>
+                <p>
+                    A complete modal dialog system using <code>:target</code>:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;CSS Modal System&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            padding: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        /* Modal hidden by default */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        /* Show when targeted */
+        .modal:target {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Modal content */
+        .modal-dialog {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .modal:target .modal-dialog {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;CSS Modal System&lt;/h1&gt;
+    &lt;p style="margin: 1rem 0;"&gt;Click buttons to open modals without JavaScript:&lt;/p&gt;
+
+    &lt;a href="#modal-1" class="btn"&gt;Open Modal 1&lt;/a&gt;
+    &lt;a href="#modal-2" class="btn"&gt;Open Modal 2&lt;/a&gt;
+
+    &lt;!-- Modal 1 --&gt;
+    &lt;div class="modal" id="modal-1"&gt;
+        &lt;div class="modal-dialog"&gt;
+            &lt;a href="#" class="modal-close"&gt;&times;&lt;/a&gt;
+            &lt;div class="modal-header"&gt;
+                &lt;h2&gt;Welcome!&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="modal-body"&gt;
+                &lt;p&gt;This is a modal dialog created entirely with CSS using the :target pseudo-class. No JavaScript required!&lt;/p&gt;
+                &lt;p style="margin-top: 1rem;"&gt;Click the X button or outside the modal to close.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class="modal-footer"&gt;
+                &lt;a href="#" class="btn btn-secondary"&gt;Cancel&lt;/a&gt;
+                &lt;a href="#" class="btn"&gt;Confirm&lt;/a&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Modal 2 --&gt;
+    &lt;div class="modal" id="modal-2"&gt;
+        &lt;div class="modal-dialog"&gt;
+            &lt;a href="#" class="modal-close"&gt;&times;&lt;/a&gt;
+            &lt;div class="modal-header"&gt;
+                &lt;h2&gt;Second Modal&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="modal-body"&gt;
+                &lt;p&gt;This demonstrates multiple modals can coexist. Each has a unique ID and can be targeted independently.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class="modal-footer"&gt;
+                &lt;a href="#" class="btn"&gt;Close&lt;/a&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                <p>
+                    This modal system:
+                </p>
+                <ul>
+                    <li>Uses <code>:target</code> to show/hide modals</li>
+                    <li>Animates backdrop fade-in and modal scale/opacity</li>
+                    <li>Supports multiple independent modals</li>
+                    <li>Provides proper close button functionality</li>
+                    <li>No JavaScript needed</li>
+                </ul>
+            </section>
+
+            <section id="example-cube">
+                <h2>Worked Example: 3D Rotating Cube</h2>
+                <p>
+                    Let's build a 3D cube that continuously rotates:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;3D Rotating Cube&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            perspective: 1000px;
+        }
+
+        .cube-container {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate-cube 10s infinite linear;
+        }
+
+        @keyframes rotate-cube {
+            from {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            to {
+                transform: rotateX(360deg) rotateY(360deg);
+            }
+        }
+
+        /* Pause on hover */
+        .cube-container:hover {
+            animation-play-state: paused;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            opacity: 0.9;
+        }
+
+        /* Position each face */
+        .front {
+            background: rgba(255, 99, 132, 0.8);
+            transform: translateZ(100px);
+        }
+
+        .back {
+            background: rgba(54, 162, 235, 0.8);
+            transform: rotateY(180deg) translateZ(100px);
+        }
+
+        .right {
+            background: rgba(255, 206, 86, 0.8);
+            transform: rotateY(90deg) translateZ(100px);
+        }
+
+        .left {
+            background: rgba(75, 192, 192, 0.8);
+            transform: rotateY(-90deg) translateZ(100px);
+        }
+
+        .top {
+            background: rgba(153, 102, 255, 0.8);
+            transform: rotateX(90deg) translateZ(100px);
+        }
+
+        .bottom {
+            background: rgba(255, 159, 64, 0.8);
+            transform: rotateX(-90deg) translateZ(100px);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            font-family: system-ui, sans-serif;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="cube-container"&gt;
+        &lt;div class="cube-face front"&gt;1&lt;/div&gt;
+        &lt;div class="cube-face back"&gt;2&lt;/div&gt;
+        &lt;div class="cube-face right"&gt;3&lt;/div&gt;
+        &lt;div class="cube-face left"&gt;4&lt;/div&gt;
+        &lt;div class="cube-face top"&gt;5&lt;/div&gt;
+        &lt;div class="cube-face bottom"&gt;6&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="controls"&gt;
+        &lt;p&gt;Hover over cube to pause rotation&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                <p>
+                    This example demonstrates:
+                </p>
+                <ul>
+                    <li><code>perspective</code> on container for 3D space</li>
+                    <li><code>transform-style: preserve-3d</code> for nested 3D transforms</li>
+                    <li>Positioning six faces with 3D rotations and translations</li>
+                    <li>Continuous rotation animation</li>
+                    <li>Pausing animation on hover with <code>animation-play-state</code></li>
+                </ul>
+            </section>
+
+            <section id="example-spinner">
+                <h2>Worked Example: Loading Spinners</h2>
+                <p>
+                    Loading indicators are essential UI feedback. Here are three spinner patterns:
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;CSS Loading Spinners&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            padding: 2rem;
+            display: flex;
+            gap: 4rem;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        .spinner-container {
+            text-align: center;
+        }
+
+        .spinner-container h3 {
+            margin-top: 1rem;
+            color: #374151;
+        }
+
+        /* Spinner 1: Simple circle */
+        .spinner-circle {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Spinner 2: Pulsing dots */
+        .spinner-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .spinner-dots span {
+            width: 12px;
+            height: 12px;
+            background: #3b82f6;
+            border-radius: 50%;
+            animation: pulse 1.4s infinite;
+        }
+
+        .spinner-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .spinner-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+        }
+
+        /* Spinner 3: Growing bars */
+        .spinner-bars {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+            height: 50px;
+        }
+
+        .spinner-bars span {
+            width: 8px;
+            background: #3b82f6;
+            animation: grow 1.2s infinite;
+        }
+
+        .spinner-bars span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .spinner-bars span:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .spinner-bars span:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .spinner-bars span:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .spinner-bars span:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes grow {
+            0%, 100% {
+                height: 10px;
+            }
+            50% {
+                height: 50px;
+            }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="spinner-container"&gt;
+        &lt;div class="spinner-circle"&gt;&lt;/div&gt;
+        &lt;h3&gt;Circle Spinner&lt;/h3&gt;
+    &lt;/div&gt;
+
+    &lt;div class="spinner-container"&gt;
+        &lt;div class="spinner-dots"&gt;
+            &lt;span&gt;&lt;/span&gt;
+            &lt;span&gt;&lt;/span&gt;
+            &lt;span&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;h3&gt;Pulsing Dots&lt;/h3&gt;
+    &lt;/div&gt;
+
+    &lt;div class="spinner-container"&gt;
+        &lt;div class="spinner-bars"&gt;
+            &lt;span&gt;&lt;/span&gt;
+            &lt;span&gt;&lt;/span&gt;
+            &lt;span&gt;&lt;/span&gt;
+            &lt;span&gt;&lt;/span&gt;
+            &lt;span&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;h3&gt;Growing Bars&lt;/h3&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                <p>
+                    These spinners demonstrate:
+                </p>
+                <ul>
+                    <li><strong>Circle spinner:</strong> Continuous rotation with partial border</li>
+                    <li><strong>Pulsing dots:</strong> Staggered scale/opacity animation</li>
+                    <li><strong>Growing bars:</strong> Staggered height animation for wave effect</li>
+                    <li>All use simple infinite animations</li>
+                    <li>Easily customizable colors and sizes</li>
+                </ul>
+            </section>
+
+            <section id="practice">
+                <h2>Practice Opportunity</h2>
+                <p>
+                    Apply your animation skills with these challenges:
+                </p>
+
+                <h3>Challenge: Animated Navigation Menu</h3>
+                <ol>
+                    <li>
+                        <strong>Build a navigation bar</strong>
+                        <ul>
+                            <li>Horizontal menu with multiple links</li>
+                            <li>Underline that slides under the hovered link</li>
+                            <li>Smooth transitions between hover states</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Add a dropdown submenu</strong>
+                        <ul>
+                            <li>Reveals on hover with slide-down animation</li>
+                            <li>Fades in backdrop/shadow</li>
+                            <li>Uses <code>transform</code> for smooth performance</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Make it responsive</strong>
+                        <ul>
+                            <li>Hamburger menu on mobile using checkbox hack</li>
+                            <li>Slide-in animation for mobile menu</li>
+                            <li>Animated hamburger icon (transforms to X)</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>Bonus Challenges</h3>
+                <ul>
+                    <li><strong>Image carousel:</strong> Build a sliding image carousel using checkbox hack or :target</li>
+                    <li><strong>Card flip gallery:</strong> Grid of cards that flip to show details on hover</li>
+                    <li><strong>Progress indicator:</strong> Animated progress bar that fills from 0-100%</li>
+                    <li><strong>Tooltip system:</strong> Hover tooltips that appear above elements with fade/slide animation</li>
+                    <li><strong>Parallax effect:</strong> Background elements that move at different speeds (use transform: translateZ)</li>
+                </ul>
+
+                <h3>Advanced Challenge: Animation Library</h3>
+                <p>
+                    Create a reusable animation library:
+                </p>
+                <ol>
+                    <li>Define 10+ keyframe animations (fade-in, slide-in, bounce, shake, etc.)</li>
+                    <li>Create utility classes that apply animations (<code>.animate-fade-in</code>, <code>.animate-slide-right</code>)</li>
+                    <li>Add duration modifiers (<code>.animate-fast</code>, <code>.animate-slow</code>)</li>
+                    <li>Add delay classes for staggered animations</li>
+                    <li>Create a demo page showing all animations</li>
+                </ol>
+            </section>
+
+            <section id="summary">
+                <h2>Summary</h2>
+                <p>
+                    In this lesson, you learned how to create smooth, performant animations with CSS:
+                </p>
+                <ul>
+                    <li><strong>CSS Transitions:</strong> Smooth property changes between states (hover effects, showing/hiding)</li>
+                    <li><strong>Timing functions:</strong> Control animation speed with ease-in, ease-out, and custom cubic-bezier curves</li>
+                    <li><strong>CSS Transforms:</strong> Efficiently move, scale, rotate, and skew elements with GPU acceleration</li>
+                    <li><strong>Keyframe animations:</strong> Complex multi-step animations with @keyframes and animation properties</li>
+                    <li><strong>3D transforms:</strong> Create depth with rotateX/Y/Z, perspective, and backface-visibility</li>
+                    <li><strong>Checkbox hack:</strong> Build interactive components (accordions, menus) without JavaScript</li>
+                    <li><strong>:target pseudo-class:</strong> Create tabs and modals using URL hash navigation</li>
+                    <li><strong>Performance:</strong> Prioritize transform and opacity, avoid animating layout properties</li>
+                </ul>
+                <p>
+                    CSS animations bring interfaces to life. Used thoughtfully, they guide users, provide feedback, and create delightful experiences. Combined with the techniques from previous lessons—component-based design, flexbox/grid layouts, and responsive principles—you now have a complete toolkit for building modern, professional websites.
+                </p>
+            </section>
+
+            <section id="bibliography">
+                <h2>Further Reading</h2>
+                <ul>
+                    <li>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations" target="_blank" rel="noopener noreferrer">
+                            MDN: Using CSS Animations
+                        </a> - Complete guide to keyframe animations
+                    </li>
+                    <li>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions" target="_blank" rel="noopener noreferrer">
+                            MDN: Using CSS Transitions
+                        </a> - Comprehensive transition documentation
+                    </li>
+                    <li>
+                        <a href="https://cubic-bezier.com/" target="_blank" rel="noopener noreferrer">
+                            Cubic-Bezier.com
+                        </a> - Interactive tool for creating custom timing functions
+                    </li>
+                    <li>
+                        <a href="https://animista.net/" target="_blank" rel="noopener noreferrer">
+                            Animista
+                        </a> - Collection of pre-made CSS animations
+                    </li>
+                    <li>
+                        <a href="https://www.joshwcomeau.com/animation/css-transitions/" target="_blank" rel="noopener noreferrer">
+                            An Interactive Guide to CSS Transitions
+                        </a> - Deep dive into transitions with interactive examples
+                    </li>
+                    <li>
+                        <a href="https://web.dev/animations-guide/" target="_blank" rel="noopener noreferrer">
+                            Web.dev: Animations Guide
+                        </a> - Best practices for performant animations
+                    </li>
+                </ul>
+            </section>
+
+            <div class="lesson-nav-links">
+                <a href="../index.html">Back to Home</a> |
+                <a href="12-component-design.html">Previous Lesson</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Learn HTML, CSS, GitHub, and More! | <a href="https://jsaaron.com" target="_blank" rel="noopener noreferrer">Joshua Aaron</a></p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

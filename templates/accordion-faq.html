@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!--
+    Pure CSS Accordion FAQ Template
+
+    This template demonstrates a fully functional accordion system
+    using the "checkbox hack" - no JavaScript required! Perfect for
+    FAQ sections, feature lists, and collapsible content areas.
+
+    Key Concepts:
+    - Checkbox hack for state management
+    - CSS :checked pseudo-class
+    - Sibling selectors (+ and ~)
+    - max-height transitions for smooth reveals
+    - Transform for icon rotation
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure CSS Accordion FAQ | Interactive Template</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --border-color: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* Accordion Container */
+        .accordion {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Individual Accordion Item */
+        .accordion-item {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.3s;
+        }
+
+        .accordion-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .accordion-item:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        /*
+            Hide the Checkbox
+
+            The checkbox is the secret sauce! It maintains state
+            (open/closed) but we hide it visually. The label acts
+            as the clickable header.
+        */
+        .accordion-checkbox {
+            display: none;
+        }
+
+        /*
+            Accordion Header (acts as the label/button)
+
+            This is a <label> element, so clicking it toggles
+            the associated checkbox. We style it to look like
+            a clickable header.
+        */
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            user-select: none;  /* Prevent text selection while clicking */
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            transition: background-color 0.2s;
+        }
+
+        .accordion-header:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        /* Header text */
+        .accordion-title {
+            flex: 1;
+        }
+
+        /*
+            Plus/Minus Icon
+
+            Starts as a + icon. When accordion opens, rotates
+            45 degrees to become an × (close icon).
+        */
+        .accordion-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+
+        .accordion-icon::before {
+            content: '+';
+        }
+
+        /*
+            When Checkbox is Checked: Rotate Icon
+
+            The + selector targets the next sibling (the label).
+            When checkbox is checked, we rotate the icon 45 degrees
+            to create an × symbol.
+        */
+        .accordion-checkbox:checked + .accordion-header .accordion-icon {
+            transform: rotate(45deg);
+            color: var(--primary-dark);
+        }
+
+        /*
+            Accordion Content
+
+            Hidden by default using max-height: 0 and overflow: hidden.
+            We use max-height instead of display or height because
+            it can be smoothly animated.
+        */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+        }
+
+        /* Inner wrapper for content */
+        .accordion-content-inner {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        /*
+            When Checkbox is Checked: Show Content
+
+            The ~ selector targets all siblings after the checkbox.
+            When checked, we set max-height to a large value
+            (large enough to fit the content).
+        */
+        .accordion-checkbox:checked ~ .accordion-content {
+            max-height: 1000px;  /* Must be larger than any content height */
+        }
+
+        /* Highlight active accordion item */
+        .accordion-checkbox:checked + .accordion-header {
+            background-color: rgba(59, 130, 246, 0.05);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Feature tag */
+        .feature-tag {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            margin-left: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Info section */
+        .info {
+            margin-top: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+        }
+
+        .info h2 {
+            margin-bottom: 1rem;
+        }
+
+        .info p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .info code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info ul {
+            margin-left: 1.5rem;
+            line-height: 2;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .accordion-header {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+
+            .accordion-content-inner {
+                padding: 0 1rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Frequently Asked Questions</h1>
+            <p>Click any question to reveal the answer</p>
+        </div>
+
+        <div class="accordion">
+            <!--
+                Accordion Item Structure:
+
+                1. Hidden checkbox with unique ID
+                2. Label (acts as header) with for="checkbox-id"
+                3. Content div (sibling of checkbox, targeted with ~)
+
+                The checkbox stores the open/closed state.
+                Clicking the label toggles the checkbox.
+                CSS :checked selector shows/hides content.
+            -->
+
+            <!-- Question 1 -->
+            <div class="accordion-item">
+                <input type="checkbox" id="q1" class="accordion-checkbox">
+                <label for="q1" class="accordion-header">
+                    <span class="accordion-title">What is the checkbox hack?</span>
+                    <span class="accordion-icon"></span>
+                </label>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            The "checkbox hack" is a CSS technique that uses a hidden checkbox to maintain state (checked/unchecked).
+                            By styling the label and using the <code>:checked</code> pseudo-class, you can create interactive
+                            components like accordions, tabs, and menus without any JavaScript.
+                        </p>
+                        <p>
+                            This works because checkboxes can be controlled via labels, and CSS can detect their checked
+                            state using the <code>:checked</code> selector. The sibling selectors (<code>+</code> and <code>~</code>)
+                            allow you to style elements based on the checkbox state.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="accordion-item">
+                <input type="checkbox" id="q2" class="accordion-checkbox">
+                <label for="q2" class="accordion-header">
+                    <span class="accordion-title">
+                        How does max-height create smooth animations?
+                        <span class="feature-tag">Popular</span>
+                    </span>
+                    <span class="accordion-icon"></span>
+                </label>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            CSS cannot smoothly animate <code>height: auto</code> because "auto" isn't a numeric value.
+                            Instead, we use <code>max-height</code> with specific pixel values:
+                        </p>
+                        <ul>
+                            <li>Closed state: <code>max-height: 0</code> with <code>overflow: hidden</code></li>
+                            <li>Open state: <code>max-height: 1000px</code> (or any value larger than the content)</li>
+                        </ul>
+                        <p>
+                            The browser can smoothly transition between these numeric values. The key is making the
+                            max-height large enough to fit all content, but not so large that the animation appears slow.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="accordion-item">
+                <input type="checkbox" id="q3" class="accordion-checkbox">
+                <label for="q3" class="accordion-header">
+                    <span class="accordion-title">Can multiple items be open at once?</span>
+                    <span class="accordion-icon"></span>
+                </label>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            Yes! With checkboxes, multiple items can be open simultaneously because each checkbox
+                            maintains its own independent state. Users can expand as many questions as they want.
+                        </p>
+                        <p>
+                            If you want only one item open at a time (exclusive accordion), you would use radio buttons
+                            instead of checkboxes, since radio buttons in the same group automatically deselect when
+                            another is selected.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="accordion-item">
+                <input type="checkbox" id="q4" class="accordion-checkbox">
+                <label for="q4" class="accordion-header">
+                    <span class="accordion-title">What are the sibling selectors?</span>
+                    <span class="accordion-icon"></span>
+                </label>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            CSS provides two sibling selectors that are essential for the checkbox hack:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Adjacent sibling (+):</strong> Selects the <em>immediately next</em> sibling.
+                                Example: <code>.checkbox:checked + .label</code> targets the label right after the checkbox.
+                            </li>
+                            <li>
+                                <strong>General sibling (~):</strong> Selects <em>all siblings</em> that come after.
+                                Example: <code>.checkbox:checked ~ .content</code> targets the content div even if
+                                there are other elements in between.
+                            </li>
+                        </ul>
+                        <p>
+                            These selectors only work for siblings (elements with the same parent) and only target
+                            elements that come <em>after</em> the first element, not before.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="accordion-item">
+                <input type="checkbox" id="q5" class="accordion-checkbox">
+                <label for="q5" class="accordion-header">
+                    <span class="accordion-title">Is this accessible for screen readers?</span>
+                    <span class="accordion-icon"></span>
+                </label>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            While this pure CSS accordion works visually, it has accessibility limitations.
+                            Screen readers will announce it as a series of checkboxes and labels, not as an accordion.
+                        </p>
+                        <p>
+                            For better accessibility, you should add ARIA attributes:
+                        </p>
+                        <ul>
+                            <li><code>role="button"</code> on the label</li>
+                            <li><code>aria-expanded="true/false"</code> to indicate open/closed state</li>
+                            <li><code>aria-controls="content-id"</code> to link header to content</li>
+                        </ul>
+                        <p>
+                            However, these ARIA attributes require JavaScript to update dynamically, so for production
+                            accordions with full accessibility, a small amount of JavaScript is recommended.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="accordion-item">
+                <input type="checkbox" id="q6" class="accordion-checkbox">
+                <label for="q6" class="accordion-header">
+                    <span class="accordion-title">When should I use this technique?</span>
+                    <span class="accordion-icon"></span>
+                </label>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            The pure CSS accordion is excellent for:
+                        </p>
+                        <ul>
+                            <li>Simple FAQ sections where JavaScript isn't available or desired</li>
+                            <li>Static sites or sites with minimal JavaScript</li>
+                            <li>Learning and understanding CSS capabilities</li>
+                            <li>Progressive enhancement (works without JavaScript)</li>
+                        </ul>
+                        <p>
+                            For complex requirements (analytics tracking, keyboard navigation, advanced animations,
+                            or better accessibility), consider using JavaScript to enhance the functionality.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info">
+            <h2>How This Works</h2>
+            <p>
+                This accordion uses three key CSS techniques:
+            </p>
+            <ul>
+                <li><strong>Hidden checkboxes:</strong> Store open/closed state without being visible</li>
+                <li><strong>:checked pseudo-class:</strong> Detect when checkboxes are toggled</li>
+                <li><strong>Sibling selectors (+, ~):</strong> Style content based on checkbox state</li>
+            </ul>
+            <p>
+                The header is a <code>&lt;label&gt;</code> connected to the checkbox via the <code>for</code> attribute.
+                Clicking the label toggles the checkbox, which triggers CSS changes on sibling elements.
+            </p>
+            <p>
+                No JavaScript required! This demonstrates the power of modern CSS for creating interactive components.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
