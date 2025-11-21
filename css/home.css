@@ -505,11 +505,19 @@ section h2 {
     padding: 2rem;
     margin-bottom: 1.5rem;
     box-shadow: var(--shadow);
-    transition: transform 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    color: inherit;
 }
 
 .guide-item:hover {
     transform: translateX(5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.guide-item:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 3px;
 }
 
 .guide-number {
