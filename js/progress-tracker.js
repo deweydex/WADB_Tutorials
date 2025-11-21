@@ -148,9 +148,9 @@ function updateProgressBar(progress) {
         return;
     }
     
-    const totalLessons = 8; // Total number of lessons
+    const totalLessons = 10; // Total number of lessons
     let completedCount = 0;
-    
+
     // Count completed lessons
     for (let i = 1; i <= totalLessons; i++) {
         const lessonId = `lesson-${String(i).padStart(2, '0')}`;
@@ -189,11 +189,11 @@ function trackLessonProgress() {
     
     // Extract lesson number from URL or page title
     const pathname = window.location.pathname;
-    const match = pathname.match(/0([1-8])-.*\.html/);
+    const match = pathname.match(/(\d+)-.*\.html/);
     if (!match) {
         return;
     }
-    
+
     const lessonNumber = parseInt(match[1], 10);
     const lessonId = `lesson-${String(lessonNumber).padStart(2, '0')}`;
     
