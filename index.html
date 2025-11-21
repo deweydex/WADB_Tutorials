@@ -37,11 +37,13 @@
     <link rel="stylesheet" href="css/navigation.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/search.css">
-    <!-- 
+    <link rel="stylesheet" href="css/stylesheet-switcher.css">
+    <!--
         Links to external CSS files that style this page.
         base.css contains foundational styles shared across all pages.
         navigation.css contains header and navigation styles.
         home.css contains homepage-specific styles.
+        stylesheet-switcher.css styles the theme switcher component.
         This demonstrates separation of concerns: base styles, navigation,
         and page-specific styles are organized into separate files.
     -->
@@ -148,6 +150,8 @@
                     <li><a href="lessons/06-github-setup.html">06. GitHub Setup</a></li>
                     <li><a href="lessons/07-github-workflow.html">07. GitHub Workflow</a></li>
                     <li><a href="lessons/08-github-pages.html">08. GitHub Pages</a></li>
+                    <li><a href="lessons/09-images.html">09. Working with Images</a></li>
+                    <li><a href="lessons/10-links.html">10. Working with Links</a></li>
                     <li class="nav-section-header">Resources</li>
                     <li><a href="#examples">Examples</a></li>
                     <li><a href="#templates">Templates</a></li>
@@ -210,7 +214,7 @@
                     <div class="progress-bar-container">
                         <div class="progress-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <div class="progress-text">0 of 8 lessons completed</div>
+                    <div class="progress-text">0 of 10 lessons completed</div>
                 </div>
                 
                 <div class="lessons-grid">
@@ -260,6 +264,18 @@
                         <div class="lesson-number">08</div>
                         <h3>GitHub Pages</h3>
                         <p>Deploy your website for the world to see</p>
+                        <span class="lesson-link">Start Lesson →</span>
+                    </a>
+                    <a href="lessons/09-images.html" class="lesson-card">
+                        <div class="lesson-number">09</div>
+                        <h3>Working with Images</h3>
+                        <p>Add and optimize images for the web</p>
+                        <span class="lesson-link">Start Lesson →</span>
+                    </a>
+                    <a href="lessons/10-links.html" class="lesson-card">
+                        <div class="lesson-number">10</div>
+                        <h3>Working with Links</h3>
+                        <p>Create navigation and hyperlinks between pages</p>
                         <span class="lesson-link">Start Lesson →</span>
                     </a>
                 </div>
@@ -452,6 +468,7 @@
     <script src="script.js"></script>
     <script src="js/progress-tracker.js"></script>
     <script src="js/search.js"></script>
+    <script src="js/stylesheet-switcher.js"></script>
 </body>
 </html>
 
