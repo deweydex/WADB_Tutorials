@@ -4,37 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Getting Started with GitHub</title>
-    <link rel="stylesheet" href="../styles.css">
-    <style>
-        .lesson-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .learning-outcomes {
-            background-color: #e0f2fe;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--primary-color);
-        }
-        .concept-section {
-            margin-bottom: 3rem;
-        }
-        .nav-links {
-            margin-bottom: 2rem;
-        }
-        .nav-links a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/navigation.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/guides.css">
 </head>
 <body>
-    <div class="lesson-container">
-        <div class="nav-links">
-            <a href="../index.html">Back to Home</a>
-        </div>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header>
+        <nav class="navbar minimal">
+            <div class="container">
+                <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+                    ☰ Menu
+                </button>
+                <div class="site-header-content">
+                    <a href="../index.html" class="logo">Learn HTML, CSS, GitHub, and More!</a>
+                    <p class="site-subtitle">
+                        A series of tutorials (and experiments) from
+                        <a href="https://jsaaron.com" target="_blank" rel="noopener noreferrer">Joshua Aaron</a> |
+                        <a href="https://github.com/jsaaron" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    </p>
+                </div>
+
+                <div class="header-right">
+                    <a href="../about.html">About</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="menu-overlay"></div>
+
+    <ul class="nav-links">
+        <li><a href="../index.html#home">Home</a></li>
+        <li class="nav-section-header">Lessons</li>
+        <li><a href="../lessons/01-html-basics.html">01. HTML Basics</a></li>
+        <li><a href="../lessons/02-html-semantics.html">02. Semantic HTML</a></li>
+        <li><a href="../lessons/03-css-basics.html">03. CSS Basics</a></li>
+        <li><a href="../lessons/04-css-layout.html">04. CSS Layout</a></li>
+        <li><a href="../lessons/05-responsive-design.html">05. Responsive Design</a></li>
+        <li><a href="../lessons/06-github-setup.html">06. GitHub Setup</a></li>
+        <li><a href="../lessons/07-github-workflow.html">07. GitHub Workflow</a></li>
+        <li><a href="../lessons/08-github-pages.html">08. GitHub Pages</a></li>
+        <li><a href="../lessons/09-images.html">09. Working with Images</a></li>
+        <li><a href="../lessons/10-links.html">10. Working with Links</a></li>
+        <li class="nav-section-header">Resources</li>
+        <li><a href="../index.html#examples">Examples</a></li>
+        <li><a href="../index.html#templates">Templates</a></li>
+        <li><a href="../index.html#github">GitHub Guides</a></li>
+        <li><a href="../design-resources.html">Design Resources</a></li>
+        <li><a href="../troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="../reference.html">Quick Reference</a></li>
+        <li><a href="../project-ideas.html">Project Ideas</a></li>
+        <li><a href="../about.html">About</a></li>
+    </ul>
+
+    <main id="main-content">
+        <div class="guide-container">
+            <div class="guide-nav-links">
+                <a href="../index.html">Back to Home</a> |
+                <a href="02-creating-repo.html">Next Guide: Creating Your First Repository</a>
+            </div>
 
         <h1>Getting Started with GitHub</h1>
 
@@ -224,11 +255,20 @@
             <p>The Odin Project. "Introduction to Git." The Odin Project Curriculum. <a href="https://www.theodinproject.com/paths/foundations/courses/foundations">https://www.theodinproject.com/paths/foundations/courses/foundations</a></p>
         </div>
 
-        <div class="nav-links" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
-            <a href="../index.html">Back to Home</a> | 
+        <div class="guide-nav-links" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+            <a href="../index.html">Back to Home</a> |
             <a href="02-creating-repo.html">Next Guide: Creating Your First Repository</a>
         </div>
-    </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Learn HTML, CSS, GitHub, and More! | Created by <a href="https://jsaaron.com" target="_blank" rel="noopener noreferrer">Joshua Aaron</a></p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
 </body>
 </html>
 
