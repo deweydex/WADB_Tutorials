@@ -148,7 +148,7 @@ function updateProgressBar(progress) {
         return;
     }
     
-    const totalLessons = 10; // Total number of lessons
+    const totalLessons = 13; // Total number of lessons
     let completedCount = 0;
 
     // Count completed lessons
