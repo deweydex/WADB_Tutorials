@@ -334,6 +334,18 @@
             font-size: 0.9em;
         }
         
+        /* The editor panel is a flex column, so without this the results box is squashed to a sliver */
+        .student-info,
+        .results,
+        .editor-panel .info-box,
+        .editor-panel h2 {
+            flex-shrink: 0;
+        }
+        
+        .results {
+            min-height: 90px;
+        }
+        
         .results.success {
             background-color: #e8f5e9;
             border-color: #4caf50;
@@ -536,6 +548,32 @@
             margin-top: 0;
         }
         
+        .row-count {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        button:focus-visible,
+        summary:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #ff6f00;
+            outline-offset: 2px;
+        }
+        
+        /* Narrow screens: stack the three panels instead of squeezing them */
+        @media (max-width: 900px) {
+            body { overflow: auto; }
+            .app-container { flex-direction: column; height: auto; }
+            .tasks-panel, .editor-panel, .reference-panel {
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                border: none;
+            }
+            .editor-container { min-height: 300px; }
+        }
+        
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -662,22 +700,19 @@
             <div class="student-info">
                 <h3>Student Information</h3>
                 <label for="studentName">Your Name:</label>
-                <input type="text" id="studentName" placeholder="Enter your full name">
-                
+                <input type="text" id="studentName" placeholder="Enter your full name" autocomplete="name">
+
                 <label for="studentId">Student ID:</label>
-                <input type="text" id="studentId" placeholder="Enter your student ID">
+                <input type="text" id="studentId" placeholder="Enter your student ID" autocomplete="off">
             </div>
             
             <h2>SQL Code Editor</h2>
             
             <div class="editor-container">
-                <div id="sqlEditor">-- Tentacular Plushies Database
--- Write your SQL statements below
+                <div id="sqlEditor"></div>
 
-</div>
-                
                 <div class="button-group">
-                    <button class="run-btn" onclick="runCode()">Run Code</button>
+                    <button class="run-btn" onclick="runCode()" title="Run the whole editor, or only the highlighted text (Ctrl+Enter)">Run Code</button>
                     <button class="check-btn" onclick="checkTasks()">Check My Work</button>
                     <button class="clear-btn" onclick="clearEditor()">Clear Editor</button>
                     <button class="reset-btn" onclick="resetDatabase()">Reset Database</button>
@@ -692,6 +727,7 @@
             <div class="info-box" style="margin-top: 15px;">
                 <h3>Submission Instructions</h3>
                 <p>When complete, fill in your name and student ID above, then click "Download SQL File" to save your work. Submit the downloaded file to your instructor.</p>
+                <p style="margin-top: 6px;">Your code is saved in this browser as you type, so a page refresh will not lose it. The database itself starts empty after a refresh, so press Run Code again to rebuild it. <strong>Ctrl+Enter</strong> (or <strong>Cmd+Enter</strong>) runs your code, or just the text you have highlighted.</p>
             </div>
         </div>
         
@@ -1091,32 +1127,90 @@ VALUES (1, 'Sarah Murphy', 2);
     <script>
         let db;
         let sqlHistory = [];
+        let ranQueries = [];
         let editor;
+        let dbReady = null;
+        
+        const STARTER_CODE = '-- Tentacular Plushies Database\n-- Write your SQL statements below\n\n';
+        const STORE_CODE = 'tentacular-quiz-code';
+        const STORE_NAME = 'tentacular-quiz-name';
+        const STORE_ID = 'tentacular-quiz-id';
+        
+        // localStorage can throw (private windows, blocked storage), so never rely on it
+        function store(key, value) {
+            try {
+                if (value === undefined) return localStorage.getItem(key);
+                localStorage.setItem(key, value);
+            } catch (e) { /* storage unavailable: carry on without it */ }
+            return null;
+        }
+        
+        function esc(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
         
         async function initDB() {
             const SQL = await initSqlJs({
                 locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
             });
             db = new SQL.Database();
+            // SQLite ignores foreign keys unless this is switched on
+            db.run('PRAGMA foreign_keys = ON;');
             console.log('Database initialized');
         }
         
         // Initialize CodeMirror
         function initEditor() {
             editor = CodeMirror(document.getElementById('sqlEditor'), {
-                value: '-- Tentacular Plushies Database\n-- Write your SQL statements below\n\n',
+                value: store(STORE_CODE) || STARTER_CODE,
                 mode: 'text/x-sql',
                 theme: 'monokai',
                 lineNumbers: true,
                 indentUnit: 4,
                 lineWrapping: true,
-                autofocus: true
+                autofocus: true,
+                extraKeys: {
+                    'Ctrl-Enter': runCode,
+                    'Cmd-Enter': runCode,
+                    'Tab': cm => cm.execCommand('insertSoftTab'),
+                    'Shift-Tab': cm => cm.execCommand('indentLess')
+                }
             });
+            editor.on('change', () => store(STORE_CODE, editor.getValue()));
         }
         
-        function runCode() {
-            const sqlCode = editor.getValue().trim();
+        function renderResultTable(result) {
+            let html = '<table><tr>';
+            result.columns.forEach(col => { html += `<th>${esc(col)}</th>`; });
+            html += '</tr>';
+            result.values.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell !== null ? esc(cell) : '<em>NULL</em>'}</td>`;
+                });
+                html += '</tr>';
+            });
+            const n = result.values.length;
+            return html + `</table><p class="row-count">${n} row${n === 1 ? '' : 's'}</p>`;
+        }
+        
+        async function runCode() {
             const resultsDiv = document.getElementById('results');
+            
+            if (!dbReady) {
+                resultsDiv.className = 'results error';
+                resultsDiv.innerHTML = '<strong>Error:</strong> The database is still loading. Check your internet connection and try again in a moment.';
+                return;
+            }
+            await dbReady;
+            
+            // Run only the highlighted text when there is a selection, otherwise everything
+            const selection = editor.getSelection().trim();
+            const sqlCode = (selection || editor.getValue()).trim();
             
             if (!sqlCode) {
                 resultsDiv.className = 'results error';
@@ -1124,63 +1218,61 @@ VALUES (1, 'Sarah Murphy', 2);
                 return;
             }
             
+            let output = '';
+            let hadError = false;
+            let count = 0;
+            let stepping = false;
+            
             try {
-                const statements = sqlCode
-                    .split(';')
-                    .map(s => s.trim())
-                    .filter(s => s.length > 0 && !s.startsWith('--'));
-                
-                let output = '';
-                
-                statements.forEach((statement, index) => {
-                    if (statement.match(/^(CREATE|INSERT|UPDATE|DELETE)/i)) {
-                        if (!sqlHistory.includes(statement)) {
-                            sqlHistory.push(statement);
-                        }
+                // iterateStatements copes with comments, and with semicolons inside text values
+                for (const stmt of db.iterateStatements(sqlCode)) {
+                    const text = stmt.getSQL().trim();
+                    count++;
+                    stepping = true;
+                    
+                    if (/^(CREATE|INSERT|UPDATE|DELETE)/i.test(text) && !sqlHistory.includes(text)) {
+                        sqlHistory.push(text);
                     }
                     
-                    try {
-                        const results = db.exec(statement + ';');
-                        
-                        if (results.length > 0) {
-                            results.forEach(result => {
-                                output += `<h4>Statement ${index + 1} Results:</h4>`;
-                                output += '<table><tr>';
-                                
-                                result.columns.forEach(col => {
-                                    output += `<th>${col}</th>`;
-                                });
-                                output += '</tr>';
-                                
-                                result.values.forEach(row => {
-                                    output += '<tr>';
-                                    row.forEach(cell => {
-                                        output += `<td>${cell !== null ? cell : 'NULL'}</td>`;
-                                    });
-                                    output += '</tr>';
-                                });
-                                
-                                output += '</table>';
-                            });
-                        } else {
-                            output += `<p><strong>Statement ${index + 1}:</strong> Executed successfully.</p>`;
-                        }
-                    } catch (err) {
-                        output += `<p class="error"><strong>Error in statement ${index + 1}:</strong> ${err.message}</p>`;
+                    if (/^SELECT/i.test(text)) ranQueries.push(text);
+                    
+                    const columns = stmt.getColumnNames();
+                    if (columns.length > 0) {
+                        const values = [];
+                        while (stmt.step()) values.push(stmt.get());
+                        output += `<h4>Statement ${count} Results:</h4>` + renderResultTable({columns, values});
+                    } else {
+                        stmt.step();
+                        const changed = db.getRowsModified();
+                        const note = /^(INSERT|UPDATE|DELETE)/i.test(text)
+                            ? ` Executed successfully (${changed} row${changed === 1 ? '' : 's'} affected).`
+                            : ' Executed successfully.';
+                        output += `<p><strong>Statement ${count}:</strong>${note}</p>`;
                     }
-                });
-                
-                resultsDiv.className = 'results success';
-                resultsDiv.innerHTML = output || '<p>Commands executed. No data returned.</p>';
-                
+                    stepping = false;
+                }
             } catch (err) {
-                resultsDiv.className = 'results error';
-                resultsDiv.innerHTML = `<strong>Error:</strong> ${err.message}`;
+                // SQLite stops at the first failing statement, so we do the same and say which one
+                hadError = true;
+                // A compile error is thrown before the loop body runs, so the failing statement is the next one
+                const failed = stepping ? count : count + 1;
+                output += `<p class="error"><strong>Error in statement ${failed}:</strong> ${esc(err.message)}</p>`;
+                if (failed > 1) {
+                    output += `<p style="font-size: 0.9em;">${failed === 2 ? 'Statement 1 ran' : `Statements 1 to ${failed - 1} ran`}. Fix the error and run again. Anything that already succeeded will run a second time, so a repeated CREATE TABLE will report that the table already exists. Delete or comment out the lines that worked first.</p>`;
+                }
             }
+            
+            resultsDiv.className = hadError ? 'results error' : 'results success';
+            resultsDiv.innerHTML = output || '<p>Commands executed. No data returned.</p>';
         }
         
         function checkTasks() {
             const resultsDiv = document.getElementById('results');
+            if (!db) {
+                resultsDiv.className = 'results error';
+                resultsDiv.innerHTML = '<strong>Error:</strong> The database is still loading. Try again in a moment.';
+                return;
+            }
             let output = '<div class="task-check-results"><h3>Task Completion Check</h3>';
             let allComplete = true;
             let taskResults = [];
@@ -1195,12 +1287,19 @@ VALUES (1, 'Sarah Murphy', 2);
                         const columns = schema[0].values.map(row => row[1].toLowerCase());
                         const hasAll = ['id', 'product_name', 'category', 'price', 'stock_quantity', 'description']
                             .every(col => columns.includes(col));
-                        task1Complete = hasAll;
-                        if (!hasAll) {
-                            const missing = ['id', 'product_name', 'category', 'price', 'stock_quantity', 'description']
-                                .filter(col => !columns.includes(col));
-                            task1Details = ` Missing: ${missing.join(', ')}`;
-                        }
+                        // table_info rows: [cid, name, type, notnull, default, pk]
+                        const info = {};
+                        schema[0].values.forEach(row => { info[row[1].toLowerCase()] = row; });
+                        const issues = [];
+                        const missing = ['id', 'product_name', 'category', 'price', 'stock_quantity', 'description']
+                            .filter(col => !columns.includes(col));
+                        if (missing.length) issues.push(`missing columns: ${missing.join(', ')}`);
+                        if (info.id && !info.id[5]) issues.push('id is not a PRIMARY KEY');
+                        const notNull = ['product_name', 'category', 'price', 'stock_quantity']
+                            .filter(col => info[col] && !info[col][3]);
+                        if (notNull.length) issues.push(`needs NOT NULL: ${notNull.join(', ')}`);
+                        task1Complete = issues.length === 0;
+                        if (!task1Complete) task1Details = ` ${issues.join('; ')}`;
                     } else {
                         task1Details = ' Table does not exist';
                     }
@@ -1219,7 +1318,9 @@ VALUES (1, 'Sarah Murphy', 2);
                         const columns = schema[0].values.map(row => row[1].toLowerCase());
                         const hasAll = ['id', 'product_id', 'customer_name', 'quantity']
                             .every(col => columns.includes(col));
-                        const hasFKey = fkeys.length > 0 && fkeys[0].values.length > 0;
+                        // foreign_key_list rows: [id, seq, table, from, to, ...]
+                        const hasFKey = fkeys.length > 0 && fkeys[0].values.some(row =>
+                            String(row[2]).toLowerCase() === 'products' && String(row[3]).toLowerCase() === 'product_id');
                         task2Complete = hasAll && hasFKey;
                         if (!hasAll || !hasFKey) {
                             const issues = [];
@@ -1228,7 +1329,7 @@ VALUES (1, 'Sarah Murphy', 2);
                                     .filter(col => !columns.includes(col));
                                 issues.push(`missing columns: ${missing.join(', ')}`);
                             }
-                            if (!hasFKey) issues.push('no foreign key');
+                            if (!hasFKey) issues.push('product_id needs a foreign key to products(id)');
                             task2Details = ` Issues: ${issues.join(', ')}`;
                         }
                     } else {
@@ -1247,9 +1348,18 @@ VALUES (1, 'Sarah Murphy', 2);
                     const catCount = db.exec("SELECT COUNT(DISTINCT category) FROM products");
                     const numProducts = count[0].values[0][0];
                     const numCats = catCount[0].values[0][0];
-                    task3Complete = numProducts >= 4 && numCats >= 3;
-                    task3Details = task3Complete ? ` Found ${numProducts} products in ${numCats} categories` :
-                        ` Found ${numProducts} products in ${numCats} categories (need 4+ products, 3+ categories)`;
+                    const badPrice = db.exec("SELECT COUNT(*) FROM products WHERE price < 10 OR price > 60")[0].values[0][0];
+                    const badStock = db.exec("SELECT COUNT(*) FROM products WHERE stock_quantity < 5 OR stock_quantity > 50")[0].values[0][0];
+                    task3Complete = numProducts >= 4 && numCats >= 3 && badPrice === 0 && badStock === 0;
+                    if (task3Complete) {
+                        task3Details = ` Found ${numProducts} products in ${numCats} categories`;
+                    } else {
+                        const problems = [];
+                        if (numProducts < 4 || numCats < 3) problems.push(`found ${numProducts} products in ${numCats} categories, need 4+ products and 3+ categories`);
+                        if (badPrice) problems.push(`${badPrice} with a price outside 10 to 60`);
+                        if (badStock) problems.push(`${badStock} with stock outside 5 to 50`);
+                        task3Details = ' ' + problems.join('; ');
+                    }
                 } catch (e) {
                     task3Details = ' No products found';
                 }
@@ -1264,9 +1374,11 @@ VALUES (1, 'Sarah Murphy', 2);
                     const invalid = db.exec(`SELECT COUNT(*) FROM transactions t 
                         LEFT JOIN products p ON t.product_id = p.id WHERE p.id IS NULL`);
                     const hasInvalid = invalid[0].values[0][0] > 0;
-                    task4Complete = numTrans >= 3 && !hasInvalid;
+                    const badQty = db.exec("SELECT COUNT(*) FROM transactions WHERE quantity < 1 OR quantity > 5")[0].values[0][0];
+                    task4Complete = numTrans >= 3 && !hasInvalid && badQty === 0;
                     task4Details = task4Complete ? ` Found ${numTrans} valid transactions` :
-                        numTrans < 3 ? ` Only ${numTrans} transactions (need 3)` : ' Invalid product_id references';
+                        numTrans < 3 ? ` Only ${numTrans} transactions (need 3)` :
+                        hasInvalid ? ' Invalid product_id references' : ` ${badQty} with a quantity outside 1 to 5`;
                 } catch (e) {
                     task4Details = ' No transactions found';
                 }
@@ -1292,6 +1404,11 @@ VALUES (1, 'Sarah Murphy', 2);
                         if (!q3.length || !q3[0].values.length) queryErrors.push('Query 3 no results');
                     } catch (e) { queryErrors.push('Query 3 failed'); }
                     
+                    // The data checks above only prove the tables work, so also look for the queries in the editor
+                    const code = (editor.getValue() + '\n' + ranQueries.join(';\n')).replace(/--.*$/gm, '').replace(/\s+/g, ' ');
+                    if (!/select[^;]*from products[^;]*where[^;]*price\s*>\s*30[^;]*order by\s+price\s+desc/i.test(code)) queryErrors.push('Query 1 not found in your editor');
+                    if (!/select[^;]*from products[^;]*where[^;]*stock_quantity\s*<\s*15/i.test(code)) queryErrors.push('Query 2 not found in your editor');
+                    if (!/select[^;]*customer_name[^;]*quantity[^;]*from transactions|select[^;]*quantity[^;]*customer_name[^;]*from transactions|select\s*\*\s*from transactions/i.test(code)) queryErrors.push('Query 3 not found in your editor');
                     task5Complete = queryErrors.length === 0;
                     task5Details = task5Complete ? ' All queries work!' : ` ${queryErrors.join('; ')}`;
                 } catch (e) {
@@ -1303,7 +1420,7 @@ VALUES (1, 'Sarah Murphy', 2);
                 taskResults.forEach(task => {
                     output += `<div class="task-status ${task.done ? 'complete' : 'incomplete'}">
                         <span class="task-status-icon">${task.done ? '✓' : '✗'}</span>
-                        <span><strong>Task ${task.num}: ${task.name}</strong> - ${task.done ? 'Complete' : 'Incomplete'}${task.details}</span>
+                        <span><strong>Task ${task.num}: ${task.name}</strong> - ${task.done ? 'Complete' : 'Incomplete'}${esc(task.details)}</span>
                     </div>`;
                     if (!task.done) allComplete = false;
                 });
@@ -1335,14 +1452,16 @@ VALUES (1, 'Sarah Murphy', 2);
         
         function clearEditor() {
             if (confirm('Clear the editor? This cannot be undone.')) {
-                editor.setValue('-- Tentacular Plushies Database\n-- Write your SQL statements below\n\n');
+                editor.setValue(STARTER_CODE);
             }
         }
         
         async function resetDatabase() {
             if (confirm('Reset the database? All data will be lost.')) {
-                await initDB();
+                dbReady = initDB();
+                await dbReady;
                 sqlHistory = [];
+                ranQueries = [];
                 document.getElementById('results').className = 'results';
                 document.getElementById('results').innerHTML = '<p><strong>Database reset.</strong> Start fresh with your SQL code.</p>';
             }
@@ -1354,8 +1473,10 @@ VALUES (1, 'Sarah Murphy', 2);
             
             if (!studentName || !studentId) {
                 alert('Please enter your name and student ID before downloading.');
+                (studentName ? document.getElementById('studentId') : document.getElementById('studentName')).focus();
                 return;
             }
+            const safeId = studentId.replace(/[^a-z0-9_-]/gi, '_');
             
             const allSQL = editor.getValue();
             const content = `-- SQL Database Quiz - Tentacular Plushies Edition
@@ -1369,7 +1490,7 @@ ${allSQL}`;
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${studentId}_SQL_Tentacular_Plushies.sql`;
+            a.download = `${safeId}_SQL_Tentacular_Plushies.sql`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1377,8 +1498,30 @@ ${allSQL}`;
         }
         
         window.addEventListener('DOMContentLoaded', function() {
-            initDB();
+            dbReady = initDB().catch(err => {
+                dbReady = null;
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.className = 'results error';
+                resultsDiv.innerHTML = '<strong>Could not load the database engine.</strong> Check your internet connection and refresh the page.';
+                console.error(err);
+            });
             initEditor();
+            
+            // Remember name and ID between refreshes
+            const nameInput = document.getElementById('studentName');
+            const idInput = document.getElementById('studentId');
+            nameInput.value = store(STORE_NAME) || '';
+            idInput.value = store(STORE_ID) || '';
+            nameInput.addEventListener('input', () => store(STORE_NAME, nameInput.value));
+            idInput.addEventListener('input', () => store(STORE_ID, idInput.value));
+        });
+        
+        // Warn before closing the tab if the student has written something beyond the starter text
+        window.addEventListener('beforeunload', function(e) {
+            if (editor && editor.getValue().trim() !== STARTER_CODE.trim()) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
         });
     </script>
 </body>
