@@ -646,6 +646,9 @@
             font-family: 'Courier New', monospace;
         }
         
+        .tasks-panel .info-box p { margin-bottom: 7px; }
+        .tasks-panel .info-box h3 { margin-top: 0; }
+        .table-info { font-size: 0.95em; margin: 0 0 4px 0; color: #444; }
         .schema-card ul { list-style: none; margin: 0; }
         .schema-card li { margin: 0; font-family: 'Courier New', monospace; }
         .schema-card .tag {
@@ -674,14 +677,35 @@
             </div>
 
             <div class="info-box">
-                <h3>How the tables connect</h3>
-                <p>A student belongs to one program (<code>students.program_id</code>). A program has one lead teacher (<code>programs.lead_teacher_id</code>).</p>
-                <p>A program contains many modules, and a module can sit in many programs, so the table <code>program_modules</code> links them.</p>
-                <p>A module is taught in one or more <strong>sections</strong>, such as A and B. Each section has one teacher, and a teacher can teach many sections. Students join sections through the table <code>enrolments</code>.</p>
-                <p>An <strong>event</strong> is one weekly class meeting. It belongs to a section and takes place in a room.</p>
-                <p><code>day_of_week</code> counts from 1 (Monday) to 5 (Friday). <code>start_time</code> is text in 24-hour form, such as <code>'09:00'</code>.</p>
+                <h3>Words about the college</h3>
+                <p><strong>Program:</strong> a course of study that a student follows, such as Computer Science.</p>
+                <p><strong>Module:</strong> one subject inside a program, such as Programming Fundamentals. Several programs can share the same module.</p>
+                <p><strong>Section:</strong> one group of students who take a module together. Programming Fundamentals has a Section A and a Section B, and each section has its own teacher.</p>
+                <p><strong>Event:</strong> one class meeting that repeats every week, such as Section A's lab on Tuesday at 13:00. The timetable is the list of events.</p>
+                <p><strong>Enrolment:</strong> the record that one student takes one section.</p>
+                <p><strong>Lead teacher:</strong> the teacher in charge of a program. This teacher may also teach sections.</p>
             </div>
-
+            
+            <div class="info-box">
+                <h3>Words about databases</h3>
+                <p><strong>Table:</strong> a grid that holds one kind of thing, such as students.</p>
+                <p><strong>Row:</strong> one item in a table, such as one student.</p>
+                <p><strong>Column:</strong> one fact that every row stores, such as <code>first_name</code>.</p>
+                <p><strong>ID (primary key):</strong> the number in the <code>id</code> column that identifies one row. No two rows in a table share an ID. The tables list marks it PK.</p>
+                <p><strong>Foreign key:</strong> a column that stores the ID of a row in another table. The column <code>students.program_id</code> holds the ID of the student's program. The tables list marks it FK.</p>
+                <p><strong>Join:</strong> a way to put rows from two tables side by side by matching a foreign key with the ID it points to.</p>
+                <p><strong>Bridge table:</strong> a table that holds two foreign keys and nothing else. We need one when each row on one side can match many rows on the other side. A module belongs to many programs, and a program has many modules, so <code>program_modules</code> sits between them. A student takes many sections, and a section has many students, so <code>enrolments</code> sits between them.</p>
+            </div>
+            
+            <div class="info-box">
+                <h3>Reading one event</h3>
+                <p>The events table stores only numbers. Event 7 holds <code>section_id = 1</code>, <code>room_id = 6</code>, <code>day_of_week = 2</code> and <code>start_time = '13:00'</code>. We follow each ID to the table it points to.</p>
+                <p><code>section_id = 1</code> leads to section 1. That row says Section A of module 1, taught by teacher 1.</p>
+                <p><code>module_id = 1</code> leads to the module Programming Fundamentals. <code>room_id = 6</code> leads to the room Lab B.</p>
+                <p>Put together, event 7 reads: Programming Fundamentals, Section A, on Tuesday at 13:00 in Lab B. A join does this lookup for every row at once.</p>
+                <p>The <code>day_of_week</code> column counts from 1 (Monday) to 5 (Friday). The <code>start_time</code> column is text in 24-hour form, such as <code>'09:00'</code>.</p>
+            </div>
+            
             <div class="task" id="task-1">
                 <h3>Task 1: Students and Programs <span class="task-badge" id="badge-1">Not checked</span></h3>
                 <p>Show each student's name together with the name of their program.</p>
@@ -716,7 +740,7 @@
 
             <div class="task" id="task-3">
                 <h3>Task 3: Modules in a Program <span class="task-badge" id="badge-3">Not checked</span></h3>
-                <p>List the modules that belong to the Computer Science program. A program and a module do not link directly, so look at the tables in the schema to find the bridge between them.</p>
+                <p>List the modules that belong to the Computer Science program. A program and a module do not link directly. Look at the tables list to find the bridge table between them.</p>
                 <div class="task-requirements">
                     <strong>Columns to show:</strong>
                     <ul>
@@ -886,7 +910,7 @@
 
             <div class="reference-section">
                 <h2>Why Join?</h2>
-                <p>Each fact is stored once, in the table where it belongs. A room name lives in <code>rooms</code>, and an event only stores a <code>room_id</code>. A join follows that ID to bring the room name back next to the event.</p>
+                <p>Each fact is stored once, in the table where it belongs. A room name lives in <code>rooms</code>, and an event only stores a <code>room_id</code>, which is a foreign key. A join follows that ID to bring the room name back next to the event.</p>
                 <p>Read a join in three steps. First decide which table holds the thing you want to list. Then follow the ID columns from table to table until you reach every column you need. Finally write one JOIN for each step.</p>
             </div>
 
@@ -934,7 +958,7 @@ JOIN rooms r  ON e.room_id = r.id;</pre>
                 </div>
                 <div class="tip-box">
                     <h4>Bridge tables</h4>
-                    <p>A table such as <code>program_modules</code> or <code>enrolments</code> exists only to link two other tables. It holds two IDs and nothing else. To get from one side to the other, join through it.</p>
+                    <p>A bridge table such as <code>program_modules</code> or <code>enrolments</code> exists only to link two other tables. It holds two foreign keys and nothing else. To get from one side to the other, join through it.</p>
                 </div>
             </div>
 
@@ -1437,6 +1461,18 @@ INSERT INTO events (id, section_id, room_id, day_of_week, start_time, duration_m
             console.log('Database initialized');
         }
 
+        const TABLE_INFO = {
+            students: 'One row for each student. The column program_id says which program the student follows.',
+            programs: 'One row for each program. The column lead_teacher_id points to the teacher in charge.',
+            teachers: 'One row for each teacher.',
+            modules: 'One row for each subject. The column hours_per_week is the time one section spends in class each week.',
+            program_modules: 'Bridge table. Each row says that one module belongs to one program.',
+            sections: 'One row for each group of students taking a module. It stores the module and the teacher.',
+            enrolments: 'Bridge table. Each row says that one student takes one section.',
+            rooms: 'One row for each room.',
+            events: 'One row for each weekly class meeting. It stores the section, the room, the day and the time.'
+        };
+        
         // Draw the table list from the live database, so it always matches the data
         function buildSchemaPanel() {
             let html = '';
@@ -1445,7 +1481,7 @@ INSERT INTO events (id, section_id, room_id, day_of_week, start_time, duration_m
                 const fkRes = db.exec(`PRAGMA foreign_key_list(${name})`);
                 const fks = {};
                 if (fkRes.length) fkRes[0].values.forEach(r => { fks[r[3]] = `${r[2]}.${r[4]}`; });
-                html += `<div class="schema-card"><h4>${esc(name)}</h4><ul>`;
+                html += `<div class="schema-card"><h4>${esc(name)}</h4><p class="table-info">${esc(TABLE_INFO[name] || '')}</p><ul>`;
                 cols.forEach(c => {
                     let tags = '';
                     if (c[5]) tags += '<span class="tag pk">PK</span>';
@@ -1463,6 +1499,7 @@ INSERT INTO events (id, section_id, room_id, day_of_week, start_time, duration_m
                 const b = document.createElement('button');
                 b.type = 'button';
                 b.textContent = name;
+                b.title = TABLE_INFO[name] || '';
                 b.onclick = () => showTable(name);
                 bar.appendChild(b);
             });
