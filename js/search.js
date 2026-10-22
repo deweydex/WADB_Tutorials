@@ -11,6 +11,14 @@
 // Search index - built when page loads
 let searchIndex = [];
 
+// Result links in the index are written relative to the site root, such as
+// 'lessons/01-html-basics.html'. Pages inside lessons/ or github-guides/ sit one
+// folder down, so we build full links from the address of this script file.
+// This runs while the script loads, which is the only time document.currentScript is set.
+const SITE_ROOT = document.currentScript
+    ? new URL('../', document.currentScript.src).href
+    : '';
+
 // Initialize search functionality
 document.addEventListener('DOMContentLoaded', () => {
     buildSearchIndex();
@@ -79,6 +87,58 @@ function buildSearchIndex() {
             url: 'lessons/08-github-pages.html',
             keywords: ['github pages', 'deploy', 'hosting', 'publish', 'website', 'domain', 'free hosting'],
             description: 'Deploy your website for the world to see'
+        },
+        
+        {
+            title: 'Working with Images',
+            type: 'Lesson',
+            url: 'lessons/09-images.html',
+            keywords: ['images', 'img', 'alt text', 'picture', 'photo', 'format', 'jpg', 'png', 'svg', 'size'],
+            description: 'Add images to your pages and keep them accessible and fast'
+        },
+        {
+            title: 'Working with Links',
+            type: 'Lesson',
+            url: 'lessons/10-links.html',
+            keywords: ['links', 'anchor', 'href', 'navigation', 'internal link', 'external link', 'url'],
+            description: 'Connect pages together with links and navigation'
+        },
+        {
+            title: 'Advanced Flexbox & Grid',
+            type: 'Lesson',
+            url: 'lessons/11-flexbox-grid-advanced.html',
+            keywords: ['flexbox', 'grid', 'layout', 'css grid', 'alignment', 'columns', 'rows', 'advanced layout'],
+            description: 'Build complex layouts with flexbox and CSS grid'
+        },
+        {
+            title: 'Component Design',
+            type: 'Lesson',
+            url: 'lessons/12-component-design.html',
+            keywords: ['component', 'reusable', 'maintainable', 'css', 'naming', 'bem', 'variables', 'custom properties'],
+            description: 'Design reusable components and write maintainable CSS'
+        },
+        {
+            title: 'CSS Animations',
+            type: 'Lesson',
+            url: 'lessons/13-css-animations.html',
+            keywords: ['animation', 'transition', 'keyframes', 'transform', 'hover', 'motion', 'css animation'],
+            description: 'Create animations with transitions, keyframes and transforms'
+        },
+        
+        // SQL Practice
+        {
+            title: 'SQL Quiz: Plushies',
+            type: 'SQL Practice',
+            url: 'tentacular-plushies-quiz-final.html',
+            keywords: ['sql', 'database', 'quiz', 'create table', 'insert', 'select', 'where', 'order by', 'primary key', 'foreign key', 'table', 'query', 'plushies', 'tentacular'],
+            description: 'Create two linked tables for a plush toy shop, add data and write your first queries'
+        },
+        {
+            title: 'SQL Quiz: Timetable Joins',
+            type: 'SQL Practice',
+            url: 'sql-joins-timetable-quiz.html',
+            keywords: ['sql', 'database', 'quiz', 'join', 'joins', 'inner join', 'left join', 'timetable', 'schedule', 'bridge table', 'junction table', 'foreign key', 'group by', 'count', 'case', 'alias', 'query'],
+            description: 'Join nine linked tables to build a weekly timetable for one student'
         },
         
         // Guides
@@ -156,6 +216,20 @@ function buildSearchIndex() {
         },
         
         // Key Concepts
+        {
+            title: 'SQL Joins',
+            type: 'Concept',
+            url: 'sql-joins-timetable-quiz.html',
+            keywords: ['join', 'inner join', 'left join', 'on', 'foreign key', 'bridge table', 'many to many', 'alias'],
+            description: 'Combine rows from linked tables, practised in the timetable quiz'
+        },
+        {
+            title: 'Foreign Keys',
+            type: 'Concept',
+            url: 'sql-joins-timetable-quiz.html',
+            keywords: ['foreign key', 'primary key', 'id', 'relationship', 'references', 'database', 'table'],
+            description: 'A column that stores the ID of a row in another table'
+        },
         {
             title: 'HTML Tags',
             type: 'Concept',
@@ -350,7 +424,7 @@ function createResultCard(item, query) {
     
     return `
         <div class="search-result-card">
-            <h4><a href="${item.url}">${highlightTitle}</a></h4>
+            <h4><a href="${SITE_ROOT}${item.url}">${highlightTitle}</a></h4>
             <p class="search-result-description">${highlightDesc}</p>
             <span class="search-result-url">${item.url}</span>
         </div>

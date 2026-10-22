@@ -26,9 +26,26 @@
             overflow: hidden;
         }
         
+        /* Slim bar that connects the quiz to the rest of the site */
+        .site-bar {
+            height: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 0 16px;
+            background: #311b92;
+            font-size: 13px;
+        }
+        
+        .site-bar a { color: #e1bee7; text-decoration: none; }
+        .site-bar a:hover { color: #fff; text-decoration: underline; }
+        .site-bar a[aria-current="page"] { color: #fff; font-weight: bold; text-decoration: underline; }
+        .site-bar-links { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
+        
         .app-container {
             display: flex;
-            height: 100vh;
+            height: calc(100vh - 36px);
             width: 100%;
         }
         
@@ -666,6 +683,13 @@
     </style>
 </head>
 <body>
+    <nav class="site-bar" aria-label="Tutorial navigation">
+        <a href="index.html#sql-practice">&larr; All tutorials</a>
+        <span class="site-bar-links">
+            <a href="tentacular-plushies-quiz-final.html">Quiz 1: Plushies</a>
+            <a href="sql-joins-timetable-quiz.html" aria-current="page">Quiz 2: Timetable Joins</a>
+        </span>
+    </nav>
     <div class="app-container" id="appContainer">
         <!-- LEFT PANEL: TASKS -->
         <div class="tasks-panel">
@@ -674,6 +698,7 @@
 
             <div class="info-box">
                 <p>The college needs a weekly timetable. The information lives in nine separate tables, and no single table holds a whole timetable. A <strong>JOIN</strong> combines rows from two tables by matching the ID columns that link them. You will write joins of growing size, and in the last two tasks you will build a real timetable for one student. The data is already loaded, so you only write SELECT queries.</p>
+                <p>This quiz assumes you have met SELECT, WHERE and ORDER BY. If those are new, start with the <a href="tentacular-plushies-quiz-final.html">Plushies quiz</a>.</p>
             </div>
 
             <div class="info-box">
