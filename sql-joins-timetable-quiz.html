@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Joins Quiz - Build a Timetable</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <!-- CodeMirror for SQL syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #1a237e 0%, #4a148c 50%, #880e4f 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+        
+        /* Left Panel - Tasks (25%) */
+        .tasks-panel {
+            width: 25%;
+            background: #faf8f3;
+            overflow-y: auto;
+            border-right: 3px solid #4a148c;
+            padding: 20px;
+        }
+        
+        /* Middle Panel - Editor (50%) */
+        .editor-panel {
+            width: 50%;
+            background: #fff;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            max-height: 100vh; /* Ensure it doesn't exceed viewport height */
+        }
+        
+        /* Right Panel - Reference (25%) */
+        .reference-panel {
+            width: 25%;
+            background: #fff;
+            border-left: 3px solid #4a148c;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #4a148c;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #880e4f;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #6a1b9a;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+        
+        h3 {
+            color: #7b1fa2;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #8e24aa;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-size: 1.05em;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #e1bee7 0%, #f3e5f5 100%);
+            padding: 12px;
+            border-radius: 5px;
+            border-left: 5px solid #4a148c;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        
+        .student-info {
+            background-color: #e8f5e9;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 2px solid #4caf50;
+        }
+        
+        .student-info h3 {
+            color: #2e7d32;
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+        }
+        
+        .student-info label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+            color: #2e7d32;
+            font-size: 0.9em;
+        }
+        
+        .student-info input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #81c784;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .task {
+            background: linear-gradient(135deg, #ffccbc 0%, #ffab91 100%);
+            border-left: 5px solid #ff6f00;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        .task h3 {
+            color: #e65100;
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+        }
+        
+        .task p {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .task-requirements {
+            background-color: #e3f2fd;
+            border-left: 3px solid #2196F3;
+            padding: 8px;
+            margin-top: 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+        }
+        
+        .task-requirements strong {
+            color: #1976D2;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .task-requirements ul,
+        .task-requirements ol {
+            margin-left: 18px;
+            margin-top: 4px;
+        }
+        
+        .task-requirements li {
+            margin-bottom: 4px;
+        }
+        
+        .task-requirements code {
+            background-color: #1a237e;
+            color: #c5cae9;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 0.9em;
+        }
+        
+        .hint-box {
+            background-color: #e0f2f1;
+            border-left: 3px solid #00897b;
+            padding: 8px;
+            margin-top: 8px;
+            border-radius: 3px;
+        }
+        
+        .hint-box summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #00695c;
+            padding: 4px;
+            font-size: 0.85em;
+        }
+        
+        .hint-box p {
+            font-size: 0.85em;
+            margin-top: 6px;
+        }
+        
+        /* Reference details (collapsible sections) */
+        .ref-details {
+            background-color: #f5f5f5;
+            border-left: 3px solid #7b1fa2;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        
+        .ref-details summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #6a1b9a;
+            padding: 6px;
+            font-size: 0.95em;
+        }
+        
+        .ref-details summary:hover {
+            color: #4a148c;
+            background-color: #e1bee7;
+            border-radius: 3px;
+        }
+        
+        .ref-details[open] summary {
+            margin-bottom: 10px;
+            border-bottom: 2px solid #9c27b0;
+            padding-bottom: 8px;
+        }
+        
+        .ref-details p,
+        .ref-details ul,
+        .ref-details ol {
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+        
+        .ref-details ul,
+        .ref-details ol {
+            margin-left: 20px;
+        }
+        
+        .ref-details li {
+            margin-bottom: 5px;
+        }
+        
+        .ref-details .example-box,
+        .ref-details .tip-box,
+        .ref-details .warning-box,
+        .ref-details table {
+            margin: 10px 0;
+        }
+        
+        .editor-container {
+            flex: 1 1 auto; /* Allow flexible sizing */
+            display: flex;
+            flex-direction: column;
+            min-height: 400px; /* Minimum height to ensure editor is usable */
+            max-height: 600px; /* Maximum height to ensure buttons visible */
+        }
+        
+        #sqlEditor {
+            flex-grow: 1;
+            border: 2px solid #9c27b0;
+            border-radius: 5px;
+            min-height: 0; /* Critical for proper sizing */
+            overflow: hidden;
+        }
+        
+        /* CodeMirror customization */
+        .CodeMirror {
+            height: 100%;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+        
+        .CodeMirror-scroll {
+            max-height: 100%;
+            overflow-y: auto;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 8px 16px;
+            font-size: 13px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        
+        .run-btn { background-color: #7b1fa2; color: white; }
+        .run-btn:hover { background-color: #6a1b9a; }
+        .check-btn { background-color: #ff6f00; color: white; }
+        .check-btn:hover { background-color: #e65100; }
+        .clear-btn { background-color: #616161; color: white; }
+        .clear-btn:hover { background-color: #424242; }
+        .reset-btn { background-color: #c62828; color: white; }
+        .reset-btn:hover { background-color: #b71c1c; }
+        .download-btn { background-color: #00897b; color: white; }
+        .download-btn:hover { background-color: #00695c; }
+        
+        .results {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            padding: 12px;
+            margin-top: 12px;
+            max-height: 350px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+        
+        /* The editor panel is a flex column, so without this the results box is squashed to a sliver */
+        .student-info,
+        .results,
+        .editor-panel .info-box,
+        .editor-panel h2 {
+            flex-shrink: 0;
+        }
+        
+        .results {
+            min-height: 90px;
+        }
+        
+        .results.success {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        
+        .results.error {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+        
+        .results table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            background-color: white;
+            font-size: 0.85em;
+        }
+        
+        .results th {
+            background-color: #6a1b9a;
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .results td {
+            border: 1px solid #ddd;
+            padding: 6px;
+        }
+        
+        .results tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        
+        .results tr:hover {
+            background-color: #e1bee7;
+        }
+        
+        .error {
+            color: #c62828;
+            font-weight: bold;
+        }
+        
+        .task-check-results {
+            padding: 12px;
+        }
+        
+        .task-status {
+            padding: 8px;
+            margin: 6px 0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+        
+        .task-status.complete {
+            background-color: #c8e6c9;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .task-status.incomplete {
+            background-color: #ffcdd2;
+            border-left: 4px solid #f44336;
+        }
+        
+        .task-status-icon {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .task-status.complete .task-status-icon {
+            color: #2e7d32;
+        }
+        
+        .task-status.incomplete .task-status-icon {
+            color: #c62828;
+        }
+        
+        .congrats {
+            background: linear-gradient(135deg, #ffd54f 0%, #ffca28 100%);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 12px;
+            border: 3px solid #ff6f00;
+        }
+        
+        .congrats h3 {
+            color: #e65100;
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+        
+        /* Reference Section */
+        .reference-section {
+            background-color: #f3e5f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 2px solid #9c27b0;
+        }
+        
+        .reference-section code {
+            background-color: #4a148c;
+            color: #e1bee7;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+        
+        .reference-section pre {
+            background-color: #311b92;
+            color: #b39ddb;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 8px 0;
+            border: 1px solid #512da8;
+            font-size: 0.8em;
+        }
+        
+        .reference-section ul,
+        .reference-section ol {
+            margin-left: 20px;
+            margin-top: 6px;
+        }
+        
+        .reference-section li {
+            margin-bottom: 6px;
+        }
+        
+        .datatype-table,
+        .constraint-table,
+        .operator-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 0.85em;
+        }
+        
+        .datatype-table th,
+        .constraint-table th,
+        .operator-table th {
+            background-color: #4a148c;
+            color: #e1bee7;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .datatype-table td,
+        .constraint-table td,
+        .operator-table td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            vertical-align: top;
+        }
+        
+        .datatype-table tr:nth-child(even),
+        .constraint-table tr:nth-child(even),
+        .operator-table tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        
+        .example-box {
+            background-color: #e8eaf6;
+            border-left: 4px solid #3f51b5;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .example-box h4 {
+            color: #3f51b5;
+            margin-top: 0;
+        }
+        
+        .tip-box {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff6f00;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .tip-box h4 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        
+        .warning-box {
+            background-color: #ffebee;
+            border-left: 4px solid #c62828;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .warning-box h4 {
+            color: #c62828;
+            margin-top: 0;
+        }
+        
+        .row-count {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        button:focus-visible,
+        summary:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #ff6f00;
+            outline-offset: 2px;
+        }
+        
+        /* Narrow screens: stack the three panels instead of squeezing them */
+        @media (max-width: 900px) {
+            body { overflow: auto; }
+            .app-container { flex-direction: column; height: auto; }
+            .tasks-panel, .editor-panel, .reference-panel {
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                border: none;
+            }
+            .editor-container { min-height: 300px; }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #9c27b0;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7b1fa2;
+        }
+
+        /* ---- Additions for the joins quiz ---- */
+        .task-badge {
+            float: right;
+            font-size: 0.8em;
+            padding: 1px 8px;
+            border-radius: 10px;
+            background: #fff;
+            color: #666;
+        }
+        
+        .task.done {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            border-left-color: #2e7d32;
+        }
+        
+        .task.done .task-badge {
+            background: #2e7d32;
+            color: #fff;
+        }
+        
+        .task.done h3 { color: #1b5e20; }
+        
+        .table-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            font-size: 0.85em;
+        }
+        
+        .table-bar button {
+            padding: 3px 10px;
+            font-size: 12px;
+            background: #e1bee7;
+            color: #4a148c;
+        }
+        
+        .table-bar button:hover { background: #ce93d8; }
+        
+        .schema-card {
+            background: #fff;
+            border: 1px solid #ce93d8;
+            border-radius: 4px;
+            padding: 6px 8px;
+            margin: 8px 0;
+            font-size: 0.82em;
+        }
+        
+        .schema-card h4 {
+            margin: 0 0 4px 0;
+            color: #4a148c;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .schema-card ul { list-style: none; margin: 0; }
+        .schema-card li { margin: 0; font-family: 'Courier New', monospace; }
+        .schema-card .tag {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-size: 0.8em;
+            padding: 0 5px;
+            border-radius: 3px;
+            margin-left: 4px;
+        }
+        .schema-card .pk { background: #fff3e0; color: #e65100; }
+        .schema-card .fk { background: #e3f2fd; color: #1565c0; }
+        
+        .results h4 { margin-top: 6px; }
+        .check-note { font-size: 0.85em; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="app-container" id="appContainer">
+        <!-- LEFT PANEL: TASKS -->
+        <div class="tasks-panel">
+            <h1>Build a Timetable</h1>
+            <p class="subtitle">SQL Joins Quiz</p>
+
+            <div class="info-box">
+                <p>The college needs a weekly timetable. The information lives in nine separate tables, and no single table holds a whole timetable. A <strong>JOIN</strong> combines rows from two tables by matching the ID columns that link them. You will write joins of growing size, and in the last two tasks you will build a real timetable for one student. The data is already loaded, so you only write SELECT queries.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>How the tables connect</h3>
+                <p>A student belongs to one program (<code>students.program_id</code>). A program has one lead teacher (<code>programs.lead_teacher_id</code>).</p>
+                <p>A program contains many modules, and a module can sit in many programs, so the table <code>program_modules</code> links them.</p>
+                <p>A module is taught in one or more <strong>sections</strong>, such as A and B. Each section has one teacher, and a teacher can teach many sections. Students join sections through the table <code>enrolments</code>.</p>
+                <p>An <strong>event</strong> is one weekly class meeting. It belongs to a section and takes place in a room.</p>
+                <p><code>day_of_week</code> counts from 1 (Monday) to 5 (Friday). <code>start_time</code> is text in 24-hour form, such as <code>'09:00'</code>.</p>
+            </div>
+
+            <div class="task" id="task-1">
+                <h3>Task 1: Students and Programs <span class="task-badge" id="badge-1">Not checked</span></h3>
+                <p>Show each student's name together with the name of their program.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show:</strong>
+                    <ul>
+                        <li><code>first_name</code> and <code>last_name</code> of the student</li>
+                        <li><code>program_name</code></li>
+                    </ul>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>Each student row stores a <code>program_id</code>. Match it to the <code>id</code> column of programs: <code>FROM students JOIN programs ON students.program_id = programs.id</code></p>
+                </details>
+            </div>
+
+            <div class="task" id="task-2">
+                <h3>Task 2: Program Leads <span class="task-badge" id="badge-2">Not checked</span></h3>
+                <p>Show each program with the teacher who leads it.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show:</strong>
+                    <ul>
+                        <li><code>program_name</code></li>
+                        <li><code>first_name</code> and <code>last_name</code> of the lead teacher</li>
+                    </ul>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>The link is <code>programs.lead_teacher_id</code>, and it points to <code>teachers.id</code>. Table aliases such as <code>programs p</code> and <code>teachers t</code> keep the query short.</p>
+                </details>
+            </div>
+
+            <div class="task" id="task-3">
+                <h3>Task 3: Modules in a Program <span class="task-badge" id="badge-3">Not checked</span></h3>
+                <p>List the modules that belong to the Computer Science program. A program and a module do not link directly, so look at the tables in the schema to find the bridge between them.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show:</strong>
+                    <ul>
+                        <li><code>module_code</code>, <code>module_name</code> and <code>hours_per_week</code></li>
+                    </ul>
+                    <strong>Order the rows by module_name.</strong>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>The route is programs, then program_modules, then modules. Join three tables, and filter with <code>WHERE program_name = 'Computer Science'</code>.</p>
+                </details>
+            </div>
+
+            <div class="task" id="task-4">
+                <h3>Task 4: Sections and Their Teachers <span class="task-badge" id="badge-4">Not checked</span></h3>
+                <p>Show every section with the module it belongs to and the teacher who teaches it.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show:</strong>
+                    <ul>
+                        <li><code>module_name</code> and <code>section_name</code></li>
+                        <li><code>first_name</code> and <code>last_name</code> of the teacher</li>
+                    </ul>
+                    <strong>Order the rows by module_name, then section_name.</strong>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>The sections table stores both a <code>module_id</code> and a <code>teacher_id</code>. Start from sections and join the other two tables to it.</p>
+                </details>
+            </div>
+
+            <div class="task" id="task-5">
+                <h3>Task 5: Every Event <span class="task-badge" id="badge-5">Not checked</span></h3>
+                <p>List all weekly events with the module, the section and the room.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show:</strong>
+                    <ul>
+                        <li><code>module_name</code>, <code>section_name</code> and <code>event_type</code></li>
+                        <li><code>room_name</code>, <code>day_of_week</code> and <code>start_time</code></li>
+                    </ul>
+                    <strong>Order the rows by day_of_week, then start_time.</strong>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>An event knows its section and its room. A section knows its module. That makes four tables: events, sections, modules and rooms.</p>
+                </details>
+            </div>
+
+            <div class="task" id="task-6">
+                <h3>Task 6: Teachers With No Sections <span class="task-badge" id="badge-6">Not checked</span></h3>
+                <p>Count how many sections each teacher teaches. A new teacher may have no sections yet, and that teacher must still appear in your result with a count of 0.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show:</strong>
+                    <ul>
+                        <li><code>first_name</code> and <code>last_name</code> of the teacher</li>
+                        <li>the number of sections, named <code>section_count</code></li>
+                    </ul>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>A plain JOIN drops teachers without a match. A <code>LEFT JOIN</code> keeps every row from the left table. Use <code>COUNT(sections.id)</code> rather than <code>COUNT(*)</code>, because a teacher with no sections still produces one row, and <code>COUNT(*)</code> would count it as 1. Finish with <code>GROUP BY teachers.id</code>.</p>
+                </details>
+            </div>
+
+            <div class="task" id="task-7">
+                <h3>Task 7: Programs With No Students <span class="task-badge" id="badge-7">Not checked</span></h3>
+                <p>Count the students in each program, including any program that has none.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show:</strong>
+                    <ul>
+                        <li><code>program_name</code></li>
+                        <li>the number of students, named <code>student_count</code></li>
+                    </ul>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>This is the same idea as Task 6 with different tables. Decide which table must keep all of its rows, and put it on the left of the LEFT JOIN.</p>
+                </details>
+            </div>
+
+            <div class="task" id="task-8">
+                <h3>Task 8: A Student's Timetable <span class="task-badge" id="badge-8">Not checked</span></h3>
+                <p>Build the weekly timetable for the student Maeve Kelly. A student does not link to events directly. Follow the chain of IDs from the student to the events they attend.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show:</strong>
+                    <ul>
+                        <li><code>day_of_week</code>, <code>start_time</code> and <code>duration_minutes</code></li>
+                        <li><code>module_name</code> and <code>room_name</code></li>
+                    </ul>
+                    <strong>Order the rows by day_of_week, then start_time.</strong>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>The chain is students, enrolments, sections, events. From sections you can also reach modules, and from events you can reach rooms. That makes six tables. Filter with <code>WHERE students.first_name = 'Maeve' AND students.last_name = 'Kelly'</code>.</p>
+                </details>
+            </div>
+
+            <div class="task" id="task-9">
+                <h3>Task 9: The Finished Timetable <span class="task-badge" id="badge-9">Not checked</span></h3>
+                <p>A student cannot read day numbers and durations easily. Improve your Task 8 query so it reads like a real timetable.</p>
+                <div class="task-requirements">
+                    <strong>Columns to show, in this order:</strong>
+                    <ol>
+                        <li><code>day</code>: the day name, such as Monday</li>
+                        <li><code>start_time</code></li>
+                        <li><code>end_time</code>: the start time plus the duration</li>
+                        <li><code>module_name</code>, <code>event_type</code> and <code>room_name</code></li>
+                        <li><code>teacher</code>: first and last name joined with a space</li>
+                    </ol>
+                    <strong>Order the rows by day, then start_time. Use Maeve Kelly again.</strong>
+                </div>
+                <details class="hint-box">
+                    <summary>Show Hint</summary>
+                    <p>Turn day numbers into names with <code>CASE day_of_week WHEN 1 THEN 'Monday' WHEN 2 THEN 'Tuesday' ... END AS day</code>. Add minutes to a time with <code>time(start_time, '+' || duration_minutes || ' minutes')</code>. Join text together with <code>||</code>. The teacher comes from sections, so join teachers as well. Sort by the number <code>day_of_week</code> and not by the day name, because names sort alphabetically.</p>
+                </details>
+            </div>
+        </div>
+
+        <!-- MIDDLE PANEL: EDITOR -->
+        <div class="editor-panel">
+            <div class="student-info">
+                <h3>Student Information</h3>
+                <label for="studentName">Your Name:</label>
+                <input type="text" id="studentName" placeholder="Enter your full name" autocomplete="name">
+
+                <label for="studentId">Student ID:</label>
+                <input type="text" id="studentId" placeholder="Enter your student ID" autocomplete="off">
+            </div>
+
+            <h2>SQL Code Editor</h2>
+
+            <div class="table-bar" id="tableBar">
+                <span>Look at a table:</span>
+            </div>
+
+            <div class="editor-container">
+                <div id="sqlEditor"></div>
+
+                <div class="button-group">
+                    <button class="run-btn" onclick="runCode()" title="Run the whole editor, or only the highlighted text (Ctrl+Enter)">Run Code</button>
+                    <button class="check-btn" onclick="checkTasks()">Check My Work</button>
+                    <button class="clear-btn" onclick="clearEditor()">Clear Editor</button>
+                    <button class="reset-btn" onclick="resetDatabase()">Reset Database</button>
+                    <button class="download-btn" onclick="downloadCode()">Download SQL File</button>
+                </div>
+            </div>
+
+            <div id="results" class="results">
+                <p>Results will appear here after you run your code. Click a table name above to see its rows.</p>
+            </div>
+
+            <div class="info-box" style="margin-top: 15px;">
+                <h3>Submission Instructions</h3>
+                <p>When complete, fill in your name and student ID above, then click "Download SQL File" to save your work. Submit the downloaded file to your instructor.</p>
+                <p style="margin-top: 6px;">Your code is saved in this browser as you type, so a page refresh will not lose it. Press <strong>Ctrl+Enter</strong> (or <strong>Cmd+Enter</strong>) to run your code, or only the text you have highlighted. <strong>Check My Work</strong> looks at the queries you have run, so run each answer at least once. It accepts any column names and any column order, as long as the rows are right.</p>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: REFERENCE -->
+        <div class="reference-panel" id="referencePanel">
+            <h1>SQL Reference</h1>
+
+            <div class="reference-section">
+                <h2>The Tables</h2>
+                <p>PK marks a primary key. FK marks a foreign key and shows where it points.</p>
+                <div id="schemaPanel"><p>Loading...</p></div>
+            </div>
+
+            <div class="reference-section">
+                <h2>Why Join?</h2>
+                <p>Each fact is stored once, in the table where it belongs. A room name lives in <code>rooms</code>, and an event only stores a <code>room_id</code>. A join follows that ID to bring the room name back next to the event.</p>
+                <p>Read a join in three steps. First decide which table holds the thing you want to list. Then follow the ID columns from table to table until you reach every column you need. Finally write one JOIN for each step.</p>
+            </div>
+
+            <div class="reference-section">
+                <h2>INNER JOIN</h2>
+                <p>Keeps only the rows that have a match in both tables. Writing <code>JOIN</code> alone means INNER JOIN.</p>
+                <div class="example-box">
+                    <h4>Syntax:</h4>
+                    <pre>SELECT columns
+FROM table_a
+JOIN table_b ON table_a.b_id = table_b.id;</pre>
+                </div>
+                <div class="example-box">
+                    <h4>Example:</h4>
+                    <pre>-- Events held in the labs
+SELECT rooms.room_name,
+       events.day_of_week,
+       events.start_time
+FROM events
+JOIN rooms ON events.room_id = rooms.id
+WHERE rooms.room_type = 'Lab';</pre>
+                </div>
+            </div>
+
+            <div class="reference-section">
+                <h2>Aliases</h2>
+                <p>An alias is a short name for a table. Write it after the table name, then use it everywhere in the query.</p>
+                <div class="example-box">
+                    <pre>SELECT r.room_name, e.start_time
+FROM events e
+JOIN rooms r ON e.room_id = r.id;</pre>
+                </div>
+                <p>When two tables share a column name, such as <code>first_name</code> in students and teachers, write <code>t.first_name</code> so SQL knows which one you mean. You can also rename a column in the output with <code>AS</code>.</p>
+            </div>
+
+            <div class="reference-section">
+                <h2>Joining Many Tables</h2>
+                <p>Add one JOIN line per link. Each ON compares an ID that already appears in the query with the matching ID in the new table.</p>
+                <div class="example-box">
+                    <pre>-- Which rooms does each section use?
+SELECT s.section_name, r.room_name
+FROM sections s
+JOIN events e ON e.section_id = s.id
+JOIN rooms r  ON e.room_id = r.id;</pre>
+                </div>
+                <div class="tip-box">
+                    <h4>Bridge tables</h4>
+                    <p>A table such as <code>program_modules</code> or <code>enrolments</code> exists only to link two other tables. It holds two IDs and nothing else. To get from one side to the other, join through it.</p>
+                </div>
+            </div>
+
+            <div class="reference-section">
+                <h2>LEFT JOIN</h2>
+                <p>Keeps every row from the left table, even when no row on the right matches. The right-hand columns are <code>NULL</code> for those rows.</p>
+                <div class="example-box">
+                    <pre>-- Every room, with how many events it hosts
+SELECT r.room_name, COUNT(e.id) AS event_count
+FROM rooms r
+LEFT JOIN events e ON e.room_id = r.id
+GROUP BY r.id;</pre>
+                </div>
+                <div class="tip-box">
+                    <h4>Counting with LEFT JOIN</h4>
+                    <p><code>COUNT(e.id)</code> ignores NULL, so an unused room shows 0. <code>COUNT(*)</code> would count the empty row and show 1.</p>
+                </div>
+            </div>
+
+            <div class="reference-section">
+                <h2>ON and WHERE</h2>
+                <p>ON says how two tables connect. WHERE says which of the joined rows you want. Keep these two jobs separate and your queries stay easy to read.</p>
+                <div class="warning-box">
+                    <h4>WARNING</h4>
+                    <p>If you forget the ON, SQL pairs every row of one table with every row of the other. Two tables of 22 and 6 rows give 132 rows. A result that is far too large is the sign of a missing join condition.</p>
+                </div>
+            </div>
+
+            <div class="reference-section">
+                <h2>Grouping and Counting</h2>
+                <table class="operator-table">
+                    <tr><th>Function</th><th>Purpose</th></tr>
+                    <tr><td><code>COUNT(col)</code></td><td>Counts rows where col is not NULL</td></tr>
+                    <tr><td><code>SUM(col)</code></td><td>Adds up values</td></tr>
+                    <tr><td><code>GROUP BY</code></td><td>One result row per group</td></tr>
+                </table>
+                <div class="example-box">
+                    <pre>-- Total teaching minutes per section
+SELECT section_id, SUM(duration_minutes)
+FROM events
+GROUP BY section_id;</pre>
+                </div>
+            </div>
+
+            <div class="reference-section">
+                <h2>Text, CASE and Times</h2>
+                <div class="example-box">
+                    <h4>Join text with ||</h4>
+                    <pre>SELECT first_name || ' ' || last_name AS full_name
+FROM teachers;</pre>
+                </div>
+                <div class="example-box">
+                    <h4>Choose a value with CASE</h4>
+                    <pre>SELECT CASE capacity
+         WHEN 16 THEN 'Small'
+         ELSE 'Large'
+       END AS size
+FROM rooms;</pre>
+                </div>
+                <div class="example-box">
+                    <h4>Add minutes to a time</h4>
+                    <pre>SELECT time('09:00', '+90 minutes');
+-- 10:30:00
+
+SELECT time(start_time, '+' || duration_minutes || ' minutes')
+FROM events;</pre>
+                </div>
+                <p>The <code>time()</code> function returns hours, minutes and seconds, such as <code>10:30:00</code>. The checker accepts that form.</p>
+            </div>
+
+            <div class="reference-section">
+                <h2>Common Mistakes</h2>
+                <ol>
+                    <li><strong>No ON clause</strong> - the result has far too many rows.</li>
+                    <li><strong>Ambiguous column name</strong> - write <code>alias.column</code> when two tables share a name.</li>
+                    <li><strong>Joining the wrong IDs</strong> - compare a foreign key with a primary key, such as <code>e.room_id = r.id</code>.</li>
+                    <li><strong>Using JOIN when you need LEFT JOIN</strong> - rows with no match vanish.</li>
+                    <li><strong>Sorting day names</strong> - sort by <code>day_of_week</code>, not by the name.</li>
+                    <li><strong>Missing quotes</strong> - text needs single quotes: <code>'Maeve'</code>.</li>
+                </ol>
+            </div>
+
+            <div class="reference-section">
+                <h2>Tips for Success</h2>
+                <ul>
+                    <li>Build a query one join at a time. Run it after each join and look at the rows.</li>
+                    <li>Click a table name above the editor to see what a table contains.</li>
+                    <li>Start with <code>SELECT *</code> to see every joined column, then pick the ones you need.</li>
+                    <li>Check the row count under each result against what you expect.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let db;
+        let sqlHistory = [];
+        let ranQueries = [];
+        let editor;
+        let dbReady = null;
+
+        const STARTER_CODE = '-- Timetable Database\n-- The tables are already loaded. Write SELECT queries below.\n-- Click a table name above the editor to see its rows.\n\n';
+        const STORE_CODE = 'timetable-quiz-code';
+        const STORE_NAME = 'timetable-quiz-name';
+        const STORE_ID = 'timetable-quiz-id';
+        const TABLES = ['students', 'programs', 'teachers', 'modules', 'program_modules', 'sections', 'enrolments', 'rooms', 'events'];
+
+        // The data is built from this script each time the database starts or resets.
+        const SEED_SQL = `CREATE TABLE teachers (
+    id INTEGER PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL
+);
+CREATE TABLE programs (
+    id INTEGER PRIMARY KEY,
+    program_name TEXT NOT NULL,
+    lead_teacher_id INTEGER NOT NULL,
+    FOREIGN KEY (lead_teacher_id) REFERENCES teachers(id)
+);
+CREATE TABLE modules (
+    id INTEGER PRIMARY KEY,
+    module_code TEXT NOT NULL,
+    module_name TEXT NOT NULL,
+    hours_per_week INTEGER NOT NULL
+);
+CREATE TABLE program_modules (
+    program_id INTEGER NOT NULL,
+    module_id INTEGER NOT NULL,
+    PRIMARY KEY (program_id, module_id),
+    FOREIGN KEY (program_id) REFERENCES programs(id),
+    FOREIGN KEY (module_id) REFERENCES modules(id)
+);
+CREATE TABLE sections (
+    id INTEGER PRIMARY KEY,
+    module_id INTEGER NOT NULL,
+    section_name TEXT NOT NULL,
+    teacher_id INTEGER NOT NULL,
+    FOREIGN KEY (module_id) REFERENCES modules(id),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id)
+);
+CREATE TABLE students (
+    id INTEGER PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    program_id INTEGER NOT NULL,
+    FOREIGN KEY (program_id) REFERENCES programs(id)
+);
+CREATE TABLE enrolments (
+    student_id INTEGER NOT NULL,
+    section_id INTEGER NOT NULL,
+    PRIMARY KEY (student_id, section_id),
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (section_id) REFERENCES sections(id)
+);
+CREATE TABLE rooms (
+    id INTEGER PRIMARY KEY,
+    room_name TEXT NOT NULL,
+    building TEXT NOT NULL,
+    capacity INTEGER NOT NULL,
+    room_type TEXT NOT NULL
+);
+CREATE TABLE events (
+    id INTEGER PRIMARY KEY,
+    section_id INTEGER NOT NULL,
+    room_id INTEGER NOT NULL,
+    day_of_week INTEGER NOT NULL,
+    start_time TEXT NOT NULL,
+    duration_minutes INTEGER NOT NULL,
+    event_type TEXT NOT NULL,
+    FOREIGN KEY (section_id) REFERENCES sections(id),
+    FOREIGN KEY (room_id) REFERENCES rooms(id)
+);
+INSERT INTO teachers (id, first_name, last_name) VALUES
+    (1, 'Aoife', 'Brennan'),
+    (2, 'Ciaran', 'Doyle'),
+    (3, 'Niamh', 'Fitzgerald'),
+    (4, 'Sean', 'Gallagher'),
+    (5, 'Orla', 'Hughes'),
+    (6, 'Padraig', 'Kavanagh'),
+    (7, 'Roisin', 'Lynch'),
+    (8, 'Tomas', 'Murphy');
+INSERT INTO programs (id, program_name, lead_teacher_id) VALUES
+    (1, 'Computer Science', 1),
+    (2, 'Computer Networking', 4),
+    (3, 'Web Development', 5),
+    (4, 'Applied Mathematics', 3);
+INSERT INTO modules (id, module_code, module_name, hours_per_week) VALUES
+    (1, 'PROG101', 'Programming Fundamentals', 4),
+    (2, 'MATH101', 'Mathematics for IT', 3),
+    (3, 'DB101', 'Database Methods', 3),
+    (4, 'WEB101', 'Web Authoring', 3),
+    (5, 'NET101', 'Networking Fundamentals', 4),
+    (6, 'COMM101', 'Communications', 2),
+    (7, 'AI101', 'AI and ML Foundations', 3),
+    (8, 'RES101', 'Research and Study Skills', 2),
+    (9, 'OS101', 'Operating Systems', 3),
+    (10, 'STAT101', 'Statistics for Data', 3);
+INSERT INTO program_modules (program_id, module_id) VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 7),
+    (1, 6),
+    (2, 5),
+    (2, 9),
+    (2, 2),
+    (2, 6),
+    (2, 1),
+    (3, 4),
+    (3, 1),
+    (3, 3),
+    (3, 6),
+    (3, 8),
+    (4, 10),
+    (4, 2),
+    (4, 7),
+    (4, 8);
+INSERT INTO sections (id, module_id, section_name, teacher_id) VALUES
+    (1, 1, 'A', 1),
+    (2, 1, 'B', 2),
+    (3, 2, 'A', 3),
+    (4, 2, 'B', 6),
+    (5, 3, 'A', 2),
+    (6, 3, 'B', 1),
+    (7, 6, 'A', 5),
+    (8, 6, 'B', 5),
+    (9, 4, 'A', 5),
+    (10, 5, 'A', 4),
+    (11, 7, 'A', 7),
+    (12, 8, 'A', 7),
+    (13, 9, 'A', 4),
+    (14, 10, 'A', 6);
+INSERT INTO students (id, first_name, last_name, program_id) VALUES
+    (1, 'Maeve', 'Kelly', 1),
+    (2, 'Cian', 'Byrne', 1),
+    (3, 'Aisling', 'Walsh', 1),
+    (4, 'Darragh', 'Ryan', 1),
+    (5, 'Saoirse', 'Nolan', 1),
+    (6, 'Eoin', 'Burke', 1),
+    (7, 'Ciara', 'Daly', 1),
+    (8, 'Fionn', 'Quinn', 1),
+    (9, 'Grainne', 'Moran', 2),
+    (10, 'Hugh', 'Healy', 2),
+    (11, 'Ide', 'Reilly', 2),
+    (12, 'Jack', 'Dunne', 2),
+    (13, 'Kate', 'Farrell', 2),
+    (14, 'Luke', 'Keane', 2),
+    (15, 'Muireann', 'Lawlor', 2),
+    (16, 'Oisin', 'Mooney', 3),
+    (17, 'Paul', 'Nash', 3),
+    (18, 'Ruth', 'Power', 3),
+    (19, 'Sinead', 'Rooney', 3),
+    (20, 'Tadhg', 'Sheehan', 3),
+    (21, 'Una', 'Tierney', 3),
+    (22, 'Vincent', 'Whelan', 3);
+INSERT INTO enrolments (student_id, section_id) VALUES
+    (1, 1),
+    (1, 3),
+    (1, 5),
+    (1, 11),
+    (1, 7),
+    (2, 2),
+    (2, 4),
+    (2, 6),
+    (2, 11),
+    (2, 8),
+    (3, 1),
+    (3, 3),
+    (3, 5),
+    (3, 11),
+    (3, 7),
+    (4, 2),
+    (4, 4),
+    (4, 6),
+    (4, 11),
+    (4, 8),
+    (5, 1),
+    (5, 3),
+    (5, 5),
+    (5, 11),
+    (5, 7),
+    (6, 2),
+    (6, 4),
+    (6, 6),
+    (6, 11),
+    (6, 8),
+    (7, 1),
+    (7, 3),
+    (7, 5),
+    (7, 11),
+    (7, 7),
+    (8, 2),
+    (8, 4),
+    (8, 6),
+    (8, 11),
+    (8, 8),
+    (9, 10),
+    (9, 13),
+    (9, 3),
+    (9, 7),
+    (9, 1),
+    (10, 10),
+    (10, 13),
+    (10, 4),
+    (10, 8),
+    (10, 2),
+    (11, 10),
+    (11, 13),
+    (11, 3),
+    (11, 7),
+    (11, 1),
+    (12, 10),
+    (12, 13),
+    (12, 4),
+    (12, 8),
+    (12, 2),
+    (13, 10),
+    (13, 13),
+    (13, 3),
+    (13, 7),
+    (13, 1),
+    (14, 10),
+    (14, 13),
+    (14, 4),
+    (14, 8),
+    (14, 2),
+    (15, 10),
+    (15, 13),
+    (15, 3),
+    (15, 7),
+    (15, 1),
+    (16, 9),
+    (16, 1),
+    (16, 5),
+    (16, 7),
+    (16, 12),
+    (17, 9),
+    (17, 2),
+    (17, 6),
+    (17, 8),
+    (17, 12),
+    (18, 9),
+    (18, 1),
+    (18, 5),
+    (18, 7),
+    (18, 12),
+    (19, 9),
+    (19, 2),
+    (19, 6),
+    (19, 8),
+    (19, 12),
+    (20, 9),
+    (20, 1),
+    (20, 5),
+    (20, 7),
+    (20, 12),
+    (21, 9),
+    (21, 2),
+    (21, 6),
+    (21, 8),
+    (21, 12),
+    (22, 9),
+    (22, 1),
+    (22, 5),
+    (22, 7),
+    (22, 12);
+INSERT INTO rooms (id, room_name, building, capacity, room_type) VALUES
+    (1, 'Room 1.01', 'Main', 30, 'Classroom'),
+    (2, 'Room 1.02', 'Main', 30, 'Classroom'),
+    (3, 'Room 2.01', 'Main', 40, 'Classroom'),
+    (4, 'Seminar 2.05', 'Main', 16, 'Classroom'),
+    (5, 'Lab A', 'Tech', 24, 'Lab'),
+    (6, 'Lab B', 'Tech', 24, 'Lab');
+INSERT INTO events (id, section_id, room_id, day_of_week, start_time, duration_minutes, event_type) VALUES
+    (1, 2, 5, 1, '10:00', 120, 'Lab'),
+    (2, 3, 1, 1, '11:00', 120, 'Lecture'),
+    (3, 6, 3, 1, '12:00', 60, 'Lecture'),
+    (4, 13, 5, 1, '13:00', 180, 'Lab'),
+    (5, 9, 5, 2, '09:00', 180, 'Lab'),
+    (6, 11, 3, 2, '11:00', 60, 'Lecture'),
+    (7, 1, 6, 2, '13:00', 120, 'Lab'),
+    (8, 4, 3, 2, '14:00', 120, 'Lecture'),
+    (9, 12, 3, 3, '09:00', 120, 'Lecture'),
+    (10, 5, 6, 3, '11:00', 120, 'Lab'),
+    (11, 10, 3, 3, '13:00', 120, 'Lecture'),
+    (12, 1, 6, 3, '15:00', 120, 'Lab'),
+    (13, 8, 3, 4, '09:00', 120, 'Lecture'),
+    (14, 14, 4, 4, '11:00', 180, 'Lecture'),
+    (15, 2, 6, 4, '11:00', 120, 'Lab'),
+    (16, 7, 1, 4, '12:00', 120, 'Lecture'),
+    (17, 11, 6, 4, '15:00', 120, 'Lab'),
+    (18, 4, 3, 5, '09:00', 60, 'Lecture'),
+    (19, 5, 3, 5, '11:00', 60, 'Lecture'),
+    (20, 3, 3, 5, '12:00', 60, 'Lecture'),
+    (21, 6, 5, 5, '13:00', 120, 'Lab'),
+    (22, 10, 5, 5, '15:00', 120, 'Lab');`;
+
+        // Each task has a reference query. Check My Work runs it and compares its rows
+        // with the rows of every query the student has run.
+        // orderKeys lists the columns (by position) whose order must match.
+        const TASKS = [
+            { num: 1, name: 'Students and Programs',
+              ref: `SELECT s.first_name, s.last_name, p.program_name
+                    FROM students s JOIN programs p ON s.program_id = p.id`,
+              orderKeys: [] },
+            { num: 2, name: 'Program Leads',
+              ref: `SELECT p.program_name, t.first_name, t.last_name
+                    FROM programs p JOIN teachers t ON p.lead_teacher_id = t.id`,
+              orderKeys: [] },
+            { num: 3, name: 'Modules in a Program',
+              ref: `SELECT m.module_code, m.module_name, m.hours_per_week
+                    FROM programs p
+                    JOIN program_modules pm ON pm.program_id = p.id
+                    JOIN modules m ON pm.module_id = m.id
+                    WHERE p.program_name = 'Computer Science'
+                    ORDER BY m.module_name`,
+              orderKeys: [1] },
+            { num: 4, name: 'Sections and Their Teachers',
+              ref: `SELECT m.module_name, s.section_name, t.first_name, t.last_name
+                    FROM sections s
+                    JOIN modules m ON s.module_id = m.id
+                    JOIN teachers t ON s.teacher_id = t.id
+                    ORDER BY m.module_name, s.section_name`,
+              orderKeys: [0, 1] },
+            { num: 5, name: 'Every Event',
+              ref: `SELECT m.module_name, s.section_name, e.event_type, r.room_name, e.day_of_week, e.start_time
+                    FROM events e
+                    JOIN sections s ON e.section_id = s.id
+                    JOIN modules m ON s.module_id = m.id
+                    JOIN rooms r ON e.room_id = r.id
+                    ORDER BY e.day_of_week, e.start_time`,
+              orderKeys: [4, 5] },
+            { num: 6, name: 'Teachers With No Sections',
+              ref: `SELECT t.first_name, t.last_name, COUNT(s.id) AS section_count
+                    FROM teachers t LEFT JOIN sections s ON s.teacher_id = t.id
+                    GROUP BY t.id`,
+              orderKeys: [] },
+            { num: 7, name: 'Programs With No Students',
+              ref: `SELECT p.program_name, COUNT(s.id) AS student_count
+                    FROM programs p LEFT JOIN students s ON s.program_id = p.id
+                    GROUP BY p.id`,
+              orderKeys: [] },
+            { num: 8, name: "A Student's Timetable",
+              ref: `SELECT e.day_of_week, e.start_time, e.duration_minutes, m.module_name, r.room_name
+                    FROM students st
+                    JOIN enrolments en ON en.student_id = st.id
+                    JOIN sections s ON en.section_id = s.id
+                    JOIN events e ON e.section_id = s.id
+                    JOIN modules m ON s.module_id = m.id
+                    JOIN rooms r ON e.room_id = r.id
+                    WHERE st.first_name = 'Maeve' AND st.last_name = 'Kelly'
+                    ORDER BY e.day_of_week, e.start_time`,
+              orderKeys: [0, 1] },
+            { num: 9, name: 'The Finished Timetable',
+              ref: `SELECT CASE e.day_of_week WHEN 1 THEN 'Monday' WHEN 2 THEN 'Tuesday' WHEN 3 THEN 'Wednesday'
+                                               WHEN 4 THEN 'Thursday' WHEN 5 THEN 'Friday' END AS day,
+                           e.start_time,
+                           time(e.start_time, '+' || e.duration_minutes || ' minutes') AS end_time,
+                           m.module_name, e.event_type, r.room_name,
+                           t.first_name || ' ' || t.last_name AS teacher
+                    FROM students st
+                    JOIN enrolments en ON en.student_id = st.id
+                    JOIN sections s ON en.section_id = s.id
+                    JOIN events e ON e.section_id = s.id
+                    JOIN modules m ON s.module_id = m.id
+                    JOIN rooms r ON e.room_id = r.id
+                    JOIN teachers t ON s.teacher_id = t.id
+                    WHERE st.first_name = 'Maeve' AND st.last_name = 'Kelly'
+                    ORDER BY e.day_of_week, e.start_time`,
+              orderKeys: [0, 1] }
+        ];
+
+        // localStorage can throw (private windows, blocked storage), so never rely on it
+        function store(key, value) {
+            try {
+                if (value === undefined) return localStorage.getItem(key);
+                localStorage.setItem(key, value);
+            } catch (e) { /* storage unavailable: carry on without it */ }
+            return null;
+        }
+
+        function esc(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        async function initDB() {
+            const SQL = await initSqlJs({
+                locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+            });
+            const fresh = new SQL.Database();
+            // SQLite ignores foreign keys unless this is switched on
+            fresh.run('PRAGMA foreign_keys = ON;');
+            fresh.run(SEED_SQL);
+            db = fresh;
+            buildSchemaPanel();
+            console.log('Database initialized');
+        }
+
+        // Draw the table list from the live database, so it always matches the data
+        function buildSchemaPanel() {
+            let html = '';
+            TABLES.forEach(name => {
+                const cols = db.exec(`PRAGMA table_info(${name})`)[0].values;
+                const fkRes = db.exec(`PRAGMA foreign_key_list(${name})`);
+                const fks = {};
+                if (fkRes.length) fkRes[0].values.forEach(r => { fks[r[3]] = `${r[2]}.${r[4]}`; });
+                html += `<div class="schema-card"><h4>${esc(name)}</h4><ul>`;
+                cols.forEach(c => {
+                    let tags = '';
+                    if (c[5]) tags += '<span class="tag pk">PK</span>';
+                    if (fks[c[1]]) tags += `<span class="tag fk">FK &rarr; ${esc(fks[c[1]])}</span>`;
+                    html += `<li>${esc(c[1])} <small>${esc(c[2])}</small>${tags}</li>`;
+                });
+                html += '</ul></div>';
+            });
+            document.getElementById('schemaPanel').innerHTML = html;
+        }
+
+        function buildTableBar() {
+            const bar = document.getElementById('tableBar');
+            TABLES.forEach(name => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.textContent = name;
+                b.onclick = () => showTable(name);
+                bar.appendChild(b);
+            });
+        }
+
+        async function showTable(name) {
+            const resultsDiv = document.getElementById('results');
+            if (!dbReady) return;
+            await dbReady;
+            const res = db.exec(`SELECT * FROM ${name}`);
+            resultsDiv.className = 'results';
+            resultsDiv.innerHTML = `<h4>Table: ${esc(name)}</h4>` + (res.length ? renderResultTable(res[0]) : '<p>No rows.</p>');
+        }
+
+        // Initialize CodeMirror
+        function initEditor() {
+            editor = CodeMirror(document.getElementById('sqlEditor'), {
+                value: store(STORE_CODE) || STARTER_CODE,
+                mode: 'text/x-sql',
+                theme: 'monokai',
+                lineNumbers: true,
+                indentUnit: 4,
+                lineWrapping: true,
+                autofocus: true,
+                extraKeys: {
+                    'Ctrl-Enter': runCode,
+                    'Cmd-Enter': runCode,
+                    'Tab': cm => cm.execCommand('insertSoftTab'),
+                    'Shift-Tab': cm => cm.execCommand('indentLess')
+                }
+            });
+            editor.on('change', () => store(STORE_CODE, editor.getValue()));
+        }
+
+        function renderResultTable(result) {
+            let html = '<table><tr>';
+            result.columns.forEach(col => { html += `<th>${esc(col)}</th>`; });
+            html += '</tr>';
+            result.values.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell !== null ? esc(cell) : '<em>NULL</em>'}</td>`;
+                });
+                html += '</tr>';
+            });
+            const n = result.values.length;
+            return html + `</table><p class="row-count">${n} row${n === 1 ? '' : 's'}</p>`;
+        }
+
+        async function runCode() {
+            const resultsDiv = document.getElementById('results');
+
+            if (!dbReady) {
+                resultsDiv.className = 'results error';
+                resultsDiv.innerHTML = '<strong>Error:</strong> The database is still loading. Check your internet connection and try again in a moment.';
+                return;
+            }
+            await dbReady;
+
+            // Run only the highlighted text when there is a selection, otherwise everything
+            const selection = editor.getSelection().trim();
+            const sqlCode = (selection || editor.getValue()).trim();
+
+            if (!sqlCode) {
+                resultsDiv.className = 'results error';
+                resultsDiv.innerHTML = '<strong>Error:</strong> Please enter some SQL code first.';
+                return;
+            }
+
+            let output = '';
+            let hadError = false;
+            let count = 0;
+            let stepping = false;
+
+            try {
+                // iterateStatements copes with comments, and with semicolons inside text values
+                for (const stmt of db.iterateStatements(sqlCode)) {
+                    const text = stmt.getSQL().trim();
+                    count++;
+                    stepping = true;
+
+                    if (/^(CREATE|INSERT|UPDATE|DELETE)/i.test(text) && !sqlHistory.includes(text)) {
+                        sqlHistory.push(text);
+                    }
+
+                    // Remember every query that ran, so Check My Work can test them
+                    if (/^(SELECT|WITH)/i.test(text) && !ranQueries.includes(text)) ranQueries.push(text);
+
+                    const columns = stmt.getColumnNames();
+                    if (columns.length > 0) {
+                        const values = [];
+                        while (stmt.step()) values.push(stmt.get());
+                        output += `<h4>Statement ${count} Results:</h4>` + renderResultTable({columns, values});
+                    } else {
+                        stmt.step();
+                        const changed = db.getRowsModified();
+                        const note = /^(INSERT|UPDATE|DELETE)/i.test(text)
+                            ? ` Executed successfully (${changed} row${changed === 1 ? '' : 's'} affected).`
+                            : ' Executed successfully.';
+                        output += `<p><strong>Statement ${count}:</strong>${note}</p>`;
+                    }
+                    stepping = false;
+                }
+            } catch (err) {
+                hadError = true;
+                // A compile error is thrown before the loop body runs, so the failing statement is the next one
+                const failed = stepping ? count : count + 1;
+                output += `<p class="error"><strong>Error in statement ${failed}:</strong> ${esc(err.message)}</p>`;
+                if (failed > 1) {
+                    output += `<p style="font-size: 0.9em;">${failed === 2 ? 'Statement 1 ran' : `Statements 1 to ${failed - 1} ran`}. Fix the error and run again.</p>`;
+                }
+            }
+
+            resultsDiv.className = hadError ? 'results error' : 'results success';
+            resultsDiv.innerHTML = output || '<p>Commands executed. No data returned.</p>';
+        }
+
+        // ---- Checking ----
+
+        // Turn one cell into a comparable string. A time such as 10:30:00 matches 10:30.
+        function norm(cell) {
+            if (cell === null) return 'NULL';
+            if (typeof cell === 'number') return String(Number(cell));
+            const s = String(cell);
+            return /^\d\d:\d\d:00$/.test(s) ? s.slice(0, 5) : s;
+        }
+
+        // Run a query and return its rows as arrays of strings, or null if it fails
+        function resultOf(sql) {
+            try {
+                const res = db.exec(sql);
+                if (!res.length) return { columns: [], rows: [] };
+                return { columns: res[0].columns, rows: res[0].values.map(r => r.map(norm)) };
+            } catch (e) {
+                return null;
+            }
+        }
+
+        const colValues = (res, k) => res.rows.map(r => r[k]);
+        const sameMultiset = (a, b) => JSON.stringify([...a].sort()) === JSON.stringify([...b].sort());
+
+        // Does the student's result hold the same rows as the expected result?
+        // Column order, extra columns and column names do not matter.
+        function matches(expected, got, orderKeys) {
+            if (!got || got.rows.length !== expected.rows.length) return false;
+            const used = new Set();
+            const map = [];
+            for (let j = 0; j < expected.columns.length; j++) {
+                const want = colValues(expected, j);
+                let found = -1;
+                for (let k = 0; k < got.columns.length; k++) {
+                    if (!used.has(k) && sameMultiset(want, colValues(got, k))) { found = k; break; }
+                }
+                if (found < 0) return false;
+                used.add(found);
+                map.push(found);
+            }
+            // The mapped columns must also pair up row by row, not only column by column
+            const tuple = (row, idxs) => JSON.stringify(idxs.map(i => row[i]));
+            const wantTuples = expected.rows.map(r => tuple(r, expected.columns.map((_, i) => i)));
+            const gotTuples = got.rows.map(r => tuple(r, map));
+            if (!sameMultiset(wantTuples, gotTuples)) return false;
+            // Where the task asks for an order, the key columns must come out in that order
+            return orderKeys.every(j => JSON.stringify(colValues(expected, j)) === JSON.stringify(colValues(got, map[j])));
+        }
+
+        function checkTasks() {
+            const resultsDiv = document.getElementById('results');
+            if (!db) {
+                resultsDiv.className = 'results error';
+                resultsDiv.innerHTML = '<strong>Error:</strong> The database is still loading. Try again in a moment.';
+                return;
+            }
+
+            const attempts = ranQueries.map(resultOf).filter(r => r !== null);
+            let output = '<div class="task-check-results"><h3>Task Completion Check</h3>';
+            let allComplete = true;
+
+            TASKS.forEach(task => {
+                const expected = resultOf(task.ref);
+                const done = attempts.some(got => matches(expected, got, task.orderKeys));
+                let details = '';
+                if (!done) {
+                    allComplete = false;
+                    const sameRows = attempts.some(a => a.rows.length === expected.rows.length);
+                    details = ranQueries.length === 0
+                        ? ' Run a query for this task first.'
+                        : sameRows
+                            ? ` One of your queries has the right number of rows (${expected.rows.length}), but the values or the order differ.`
+                            : ` The answer has ${expected.rows.length} rows with these columns: ${expected.columns.join(', ')}.`;
+                }
+                output += `<div class="task-status ${done ? 'complete' : 'incomplete'}">
+                    <span class="task-status-icon">${done ? '&#10003;' : '&#10007;'}</span>
+                    <span><strong>Task ${task.num}: ${esc(task.name)}</strong> - ${done ? 'Complete' : 'Incomplete'}${esc(details)}</span>
+                </div>`;
+
+                const card = document.getElementById('task-' + task.num);
+                const badge = document.getElementById('badge-' + task.num);
+                if (card) card.classList.toggle('done', done);
+                if (badge) badge.textContent = done ? 'Done' : 'Not done';
+            });
+
+            output += '<hr style="margin: 15px 0;">';
+
+            if (allComplete) {
+                output += `<div class="congrats">
+                    <h3>TIMETABLE COMPLETE!</h3>
+                    <p>You joined nine tables into one weekly timetable.</p>
+                    <p style="margin-top: 10px;">All nine tasks are complete. Do not forget to download your SQL file.</p>
+                </div>`;
+            } else {
+                const incomplete = TASKS.filter(t => document.getElementById('task-' + t.num) && !document.getElementById('task-' + t.num).classList.contains('done')).map(t => t.num).join(', ');
+                output += `<p style="color: #c62828; font-weight: bold;">Some tasks are incomplete. Review Tasks ${incomplete} and try again.</p>`;
+            }
+
+            output += '</div>';
+            resultsDiv.className = 'results';
+            resultsDiv.innerHTML = output;
+        }
+
+        function clearEditor() {
+            if (confirm('Clear the editor? This cannot be undone.')) {
+                editor.setValue(STARTER_CODE);
+            }
+        }
+
+        async function resetDatabase() {
+            if (confirm('Reset the database to its starting data? Your code in the editor is kept.')) {
+                dbReady = initDB();
+                await dbReady;
+                sqlHistory = [];
+                ranQueries = [];
+                TASKS.forEach(t => {
+                    const card = document.getElementById('task-' + t.num);
+                    const badge = document.getElementById('badge-' + t.num);
+                    if (card) card.classList.remove('done');
+                    if (badge) badge.textContent = 'Not checked';
+                });
+                document.getElementById('results').className = 'results';
+                document.getElementById('results').innerHTML = '<p><strong>Database reset.</strong> The tables hold their starting data again.</p>';
+            }
+        }
+
+        function downloadCode() {
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+
+            if (!studentName || !studentId) {
+                alert('Please enter your name and student ID before downloading.');
+                (studentName ? document.getElementById('studentId') : document.getElementById('studentName')).focus();
+                return;
+            }
+            const safeId = studentId.replace(/[^a-z0-9_-]/gi, '_');
+
+            const allSQL = editor.getValue();
+            const content = `-- SQL Joins Quiz - Build a Timetable
+-- Student Name: ${studentName}
+-- Student ID: ${studentId}
+-- Date: ${new Date().toLocaleDateString()}
+
+${allSQL}`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${safeId}_SQL_Timetable_Joins.sql`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            buildTableBar();
+            dbReady = initDB().catch(err => {
+                dbReady = null;
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.className = 'results error';
+                resultsDiv.innerHTML = '<strong>Could not load the database engine.</strong> Check your internet connection and refresh the page.';
+                console.error(err);
+            });
+            initEditor();
+
+            // Remember name and ID between refreshes
+            const nameInput = document.getElementById('studentName');
+            const idInput = document.getElementById('studentId');
+            nameInput.value = store(STORE_NAME) || '';
+            idInput.value = store(STORE_ID) || '';
+            nameInput.addEventListener('input', () => store(STORE_NAME, nameInput.value));
+            idInput.addEventListener('input', () => store(STORE_ID, idInput.value));
+        });
+
+        // Warn before closing the tab if the student has written something beyond the starter text
+        window.addEventListener('beforeunload', function(e) {
+            if (editor && editor.getValue().trim() !== STARTER_CODE.trim()) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>
