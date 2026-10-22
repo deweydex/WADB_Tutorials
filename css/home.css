@@ -300,7 +300,8 @@ section h2 {
     They have rounded corners, shadows, and hover effects for interactivity.
     The entire card is now a clickable link for better UX.
 */
-.lesson-card {
+.lesson-card,
+.practice-card {
     display: block;                         /* Makes the anchor tag display as block */
     background-color: white;
     border-radius: 12px;                    /* Rounded corners */
@@ -319,7 +320,8 @@ section h2 {
     When users hover over a card, it lifts up and the shadow increases.
     This provides clear visual feedback that the card is interactive.
 */
-.lesson-card:hover {
+.lesson-card:hover,
+.practice-card:hover {
     transform: translateY(-5px);  /* Moves card 5px upward */
     box-shadow: var(--shadow-lg);  /* Larger shadow for more depth */
     text-decoration: none;         /* Ensures no underline appears */
@@ -341,13 +343,15 @@ section h2 {
     margin-bottom: 1rem;
 }
 
-.lesson-card h3 {
+.lesson-card h3,
+.practice-card h3 {
     font-size: 1.5rem;
     margin-bottom: 0.75rem;
     color: var(--text-color);
 }
 
-.lesson-card p {
+.lesson-card p,
+.practice-card p {
     color: var(--text-light);
     margin-bottom: 1.5rem;
     line-height: 1.6;
@@ -361,7 +365,8 @@ section h2 {
     transition: transform 0.2s;
 }
 
-.lesson-card:hover .lesson-link {
+.lesson-card:hover .lesson-link,
+.practice-card:hover .lesson-link {
     transform: translateX(5px);
 }
 
@@ -371,10 +376,21 @@ section h2 {
     When navigating with keyboard, the entire card should show focus.
     This ensures keyboard users can see which card they're about to activate.
 */
-.lesson-card:focus {
+.lesson-card:focus,
+.practice-card:focus {
     outline: 3px solid var(--primary-color);
     outline-offset: 4px;
     border-radius: 12px;
+}
+
+/* 
+    SQL Practice Section
+    
+    Reuses the lesson card look. The cards use their own class (practice-card)
+    so that the lesson progress tracker, which counts .lesson-card, ignores them.
+*/
+.sql-practice-section {
+    background-color: white;
 }
 
 /* Examples Section */
